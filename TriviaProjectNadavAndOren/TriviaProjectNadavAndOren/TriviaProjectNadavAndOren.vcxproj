@@ -25,6 +25,7 @@
     <ClInclude Include="Server.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Communicator.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
