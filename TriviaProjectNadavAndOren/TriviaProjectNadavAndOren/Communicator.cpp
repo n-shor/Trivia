@@ -38,8 +38,28 @@ void Communicator::bindAndListen()
 
 void Communicator::handleNewClient(SOCKET s)
 {
-	
+	std::cout << "Client connected." << std::endl;
+
+	// sends "Hello" message to the client
+	std::string message = "Hello";
+	send(s, message.c_str(), message.size(), 0);
+
+	// receives the "Hello" message from the client
+	char buffer[6];
+	int bytes_read = recv(s, buffer, 5, 0);
+	buffer[bytes_read] = '\0';
+	std::cout << "Received message from client: " << buffer << std::endl;
+
+	// ff the received message is "Hello", sends "Hello" back
+	if (std::string(buffer) == "Hello") {
+		message = "Hello";
+		send(s, message.c_str(), message.size(), 0);
+	}
+
+	// closes the client socket
+	closesocket(s);
 }
+
 
 
 
