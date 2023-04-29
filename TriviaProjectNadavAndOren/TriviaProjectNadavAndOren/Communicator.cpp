@@ -50,7 +50,7 @@ void Communicator::handleNewClient(SOCKET s)
 	buffer[bytes_read] = '\0';
 	std::cout << "Received message from client: " << buffer << std::endl;
 
-	// ff the received message is "Hello", sends "Hello" back
+	// if the received message is "Hello", sends "Hello" back
 	if (std::string(buffer) == "Hello") {
 		message = "Hello";
 		send(s, message.c_str(), message.size(), 0);
@@ -60,6 +60,34 @@ void Communicator::handleNewClient(SOCKET s)
 	closesocket(s);
 }
 
+void Communicator::startHandleRequests()
+{
+	// create the server socket
+	m_serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (m_serverSocket == INVALID_SOCKET)
+	{
+		std::cerr << "Failed to create socket: " << WSAGetLastError() << std::endl;
+		return;
+	}
 
+	// initialize Winsock
+	WSADATA wsaData;
+	int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	if (result != 0) 
+	{
+		std::cerr << "WSAStartup failed: " << result << std::endl;
+		return;
+	}
 
+	try 
+	{
+		// bind and listen for incoming connections
+		bindAndListen();
+	}
+	catch (std::exception& e) 
+	{
+		std::cerr << e.what() << std::endl;
+		return;
+	}
+}
 
