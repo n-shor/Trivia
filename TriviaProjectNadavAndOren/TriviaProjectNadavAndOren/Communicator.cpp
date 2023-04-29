@@ -66,28 +66,47 @@ void Communicator::startHandleRequests()
 	m_serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (m_serverSocket == INVALID_SOCKET)
 	{
-		std::cerr << "Failed to create socket: " << WSAGetLastError() << std::endl;
-		return;
+		throw std::runtime_error("Failed to create socket: " + std::to_string(WSAGetLastError()));
 	}
 
-	// initialize Winsock
-	WSADATA wsaData;
-	int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	if (result != 0) 
+	// bind the server socket to a port
+	sockaddr_in addr = { 0 };
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(PORT);
+	addr.sin_addr.s_addr = INADDR_ANY;
+	if (bind(m_serverSocket, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) == SOCKET_ERROR)
 	{
-		std::cerr << "WSAStartup failed: " << result << std::endl;
-		return;
+		closesocket(m_serverSocket);
+		throw std::runtime_error("Failed to bind socket: " + std::to_string(WSAGetLastError()));
 	}
 
-	try 
+	// start listening for incoming connections
+	if (listen(m_serverSocket, SOMAXCONN) == SOCKET_ERROR)
 	{
-		// bind and listen for incoming connections
-		bindAndListen();
+		closesocket(m_serverSocket);
+		throw std::runtime_error("Failed to listen on socket: " + std::to_string(WSAGetLastError()));
 	}
-	catch (std::exception& e) 
+
+	std::cout << "Listening on port " << PORT << std::endl;
+
+	// wait for incoming connections
+	while (true)
 	{
-		std::cerr << e.what() << std::endl;
-		return;
+		std::cout << "Waiting for client connection request" << std::endl;
+
+		// accept a new connection
+		SOCKET clientSocket = accept(m_serverSocket, NULL, NULL);
+		if (clientSocket == INVALID_SOCKET)
+		{
+			closesocket(m_serverSocket);
+			throw std::runtime_error("Failed to accept client connection: " + std::to_string(WSAGetLastError()));
+		}
+
+		std::cout << "Accepted client connection" << std::endl;
+
+		// handle the client connection in a separate thread
+		std::thread(&Communicator::handleNewClient, this, clientSocket).detach();
 	}
 }
+
 
