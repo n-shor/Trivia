@@ -33,10 +33,11 @@ void Communicator::handleNewClient(SOCKET s)
     send(s, message.c_str(), message.size(), 0);
 
     // receives the "Hello" message from the client
-    char buffer[6];
+    char buffer[1024];
     int bytes_read = recv(s, buffer, 5, 0);
     buffer[bytes_read] = '\0';
     std::cout << "Received message from client: " << buffer << std::endl;
+
 
     // if the received message is "Hello", sends "Hello" back
     if (std::string(buffer) == "Hello") {
