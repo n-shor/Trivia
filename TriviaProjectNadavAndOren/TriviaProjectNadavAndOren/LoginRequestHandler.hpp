@@ -8,7 +8,7 @@ class LoginRequestHandler : public IRequestHandler
         return requestInfo.messageCode == LOGIN_CODE || requestInfo.messageCode == SIGNUP_CODE;
     }
 
-    std::vector<unsigned char> handleRequest(const RequestInfo& requestInfo, std::shared_ptr<IRequestHandler>& nextHandler) override {
+    std::vector<unsigned char> handleRequest(const RequestInfo& requestInfo) override {
         if (requestInfo.messageCode == LOGIN_CODE) {
             LoginRequest loginRequest = JsonRequestPacketDeserializer::deserializeLoginRequest(requestInfo);
             std::cout << "username: " << loginRequest.username  << ", password: " << loginRequest.password << std::endl;
@@ -26,6 +26,7 @@ class LoginRequestHandler : public IRequestHandler
         //nextHandler = std::make_shared<NextRequestHandler>();
         ErrorResponse e;
         e.message = "irrelevant message";
+        std::cout << "cancer";
         return std::vector<unsigned char>();
     }
 

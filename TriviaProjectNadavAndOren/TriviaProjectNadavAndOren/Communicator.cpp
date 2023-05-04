@@ -34,10 +34,14 @@ void Communicator::handleNewClient(SOCKET s)
 
     // receives the "Hello" message from the client
     char buffer[1024];
-    int bytes_read = recv(s, buffer, 5, 0);
+    int bytes_read = recv(s, buffer, 1024, 0);
     buffer[bytes_read] = '\0';
-    std::cout << "Received message from client: " << buffer << std::endl;
+    std::cout << "Received message from client: " << new std::string(buffer) << std::endl;
+    RequestInfo ri;
+    ri.messageCode = 1;
+    ri.messageContent = std::vector<unsigned char>(std::begin(buffer), std::end(buffer));
 
+    m_clients[s]->handleRequest(ri);
 
     // if the received message is "Hello", sends "Hello" back
     if (std::string(buffer) == "Hello") {
@@ -77,6 +81,7 @@ void Communicator::startHandleRequests()
         std::cout << "Accepted client connection" << std::endl;
 
         // handle the client connection in a separate thread
+        m_clients[clientSocket] = new LoginRequestHandler();
         std::thread(&Communicator::handleNewClient, this, clientSocket).detach();
     }
 }

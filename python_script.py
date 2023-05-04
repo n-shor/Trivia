@@ -14,7 +14,13 @@ def recv_message(client_socket):
     header_data = client_socket.recv(5)
     message_type, message_size = struct.unpack('!BI', header_data)
     message_json = client_socket.recv(message_size).decode()
-    message_data = json.loads(message_json)
+    
+    try:
+        message_data = json.loads(message_json)
+    except json.JSONDecodeError:
+        print(f"Invalid JSON received: {message_json}")
+        message_data = None
+
     return message_type, message_data
 
 
@@ -34,9 +40,7 @@ def main():
         login_data = {"username": "user1", "password": "1234"}
         send_message(client_socket, 1, login_data)
 
-        recv_message(1024)
-
-        signup_data = {"username": "user1", "password": "1234", "mail": "user1@gmail.com"}
+        signup_data = {"username": "user1", "password": "1234", "email": "user1@gmail.com"}
         send_message(client_socket, 2, signup_data)
 
         response_type, response_data = recv_message(client_socket)

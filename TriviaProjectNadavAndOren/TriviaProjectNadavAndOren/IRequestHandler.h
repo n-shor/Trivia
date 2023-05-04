@@ -1,5 +1,7 @@
 #pragma once
 #include <memory>
+#include <string>
+#include <chrono>
 
 struct LoginRequest
 {
@@ -40,5 +42,5 @@ class IRequestHandler
 {
 public:
     virtual bool isRequestRelevant(const RequestInfo& requestInfo) = 0;
-    virtual std::vector<unsigned char> handleRequest(const RequestInfo& requestInfo, std::shared_ptr<IRequestHandler>& nextHandler) = 0;
+    virtual std::vector<unsigned char> handleRequest(const RequestInfo& requestInfo) = 0;
 };
