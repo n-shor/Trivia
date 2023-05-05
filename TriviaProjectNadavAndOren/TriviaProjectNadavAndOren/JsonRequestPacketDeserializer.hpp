@@ -13,8 +13,8 @@ class JsonRequestPacketDeserializer
 {
 public:
     static LoginRequest deserializeLoginRequest(const RequestInfo& requestInfo) {
-        //std::string jsonString(requestInfo.messageContent.begin(), requestInfo.messageContent.end());
-        json j = json::parse(requestInfo.messageContent);
+        std::string jsonString(requestInfo.messageContent.begin(), requestInfo.messageContent.end());
+        json j = json::parse(jsonString);
         LoginRequest request;
         request.username = j.at("username").get<std::string>();
         request.password = j.at("password").get<std::string>();

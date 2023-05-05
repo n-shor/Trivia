@@ -7,6 +7,9 @@ def send_message(client_socket, message_type, message_data):
     message_json = json.dumps(message_data).encode()
     message_size = len(message_json)
     message_header = struct.pack('!BI', message_type, message_size)
+
+    print(f"Sending message (type {message_type}, size {message_size}): {message_json}")
+
     client_socket.sendall(message_header + message_json)
 
 
@@ -39,9 +42,9 @@ def main():
 
         login_data = {"username": "user1", "password": "1234"}
         send_message(client_socket, 1, login_data)
-
+        #choose which message to send
         signup_data = {"username": "user1", "password": "1234", "email": "user1@gmail.com"}
-        send_message(client_socket, 2, signup_data)
+        #send_message(client_socket, 2, signup_data)
 
         response_type, response_data = recv_message(client_socket)
         print(f"Received from server (type {response_type}): {response_data}")

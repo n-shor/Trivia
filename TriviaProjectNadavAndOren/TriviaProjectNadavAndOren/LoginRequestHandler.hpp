@@ -12,7 +12,6 @@ class LoginRequestHandler : public IRequestHandler
         if (requestInfo.messageCode == LOGIN_CODE) {
             LoginRequest loginRequest = JsonRequestPacketDeserializer::deserializeLoginRequest(requestInfo);
             std::cout << "username: " << loginRequest.username  << ", password: " << loginRequest.password << std::endl;
-
             // Process the login request and generate a response
             // TODO: continue the code with logic here
         }

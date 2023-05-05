@@ -3,6 +3,7 @@
 #include "LoginRequestHandler.hpp"
 #include <WinSock2.h>
 #include <string>
+#include <vector>
 #include <iostream>
 #include <map>
 #include <thread>

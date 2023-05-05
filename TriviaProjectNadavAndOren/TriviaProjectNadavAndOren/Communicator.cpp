@@ -24,34 +24,51 @@ void Communicator::bindAndListen()
     std::cout << "Listening on port " << PORT << std::endl;
 }
 
+//helper function in order to parse the message properly
+std::pair<int, std::string> recvMessage(int clientSocket) {
+    char headerData[5];
+    recv(clientSocket, headerData, 5, 0);
+
+    int messageType = headerData[0];
+    int messageSize;
+    memcpy(&messageSize, &headerData[1], 4);
+    messageSize = ntohl(messageSize);
+
+    std::vector<char> messageJson(messageSize);
+    int bytesToReceive = messageSize;
+    int bytesReceived = 0;
+
+    while (bytesReceived < messageSize) {
+        int received = recv(clientSocket, &messageJson[bytesReceived], bytesToReceive, 0);
+        bytesReceived += received;
+        bytesToReceive -= received;
+    }
+
+    std::string messageData(messageJson.begin(), messageJson.end());
+
+    return { messageType, messageData };
+}
+
 void Communicator::handleNewClient(SOCKET s)
 {
     std::cout << "Client connected." << std::endl;
 
-    // sends "Hello" message to the client
-    std::string message = "Hello";
-    send(s, message.c_str(), message.size(), 0);
+    // Receives the JSON message from the client
+    auto [messageCode, messageData] = recvMessage(s);
+    std::cout << "Received message (type " << messageCode << "): " << messageData << std::endl;
 
-    // receives the "Hello" message from the client
-    char buffer[1024];
-    int bytes_read = recv(s, buffer, 1024, 0);
-    buffer[bytes_read] = '\0';
-    std::cout << "Received message from client: " << new std::string(buffer) << std::endl;
+    // Prepare the RequestInfo object
     RequestInfo ri;
-    ri.messageCode = 1;
-    ri.messageContent = std::vector<unsigned char>(std::begin(buffer), std::end(buffer));
+    ri.messageCode = messageCode;
+    ri.messageContent = std::vector<unsigned char>(messageData.begin(), messageData.end());
 
+    // Process the received JSON message
     m_clients[s]->handleRequest(ri);
 
-    // if the received message is "Hello", sends "Hello" back
-    if (std::string(buffer) == "Hello") {
-        message = "Hello";
-        send(s, message.c_str(), message.size(), 0);
-    }
-
-    // closes the client socket
+    // Closes the client socket
     closesocket(s);
 }
+
 
 void Communicator::startHandleRequests()
 {
