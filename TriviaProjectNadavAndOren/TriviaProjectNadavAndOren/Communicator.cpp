@@ -1,5 +1,6 @@
 #include "Communicator.h"
 #define PORT 8080
+#define TEMP_STATUS_VAL 69
 
 void Communicator::bindAndListen()
 {
@@ -62,8 +63,25 @@ void Communicator::handleNewClient(SOCKET s)
     ri.messageCode = messageCode;
     ri.messageContent = std::vector<unsigned char>(messageData.begin(), messageData.end());
 
+
+    //create response
+    switch (messageCode) {
+    case 1:
+        m_clients[s] = new LoginRequestHandler();
+        break;
+    case 2:
+        m_clients[s] = new RegisterRequestHandler();
+        break;
+    default:
+        m_clients[s] = new ErrorResponseHandler();
+        break;
+    }
+
     // Process the received JSON message
-    m_clients[s]->handleRequest(ri);
+    std::vector<unsigned char> res = m_clients[s]->handleRequest(ri);
+    std::string msg(res.begin(), res.end());
+    std::cout << msg;
+    send(s, msg.c_str(), msg.size(), 0);
 
     // Closes the client socket
     closesocket(s);
