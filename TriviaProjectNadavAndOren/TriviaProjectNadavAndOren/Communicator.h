@@ -1,13 +1,17 @@
 #pragma once
 #include "IRequestHandler.h"
-#include "LoginRequestHandler.h"
+#include "RegisterRequestHandler.hpp"
+#include "LoginRequestHandler.hpp"
+#include "JsonResponsePacketSerializer.hpp"
 #include <WinSock2.h>
 #include <string>
+#include <vector>
 #include <iostream>
 #include <map>
 #include <thread>
 #include <exception>
 #include <iostream>
+#include "ErrorResponseHandler.hpp"
 
 class Communicator
 {

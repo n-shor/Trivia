@@ -1,5 +1,6 @@
 #include "Communicator.h"
 #define PORT 8080
+#define TEMP_STATUS_VAL 69
 
 void Communicator::bindAndListen()
 {
@@ -24,29 +25,68 @@ void Communicator::bindAndListen()
     std::cout << "Listening on port " << PORT << std::endl;
 }
 
+//helper function in order to parse the message properly
+std::pair<int, std::string> recvMessage(int clientSocket) {
+    char headerData[5];
+    recv(clientSocket, headerData, 5, 0);
+
+    int messageType = headerData[0];
+    int messageSize;
+    memcpy(&messageSize, &headerData[1], 4);
+    messageSize = ntohl(messageSize);
+
+    std::vector<char> messageJson(messageSize);
+    int bytesToReceive = messageSize;
+    int bytesReceived = 0;
+
+    while (bytesReceived < messageSize) {
+        int received = recv(clientSocket, &messageJson[bytesReceived], bytesToReceive, 0);
+        bytesReceived += received;
+        bytesToReceive -= received;
+    }
+
+    std::string messageData(messageJson.begin(), messageJson.end());
+
+    return { messageType, messageData };
+}
+
 void Communicator::handleNewClient(SOCKET s)
 {
     std::cout << "Client connected." << std::endl;
 
-    // sends "Hello" message to the client
-    std::string message = "Hello";
-    send(s, message.c_str(), message.size(), 0);
+    // Receives the JSON message from the client
+    auto [messageCode, messageData] = recvMessage(s);
+    std::cout << "Received message (type " << messageCode << "): " << messageData << std::endl;
 
-    // receives the "Hello" message from the client
-    char buffer[6];
-    int bytes_read = recv(s, buffer, 5, 0);
-    buffer[bytes_read] = '\0';
-    std::cout << "Received message from client: " << buffer << std::endl;
+    // Prepare the RequestInfo object
+    RequestInfo ri;
+    ri.messageCode = messageCode;
+    ri.messageContent = std::vector<unsigned char>(messageData.begin(), messageData.end());
 
-    // if the received message is "Hello", sends "Hello" back
-    if (std::string(buffer) == "Hello") {
-        message = "Hello";
-        send(s, message.c_str(), message.size(), 0);
+
+    //create response
+    switch (messageCode) {
+    case 1:
+        m_clients[s] = new LoginRequestHandler();
+        break;
+    case 2:
+        m_clients[s] = new RegisterRequestHandler();
+        break;
+    default:
+        m_clients[s] = new ErrorResponseHandler();
+        break;
     }
 
-    // closes the client socket
+    // Process the received JSON message
+    std::vector<unsigned char> res = m_clients[s]->handleRequest(ri);
+    std::string msg(res.begin(), res.end());
+    std::cout << msg;
+    send(s, msg.c_str(), msg.size(), 0);
+
+    // Closes the client socket
     closesocket(s);
 }
+
 
 void Communicator::startHandleRequests()
 {
@@ -76,6 +116,7 @@ void Communicator::startHandleRequests()
         std::cout << "Accepted client connection" << std::endl;
 
         // handle the client connection in a separate thread
+        m_clients[clientSocket] = new LoginRequestHandler();
         std::thread(&Communicator::handleNewClient, this, clientSocket).detach();
     }
 }
