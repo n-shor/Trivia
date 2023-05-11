@@ -1,11 +1,62 @@
 #pragma once
 #include "IRequestHandler.h"
 #include "JsonRequestPacketDeserializer.hpp"
-#include "user.h"
+#include "IDatabase.h"
+#include <string>
+#include <vector>
+
+class User {
+public:
+    std::string username;
+    std::string password;
+    std::string email;
+
+    User(std::string username, std::string password, std::string email) : username(username), password(password), email(email) {}
+};
+
+class DatabaseLoginManager {
+private:
+    std::vector<User> connected_users;
+    IDatabase* database;
+
+public:
+    DatabaseLoginManager(IDatabase* db) : database(db) {}
+
+    void login(std::string username, std::string password) {
+        if (database->doesUserExist(username) && database->doesPasswordMatch(username, password)) {
+            User user(username, password, "");
+            connected_users.push_back(user);
+        }
+        // Add error handling or other state changes as needed
+    }
+
+    void signup(std::string username, std::string password, std::string email) {
+        if (!database->doesUserExist(username)) {
+            database->addNewUser(username, password, email);
+        }
+        // Add error handling or other state changes as needed
+    }
+
+    void disconnect(std::string username) {
+        for (auto it = connected_users.begin(); it != connected_users.end(); ++it) {
+            if (it->username == username) {
+                connected_users.erase(it);
+                break;
+            }
+        }
+    }
+};
 
 class LoginRequestHandler : public IRequestHandler
 {
+private:
+    DatabaseLoginManager db_login_manager;
+    static const int LOGIN_CODE = 1;
+    static const int SIGNUP_CODE = 2;
+
 public:
+    LoginRequestHandler(IDatabase* db) : db_login_manager(db) {}
+
     bool isRequestRelevant(const RequestInfo& requestInfo) override {
         return requestInfo.messageCode == LOGIN_CODE || requestInfo.messageCode == SIGNUP_CODE;
     }
@@ -19,46 +70,30 @@ public:
         {
             return signup(requestInfo);
         }
-        SignupRequest signupRequest = JsonRequestPacketDeserializer::deserializeSignUpRequest(requestInfo);
-        std::cout << "username: " << signupRequest.username << ", email: " << signupRequest.email << ", password: " << signupRequest.password << std::endl;
-        // Process the signup request and generate a response
-        // TODO: continue the code with logic here
 
-        // If the request is not relevant, set the next handler and return an empty vector
-        //nextHandler = std::make_shared<NextRequestHandler>();
         ErrorResponse e;
         e.message = "irrelevant message";
-        std::cout << "cancer";
         return JsonResponsePacketSerializer::serializeErrorResponse(e);
     }
 
 private:
     std::vector<unsigned char> login(const RequestInfo& requestInfo) {
         LoginRequest loginRequest = JsonRequestPacketDeserializer::deserializeLoginRequest(requestInfo);
-        std::cout << "username: " << loginRequest.username << ", password: " << loginRequest.password << std::endl;
-        // Process the login request and generate a response
-        // TODO: continue the code with logic here
+        db_login_manager.login(loginRequest.username, loginRequest.password);
 
-        // If the request is not relevant, set the next handler and return an empty vector
-        //nextHandler = std::make_shared<NextRequestHandler>();
         LoginResponse l;
         l.status = 1;
 
         return JsonResponsePacketSerializer::serializeLoginResponse(l);
     }
+
     std::vector<unsigned char> signup(const RequestInfo& requestInfo) {
         SignupRequest signupRequest = JsonRequestPacketDeserializer::deserializeSignUpRequest(requestInfo);
-        std::cout << "username: " << signupRequest.username << ", email: " << signupRequest.email << ", password: " << signupRequest.password << std::endl;
-        // Process the signup request and generate a response
-        // TODO: continue the code with logic here
-
-        user* new_user = new user(signupRequest.username, signupRequest.email, signupRequest.password);
+        db_login_manager.signup(signupRequest.username, signupRequest.password, signupRequest.email);
 
         SignupResponse l;
         l.status = 1;
 
         return JsonResponsePacketSerializer::serializeSignUpResponse(l);
     }
-    static const int LOGIN_CODE = 1;
-    static const int SIGNUP_CODE = 2;
 };
