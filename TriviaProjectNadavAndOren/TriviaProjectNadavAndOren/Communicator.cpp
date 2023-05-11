@@ -63,20 +63,6 @@ void Communicator::handleNewClient(SOCKET s)
     ri.messageCode = messageCode;
     ri.messageContent = std::vector<unsigned char>(messageData.begin(), messageData.end());
 
-
-    //create response
-    switch (messageCode) {
-    case 1:
-        m_clients[s] = new LoginRequestHandler();
-        break;
-    case 2:
-        m_clients[s] = new RegisterRequestHandler();
-        break;
-    default:
-        m_clients[s] = new ErrorResponseHandler();
-        break;
-    }
-
     // Process the received JSON message
     std::vector<unsigned char> res = m_clients[s]->handleRequest(ri);
     std::string msg(res.begin(), res.end());
@@ -120,4 +106,3 @@ void Communicator::startHandleRequests()
         std::thread(&Communicator::handleNewClient, this, clientSocket).detach();
     }
 }
-
