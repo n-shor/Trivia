@@ -54,20 +54,30 @@ void Communicator::handleNewClient(SOCKET s)
 {
     std::cout << "Client connected." << std::endl;
 
-    // Receives the JSON message from the client
-    auto [messageCode, messageData] = recvMessage(s);
-    std::cout << "Received message (type " << messageCode << "): " << messageData << std::endl;
+    while (true)
+    {
+        // Receives the JSON message from the client
+        auto [messageCode, messageData] = recvMessage(s);
 
-    // Prepare the RequestInfo object
-    RequestInfo ri;
-    ri.messageCode = messageCode;
-    ri.messageContent = std::vector<unsigned char>(messageData.begin(), messageData.end());
+        if (messageData == "")
+        {
+            break; //this is temporary, we will remove this once the client learns to disconnect by itself.
+            //this also doesn't work for some reason
+        }
 
-    // Process the received JSON message
-    std::vector<unsigned char> res = m_clients[s]->handleRequest(ri);
-    std::string msg(res.begin(), res.end());
-    std::cout << msg;
-    send(s, msg.c_str(), msg.size(), 0);
+        std::cout << "Received message (type " << messageCode << "): " << messageData << std::endl;
+
+        // Prepare the RequestInfo object
+        RequestInfo ri;
+        ri.messageCode = messageCode;
+        ri.messageContent = std::vector<unsigned char>(messageData.begin(), messageData.end());
+
+        // Process the received JSON message
+        std::vector<unsigned char> res = m_clients[s]->handleRequest(ri);
+        std::string msg(res.begin(), res.end());
+        std::cout << msg << std::endl;
+        send(s, msg.c_str(), msg.size(), 0);
+    }
 
     // Closes the client socket
     closesocket(s);
