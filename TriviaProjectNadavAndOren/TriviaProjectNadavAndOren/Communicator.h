@@ -1,6 +1,5 @@
 #pragma once
 #include "IRequestHandler.h"
-#include "RegisterRequestHandler.hpp"
 #include "LoginRequestHandler.hpp"
 #include "JsonResponsePacketSerializer.hpp"
 #include <WinSock2.h>
@@ -11,7 +10,6 @@
 #include <thread>
 #include <exception>
 #include <iostream>
-#include "ErrorResponseHandler.hpp"
 
 class Communicator
 {

@@ -42,6 +42,9 @@
     <ClInclude Include="sqlite3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SqliteDatabase.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -58,9 +61,6 @@
     </ClCompile>
     <ClCompile Include="IDatabase.h">
       <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SqliteDatabase.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="sqlite3.c">
       <Filter>Source Files</Filter>

@@ -4,64 +4,122 @@
 #include "IDatabase.h"
 #include <string>
 #include <vector>
+#include "SqliteDatabase.hpp"
 
-class User {
+enum statuses { Error = -1, FailedLogin = 1234, UserAlreadyExists = 42, LoggedIn = 69, SignedUp = 420, NoSuchLoggedUser = 567, LoggedOut = 890};
+
+
+class LoggedUser
+{
+private:
+    std::string m_username;
 public:
-    std::string username;
-    std::string password;
-    std::string email;
-
-    User(std::string username, std::string password, std::string email) : username(username), password(password), email(email) {}
+    LoggedUser(std::string username)
+    {
+        m_username = username;
+    }
+    std::string getUsername()
+    {
+        return m_username;
+    }
 };
 
-class DatabaseLoginManager {
-private:
-    std::vector<User> connected_users;
-    IDatabase* database;
 
+class LoginManager 
+{
+protected:
+    IDatabase* m_database;
+    std::vector<LoggedUser> m_LoggedUsers;
 public:
-    DatabaseLoginManager(IDatabase* db) : database(db) {}
-
-    void login(std::string username, std::string password) {
-        if (database->doesUserExist(username) && database->doesPasswordMatch(username, password)) {
-            User user(username, password, "");
-            connected_users.push_back(user);
-        }
-        // Add error handling or other state changes as needed
+    LoginManager() 
+    {
+        m_database = new SqliteDatabase();
+        m_database->open();
     }
 
-    void signup(std::string username, std::string password, std::string email) {
-        if (!database->doesUserExist(username)) {
-            database->addNewUser(username, password, email);
+    int signup(std::string username, std::string password, std::string email)
+    {
+        if (!m_database->doesUserExist(username)) {
+            m_database->addNewUser(username, password, email);
+            return SignedUp;
         }
+        return UserAlreadyExists;
         // Add error handling or other state changes as needed
     }
-
-    void disconnect(std::string username) {
-        for (auto it = connected_users.begin(); it != connected_users.end(); ++it) {
-            if (it->username == username) {
-                connected_users.erase(it);
-                break;
+    int login(std::string username, std::string password)
+    {
+        if (m_database->doesUserExist(username) && m_database->doesPasswordMatch(username, password)) 
+        {
+            m_LoggedUsers.push_back(*(new LoggedUser(username)));
+            return LoggedIn;
+        }
+        return FailedLogin;
+    }
+    int logout(std::string username)
+    {
+        for (auto it = m_LoggedUsers.begin(); it != m_LoggedUsers.end(); ++it) 
+        {
+            if (it->getUsername() == username) 
+            {
+                m_LoggedUsers.erase(it);
+                return LoggedOut;
             }
         }
+        return NoSuchLoggedUser;
+    }
+
+    ~LoginManager()
+    {
+        m_database->close();
+        delete m_database;
+    }
+};
+
+class MenuRequestHandler{}; //is only empty for now, until we have a menu
+
+class RequestHandlerFactory
+{
+protected:
+    LoginManager m_loginManager;
+public:
+    RequestHandlerFactory()
+    {
+        m_loginManager = *(new LoginManager());
+    }
+    LoginRequestHandler* createLoginRequestHandler()
+    {
+        return new LoginRequestHandler();
+    }
+    MenuRequestHandler* createMenuRequestHandler()
+    {
+        return NULL;
+    }
+    LoginManager& getLoginManager()
+    {
+        return m_loginManager;
     }
 };
 
 class LoginRequestHandler : public IRequestHandler
 {
 private:
-    DatabaseLoginManager db_login_manager;
+    RequestHandlerFactory m_handlerFactory;
     static const int LOGIN_CODE = 1;
     static const int SIGNUP_CODE = 2;
 
 public:
-    LoginRequestHandler(IDatabase* db) : db_login_manager(db) {}
+    LoginRequestHandler() 
+    {
+        m_handlerFactory = *(new RequestHandlerFactory());
+    }
 
-    bool isRequestRelevant(const RequestInfo& requestInfo) override {
+    bool isRequestRelevant(const RequestInfo& requestInfo) override
+    {
         return requestInfo.messageCode == LOGIN_CODE || requestInfo.messageCode == SIGNUP_CODE;
     }
 
-    std::vector<unsigned char> handleRequest(const RequestInfo& requestInfo) override {
+    std::vector<unsigned char> handleRequest(const RequestInfo& requestInfo) override 
+    {
         if (requestInfo.messageCode == LOGIN_CODE)
         {
             return login(requestInfo);
@@ -77,22 +135,25 @@ public:
     }
 
 private:
-    std::vector<unsigned char> login(const RequestInfo& requestInfo) {
+    std::vector<unsigned char> login(const RequestInfo& requestInfo) 
+    {
         LoginRequest loginRequest = JsonRequestPacketDeserializer::deserializeLoginRequest(requestInfo);
-        db_login_manager.login(loginRequest.username, loginRequest.password);
 
         LoginResponse l;
-        l.status = 1;
+
+        l.status = m_handlerFactory.getLoginManager().login(loginRequest.username, loginRequest.password);
 
         return JsonResponsePacketSerializer::serializeLoginResponse(l);
     }
 
-    std::vector<unsigned char> signup(const RequestInfo& requestInfo) {
+    std::vector<unsigned char> signup(const RequestInfo& requestInfo) 
+    {
         SignupRequest signupRequest = JsonRequestPacketDeserializer::deserializeSignUpRequest(requestInfo);
-        db_login_manager.signup(signupRequest.username, signupRequest.password, signupRequest.email);
 
         SignupResponse l;
-        l.status = 1;
+
+       l.status = m_handlerFactory.getLoginManager().signup(signupRequest.username, signupRequest.password, signupRequest.email);
+
 
         return JsonResponsePacketSerializer::serializeSignUpResponse(l);
     }
