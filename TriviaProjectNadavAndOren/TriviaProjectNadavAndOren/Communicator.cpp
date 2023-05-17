@@ -59,12 +59,6 @@ void Communicator::handleNewClient(SOCKET s)
         // Receives the JSON message from the client
         auto [messageCode, messageData] = recvMessage(s);
 
-        if (messageData == "")
-        {
-            break; //this is temporary, we will remove this once the client learns to disconnect by itself.
-            //this also doesn't work for some reason
-        }
-
         std::cout << "Received message (type " << messageCode << "): " << messageData << std::endl;
 
         // Prepare the RequestInfo object
