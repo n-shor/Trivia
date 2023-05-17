@@ -54,7 +54,7 @@ void Communicator::handleNewClient(SOCKET s)
 {
     std::cout << "Client connected." << std::endl;
 
-    while (true)
+    for (int i = 0; i < 5; i++) //we want to recieve 5 messages in total.
     {
         // Receives the JSON message from the client
         auto [messageCode, messageData] = recvMessage(s);

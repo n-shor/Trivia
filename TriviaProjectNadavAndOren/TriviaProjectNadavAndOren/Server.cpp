@@ -2,6 +2,24 @@
 #include "Communicator.h"
 #include <iostream>
 
+Server* Server::m_instancePtr = nullptr;
+
+Server& Server::getInstance()
+{
+	if (m_instancePtr == nullptr)
+	{
+		m_instancePtr = new Server();
+	}
+
+	return *m_instancePtr;
+}
+
+void Server::destroyInstance()
+{
+	delete m_instancePtr;
+	m_instancePtr = nullptr;
+}
+
 Server::Server() :
 	m_communicator(),
 	m_wsaData()
