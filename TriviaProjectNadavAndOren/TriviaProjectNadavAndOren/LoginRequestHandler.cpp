@@ -1,9 +1,10 @@
 #include "LoginRequestHandler.h"
 #include "RequestHandlerFactory.h"
+#include "MenuRequestHandler.h"
 
 LoginRequestHandler::LoginRequestHandler()
 {
-    m_handlerFactory = new RequestHandlerFactory();
+    m_handlerFactory = new RequestHandlerFactory(new SqliteDatabase());
 }
 
 
@@ -12,7 +13,7 @@ bool LoginRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
     return requestInfo.messageCode == LOGIN_CODE || requestInfo.messageCode == SIGNUP_CODE;
 }
 
-std::vector<unsigned char> LoginRequestHandler::handleRequest(const RequestInfo& requestInfo)
+RequestResult LoginRequestHandler::handleRequest(const RequestInfo& requestInfo)
 {
     if (requestInfo.messageCode == LOGIN_CODE)
     {
@@ -23,23 +24,32 @@ std::vector<unsigned char> LoginRequestHandler::handleRequest(const RequestInfo&
         return signup(requestInfo);
     }
 
+    RequestResult r;
     ErrorResponse e;
     e.message = "irrelevant message";
-    return JsonResponsePacketSerializer::serializeErrorResponse(e);
+    r.response = JsonResponsePacketSerializer::serializeResponse(e);
+    r.newHandler = NULL;
+    return r;
 }
 
-std::vector<unsigned char> LoginRequestHandler::login(const RequestInfo& requestInfo)
+RequestResult LoginRequestHandler::login(const RequestInfo& requestInfo)
 {
     LoginRequest loginRequest = JsonRequestPacketDeserializer::deserializeLoginRequest(requestInfo);
+    RequestResult r;
     LoginResponse l;
     l.status = m_handlerFactory->getLoginManager().login(loginRequest.username, loginRequest.password);
-    return JsonResponsePacketSerializer::serializeLoginResponse(l);
+    r.response = JsonResponsePacketSerializer::serializeResponse(l);
+    r.newHandler = m_handlerFactory->createMenuRequestHandler();
+    return r;
 }
 
-std::vector<unsigned char> LoginRequestHandler::signup(const RequestInfo& requestInfo)
+RequestResult LoginRequestHandler::signup(const RequestInfo& requestInfo)
 {
     SignupRequest signupRequest = JsonRequestPacketDeserializer::deserializeSignUpRequest(requestInfo);
+    RequestResult r;
     SignupResponse l;
     l.status = m_handlerFactory->getLoginManager().signup(signupRequest.username, signupRequest.password, signupRequest.email);
-    return JsonResponsePacketSerializer::serializeSignUpResponse(l);
+    r.response = JsonResponsePacketSerializer::serializeResponse(l);
+    r.newHandler = m_handlerFactory->createLoginRequestHandler();
+    return r;
 }

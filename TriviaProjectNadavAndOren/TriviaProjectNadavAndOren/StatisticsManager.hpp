@@ -6,12 +6,12 @@
 class StatisticsManager
 {
 private:
-    SqliteDatabase* m_database;
+    IDatabase* m_database;
 
 public:
-    StatisticsManager(SqliteDatabase* database)
-        : m_database(database)
-    {}
+    StatisticsManager(IDatabase* db) : m_database(db)
+    {
+    }
 
     std::vector<std::string> getHighScore()
     {

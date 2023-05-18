@@ -130,7 +130,8 @@ public:
         return true;
     }
 
-    bool addQuestion(int id, std::string question, std::string optionA, std::string optionB, std::string optionC, std::string optionD, char correctAnswer) {
+    bool addQuestion(int id, std::string question, std::string optionA, std::string optionB,
+        std::string optionC, std::string optionD, char correctAnswer) {
         std::string sql = "INSERT INTO TriviaQuestions (ID, Question, OptionA, OptionB, OptionC, OptionD, CorrectAnswer) "
             "VALUES (" + std::to_string(id) + ", '" + question + "', '" + optionA + "', '" + optionB + "', '" + optionC + "', '" + optionD + "', '" + correctAnswer + "');";
 
@@ -181,23 +182,6 @@ public:
 
         sqlite3_finalize(stmt);
         return correctAnswer;
-    }
-
-    float getPlayerAverageAnswerTime(std::string username) {
-        std::string sql = "SELECT AVERAGE_ANSWER_TIME FROM STATISTICS WHERE USERNAME = '" + username + "';";
-        sqlite3_stmt* stmt;
-
-        if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
-            throw std::runtime_error("Error preparing SQL statement");
-        }
-
-        float avgAnswerTime = 0.0;
-        if (sqlite3_step(stmt) == SQLITE_ROW) {
-            avgAnswerTime = sqlite3_column_double(stmt, 0);
-        }
-
-        sqlite3_finalize(stmt);
-        return avgAnswerTime;
     }
 
     float getPlayerAverageAnswerTime(std::string username) {

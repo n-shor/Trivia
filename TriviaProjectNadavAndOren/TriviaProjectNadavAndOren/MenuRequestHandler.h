@@ -3,7 +3,29 @@
 #include "LoginRequestHandler.h"
 #include "MenuRequestHandler.h"
 
-class MenuRequestHandler
+enum menuRequestTypes { CreateRoomRequest, GetRoomsRequest, GetPlayersInRoomRequest, JoinRoomRequest, GetStatisticsRequest, LogoutRequest};
+
+class MenuRequestHandler : public IRequestHandler
 {
-    // TODO: Define the members and methods for this class
+private:
+    LoggedUser m_user;
+    RoomManager& m_roomManager;
+    //needs statistics manager
+    RequestHandlerFactory& m_handlerFactory;
+
+    bool isRequestRelevant(const RequestInfo& requestInfo) override;
+    RequestResult handleRequest(const RequestInfo& requestInfo) override;
+
+    RequestResult signout(RequestInfo);
+    RequestResult getRooms(RequestInfo);
+    RequestResult getPlayersInRoom(RequestInfo);
+    RequestResult getPersonalStats(RequestInfo);
+    RequestResult getHighScore(RequestInfo);
+    RequestResult joinRoom(RequestInfo);
+    RequestResult createRoom(RequestInfo);
+
+public:
+    MenuRequestHandler(std::string username, RequestHandlerFactory& rhf, RoomManager& rm);
+    //you forgot to put refernces (&) here
+    // continue here 
 };

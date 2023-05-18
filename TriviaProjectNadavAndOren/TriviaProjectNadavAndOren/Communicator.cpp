@@ -67,7 +67,7 @@ void Communicator::handleNewClient(SOCKET s)
         ri.messageContent = std::vector<unsigned char>(messageData.begin(), messageData.end());
 
         // Process the received JSON message
-        std::vector<unsigned char> res = m_clients[s]->handleRequest(ri);
+        std::vector<unsigned char> res = m_clients[s]->handleRequest(ri).response;
         std::string msg(res.begin(), res.end());
         std::cout << msg << std::endl;
         send(s, msg.c_str(), msg.size(), 0);

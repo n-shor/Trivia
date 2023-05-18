@@ -3,6 +3,81 @@
 #include <string>
 #include <chrono>
 
+//forward declaration of IRequestHandler
+class IRequestHandler;
+
+struct RoomData
+{
+    unsigned int id;
+    std::string name;
+    unsigned int maxPlayers;
+    unsigned int numOfQuestionsInGame;
+    unsigned int timePerQuestion;
+    unsigned int isActive;
+};
+
+struct CreateRoomRequest
+{
+    std::string roomName;
+    unsigned int maxUsers;
+    unsigned int questionCount;
+    unsigned int answerTimeout;
+};
+
+struct GetPlayersInRoomRequest
+{
+    unsigned int roomId;
+};
+
+struct JoinRoomRequest
+{
+    unsigned int roomId;
+};
+
+struct RequestResult
+{
+    std::vector<unsigned char> response;
+    IRequestHandler* newHandler;
+};
+
+struct GetPlayesInRoomResponse
+{
+    std::vector<std::string> players;
+};
+
+struct getHighScoreResponse
+{
+    unsigned int status;
+    std::vector<std::string> statics;
+};
+
+struct getPersonalStatsResponse
+{
+    unsigned int status;
+    std::vector<std::string> statistics;
+};
+
+struct JoinRoomResponse
+{
+    unsigned int status;
+};
+
+struct CreateRoomResponse
+{
+    unsigned int status;
+};
+
+struct GetRoomsResponse
+{
+    unsigned int status;
+    std::vector<RoomData> rooms;
+};
+
+struct LogoutResponse
+{
+    unsigned int status;
+};
+
 struct LoginRequest
 {
     std::string username;
@@ -18,12 +93,12 @@ struct SignupRequest
 
 struct LoginResponse
 {
-    int status;
+    unsigned int status;
 };
 
 struct SignupResponse
 {
-    int status;
+    unsigned int status;
 };
 
 struct ErrorResponse
@@ -42,5 +117,5 @@ class IRequestHandler
 {
 public:
     virtual bool isRequestRelevant(const RequestInfo& requestInfo) = 0;
-    virtual std::vector<unsigned char> handleRequest(const RequestInfo& requestInfo) = 0;
+    virtual RequestResult handleRequest(const RequestInfo& requestInfo) = 0;
 };

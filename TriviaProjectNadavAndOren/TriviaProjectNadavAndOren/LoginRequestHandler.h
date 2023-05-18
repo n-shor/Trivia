@@ -15,9 +15,9 @@ private:
 public:
     LoginRequestHandler();
     bool isRequestRelevant(const RequestInfo& requestInfo) override;
-    std::vector<unsigned char> handleRequest(const RequestInfo& requestInfo) override;
+    RequestResult handleRequest(const RequestInfo& requestInfo) override;
 
 private:
-    std::vector<unsigned char> login(const RequestInfo& requestInfo);
-    std::vector<unsigned char> signup(const RequestInfo& requestInfo);
+    RequestResult login(const RequestInfo& requestInfo);
+    RequestResult signup(const RequestInfo& requestInfo);
 };
