@@ -20,9 +20,9 @@ void Server::destroyInstance()
 	m_instancePtr = nullptr;
 }
 
-Server::Server() :
-	m_communicator(),
-	m_wsaData()
+Server::Server()// :
+//	m_communicator(),
+	//m_wsaData()
 {	
 	// initialize Winsock
 	int result = WSAStartup(MAKEWORD(2, 2), &m_wsaData);
