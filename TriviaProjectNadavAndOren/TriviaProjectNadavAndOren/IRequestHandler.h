@@ -2,8 +2,9 @@
 #include <memory>
 #include <string>
 #include <chrono>
+#include <vector>
+#include "IRequestHandler.h"
 
-//forward declaration of IRequestHandler
 class IRequestHandler;
 
 struct RoomData
@@ -48,7 +49,7 @@ struct GetPlayesInRoomResponse
 struct getHighScoreResponse
 {
     unsigned int status;
-    std::vector<std::string> statics;
+    std::vector<std::string> statistics;
 };
 
 struct getPersonalStatsResponse

@@ -9,8 +9,9 @@ private:
     IDatabase* m_database;
 
 public:
-    StatisticsManager(IDatabase* db) : m_database(db)
+    StatisticsManager()
     {
+        IDatabase* m_database = new SqliteDatabase();
     }
 
     std::vector<std::string> getHighScore()

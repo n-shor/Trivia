@@ -12,9 +12,9 @@ protected:
     RoomManager m_roomManager;
     LoginManager m_loginManager;
 public:
-    RequestHandlerFactory(SqliteDatabase* database);
+    RequestHandlerFactory();
     LoginRequestHandler* createLoginRequestHandler();
-    MenuRequestHandler* createMenuRequestHandler();
+    MenuRequestHandler* createMenuRequestHandler(std::string username);
     LoginManager& getLoginManager();
     StatisticsManager& getStatisticsManager();
     RoomManager& getRoomManager();

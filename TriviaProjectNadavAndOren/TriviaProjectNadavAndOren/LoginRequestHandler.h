@@ -11,6 +11,7 @@ private:
     RequestHandlerFactory* m_handlerFactory;
     static const int LOGIN_CODE = 1;
     static const int SIGNUP_CODE = 2;
+    static const int END_CODE = 3;
 
 public:
     LoginRequestHandler();

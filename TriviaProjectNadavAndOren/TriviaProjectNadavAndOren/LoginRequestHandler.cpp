@@ -1,16 +1,17 @@
 #include "LoginRequestHandler.h"
 #include "RequestHandlerFactory.h"
-#include "MenuRequestHandler.h"
 
 LoginRequestHandler::LoginRequestHandler()
 {
-    m_handlerFactory = new RequestHandlerFactory(new SqliteDatabase());
+    m_handlerFactory = new RequestHandlerFactory();
 }
 
 
 bool LoginRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
 {
-    return requestInfo.messageCode == LOGIN_CODE || requestInfo.messageCode == SIGNUP_CODE;
+    return requestInfo.messageCode == LOGIN_CODE
+        || requestInfo.messageCode == SIGNUP_CODE
+        || requestInfo.messageCode == END_CODE;
 }
 
 RequestResult LoginRequestHandler::handleRequest(const RequestInfo& requestInfo)
@@ -23,14 +24,28 @@ RequestResult LoginRequestHandler::handleRequest(const RequestInfo& requestInfo)
     {
         return signup(requestInfo);
     }
+    else if (requestInfo.messageCode == END_CODE)
+    {
+        RequestResult r;
+        ErrorResponse response;
+        response.message = "End of messages";
+        r.response = JsonResponsePacketSerializer::serializeResponse(response);
+        r.newHandler = nullptr;
+        return r;
+    }
 
+    // Handle other message codes here
+
+    // Return an irrelevant response for unrecognized message codes
     RequestResult r;
     ErrorResponse e;
-    e.message = "irrelevant message";
+    e.message = "Irrelevant message";
     r.response = JsonResponsePacketSerializer::serializeResponse(e);
-    r.newHandler = NULL;
+    r.newHandler = m_handlerFactory->createLoginRequestHandler();
     return r;
 }
+
+
 
 RequestResult LoginRequestHandler::login(const RequestInfo& requestInfo)
 {
@@ -39,7 +54,7 @@ RequestResult LoginRequestHandler::login(const RequestInfo& requestInfo)
     LoginResponse l;
     l.status = m_handlerFactory->getLoginManager().login(loginRequest.username, loginRequest.password);
     r.response = JsonResponsePacketSerializer::serializeResponse(l);
-    r.newHandler = m_handlerFactory->createMenuRequestHandler();
+    r.newHandler = (IRequestHandler*)m_handlerFactory->createMenuRequestHandler(loginRequest.username);
     return r;
 }
 

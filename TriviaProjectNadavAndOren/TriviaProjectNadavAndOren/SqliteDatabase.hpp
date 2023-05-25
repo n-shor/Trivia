@@ -25,7 +25,7 @@ public:
             "PASSWORD TEXT NOT NULL,"
             "EMAIL TEXT NOT NULL);";
 
-        const char* sqlTrivia = "CREATE TABLE IF NOT EXISTS TriviaQuestions("
+        const char* sqlTrivia = "CREATE TABLE IF NOT EXISTS TRIVIA_QUESTIONS("
             "ID INT PRIMARY KEY,"
             "Question TEXT NOT NULL,"
             "OptionA TEXT NOT NULL,"
@@ -53,16 +53,16 @@ public:
         }
 
         std::vector<std::string> questions = {
-        "INSERT INTO TriviaQuestions VALUES (1, 'John has 8 apples, Susan is late to her train by 23.2 seconds and the air resistance equals 83 newtons. What is the mass of the sun?', '14.5 newtons', '5.972*10^24 kg', '1.989*10^30 kg', 'Louis XV', 'C');",
-        "INSERT INTO TriviaQuestions VALUES (2, 'Who let the dogs out?', 'who, who, who, who, who?', 'who, who, who, who, who', 'Joe Mama', 'The Baha men', 'A');",
-        "INSERT INTO TriviaQuestions VALUES (3, 'What’s the accurate color of the famous dress?', 'white and gold', 'black and blue', 'blue and gold', 'Israeli flag colors', 'B');",
-        "INSERT INTO TriviaQuestions VALUES (4, 'why did the chicken cross the road?', 'BOOM SCHNITZEL!', 'What is America swimsuit?', 'Chaim and Moshe live in a building with 100 floors…', 'to get to the other side', 'D');",
-        "INSERT INTO TriviaQuestions VALUES (5, 'If 23 people are in the same room, what’s the chance that 2 people have the same birthday?', '1.2% approximately', '50% approximately', '100% EXACTLY', '0.00534% approximately', 'B');",
-        "INSERT INTO TriviaQuestions VALUES (6, 'What is the most streamed song on spotify?', 'Shape of you by ed sheeran', 'Bohemian rhapsody by queen', 'Blinding lights by the weeknd', 'One dance by drake', 'C');",
-        "INSERT INTO TriviaQuestions VALUES (7, 'How many US presidents were assassinated?', '4', '0', '2', '3', 'A');",
-        "INSERT INTO TriviaQuestions VALUES (8, 'What is the country with the highest Male to Female ratio?', 'UAE', 'Qatar', 'Bahrain', 'Kuwait', 'B');",
-        "INSERT INTO TriviaQuestions VALUES (9, 'The richest woman in the world is the _ richest person', '5th', '23rd', '104th', '11th', 'D');",
-        "INSERT INTO TriviaQuestions VALUES (10, 'Who is the chess player that was the world champion for the most years?', 'garry kasparov', 'magnus carlsen', 'emanuel lasker', 'Bobby fischer', 'C');"
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (1, 'John has 8 apples, Susan is late to her train by 23.2 seconds and the air resistance equals 83 newtons. What is the mass of the sun?', '14.5 newtons', '5.972*10^24 kg', '1.989*10^30 kg', 'Louis XV', 'C');",
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (2, 'Who let the dogs out?', 'who, who, who, who, who?', 'who, who, who, who, who', 'Joe Mama', 'The Baha men', 'A');",
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (3, 'What’s the accurate color of the famous dress?', 'white and gold', 'black and blue', 'blue and gold', 'Israeli flag colors', 'B');",
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (4, 'why did the chicken cross the road?', 'BOOM SCHNITZEL!', 'What is America swimsuit?', 'Chaim and Moshe live in a building with 100 floors…', 'to get to the other side', 'D');",
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (5, 'If 23 people are in the same room, what’s the chance that 2 people have the same birthday?', '1.2% approximately', '50% approximately', '100% EXACTLY', '0.00534% approximately', 'B');",
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (6, 'What is the most streamed song on spotify?', 'Shape of you by ed sheeran', 'Bohemian rhapsody by queen', 'Blinding lights by the weeknd', 'One dance by drake', 'C');",
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (7, 'How many US presidents were assassinated?', '4', '0', '2', '3', 'A');",
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (8, 'What is the country with the highest Male to Female ratio?', 'UAE', 'Qatar', 'Bahrain', 'Kuwait', 'B');",
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (9, 'The richest woman in the world is the _ richest person', '5th', '23rd', '104th', '11th', 'D');",
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (10, 'Who is the chess player that was the world champion for the most years?', 'garry kasparov', 'magnus carlsen', 'emanuel lasker', 'Bobby fischer', 'C');"
         };
 
         for (const std::string& question : questions) {
@@ -132,7 +132,7 @@ public:
 
     bool addQuestion(int id, std::string question, std::string optionA, std::string optionB,
         std::string optionC, std::string optionD, char correctAnswer) {
-        std::string sql = "INSERT INTO TriviaQuestions (ID, Question, OptionA, OptionB, OptionC, OptionD, CorrectAnswer) "
+        std::string sql = "INSERT INTO TRIVIA_QUESTIONS (ID, Question, OptionA, OptionB, OptionC, OptionD, CorrectAnswer) "
             "VALUES (" + std::to_string(id) + ", '" + question + "', '" + optionA + "', '" + optionB + "', '" + optionC + "', '" + optionD + "', '" + correctAnswer + "');";
 
         if (sqlite3_exec(db, sql.c_str(), nullptr, 0, nullptr) != SQLITE_OK) {
@@ -145,7 +145,7 @@ public:
     }
 
     Question getQuestion(int id) {
-        std::string sql = "SELECT * FROM TriviaQuestions WHERE ID = " + std::to_string(id) + ";";
+        std::string sql = "SELECT * FROM TRIVIA_QUESTIONS WHERE ID = " + std::to_string(id) + ";";
         sqlite3_stmt* stmt;
 
         if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
@@ -168,7 +168,7 @@ public:
     }
 
     char getCorrectAnswer(int id) {
-        std::string sql = "SELECT CorrectAnswer FROM TriviaQuestions WHERE ID = " + std::to_string(id) + ";";
+        std::string sql = "SELECT CorrectAnswer FROM TRIVIA_QUESTIONS WHERE ID = " + std::to_string(id) + ";";
         sqlite3_stmt* stmt;
 
         if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {

@@ -2,9 +2,8 @@
 #include "LoginRequestHandler.h"
 #include "MenuRequestHandler.h"
 
-RequestHandlerFactory::RequestHandlerFactory(SqliteDatabase* database) : m_StatisticsManager(database)
+RequestHandlerFactory::RequestHandlerFactory() : m_StatisticsManager()
 {
-
 }
 
 LoginRequestHandler* RequestHandlerFactory::createLoginRequestHandler()
@@ -12,10 +11,9 @@ LoginRequestHandler* RequestHandlerFactory::createLoginRequestHandler()
     return new LoginRequestHandler();
 }
 
-MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler()
+MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler(std::string username)
 {
-    return new MenuRequestHandler(); //message from nadav to oren: either make an empty constructor 
-    //if possible or just find a way to use the other one
+    return new MenuRequestHandler(username, *this, this->m_roomManager);
 }
 
 LoginManager& RequestHandlerFactory::getLoginManager()

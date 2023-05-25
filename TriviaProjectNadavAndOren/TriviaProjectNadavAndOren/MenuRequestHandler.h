@@ -2,19 +2,19 @@
 #include "RequestHandlerFactory.h"
 #include "LoginRequestHandler.h"
 #include "MenuRequestHandler.h"
+#include "JsonResponsePacketSerializer.hpp"
+#include "JsonRequestPacketDeserializer.hpp"
 
-enum menuRequestTypes { CreateRoomRequest, GetRoomsRequest, GetPlayersInRoomRequest, JoinRoomRequest, GetStatisticsRequest, LogoutRequest};
+enum menuRequestTypes { CreateRoom, GetRooms, GetPlayersInRoom, JoinRoom, GetStatistics, Logout, GetHighScore};
+enum status {signedOut, GetRoomsSuccesfull, GetPlayersInRoomSuccesfull, GetPersonalStatsSuccesfull, GetHighScoreSuccesfull, joinRoomSuccesfull, joinRoomUnsuccesfull, CreateRoomSuccesfull};
 
 class MenuRequestHandler : public IRequestHandler
 {
 private:
     LoggedUser m_user;
-    RoomManager& m_roomManager;
-    //needs statistics manager
     RequestHandlerFactory& m_handlerFactory;
 
     bool isRequestRelevant(const RequestInfo& requestInfo) override;
-    RequestResult handleRequest(const RequestInfo& requestInfo) override;
 
     RequestResult signout(RequestInfo);
     RequestResult getRooms(RequestInfo);
@@ -25,7 +25,6 @@ private:
     RequestResult createRoom(RequestInfo);
 
 public:
-    MenuRequestHandler(std::string username, RequestHandlerFactory& rhf, RoomManager& rm);
-    //you forgot to put refernces (&) here
-    // continue here 
+    MenuRequestHandler(std::string username, RequestHandlerFactory rhf, RoomManager rm);
+    RequestResult handleRequest(const RequestInfo& requestInfo) override;
 };
