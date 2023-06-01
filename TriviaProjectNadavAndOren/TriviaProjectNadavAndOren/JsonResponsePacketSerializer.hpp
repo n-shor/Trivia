@@ -11,21 +11,69 @@ using json = nlohmann::json;
 class JsonResponsePacketSerializer 
 {
 public:
-    static std::vector<unsigned char> serializeLoginResponse(const LoginResponse& response) 
+    static std::vector<unsigned char> serializeResponse(const LoginResponse& response) 
     {
         json j = { {"status", response.status} };
         return createBuffer(1, j.dump());
     }
 
-    static std::vector<unsigned char> serializeSignUpResponse(const SignupResponse& response)
+    static std::vector<unsigned char> serializeResponse(const SignupResponse& response)
     {
         json j = { {"status", response.status} };
         return createBuffer(2, j.dump());
     }
 
-    static std::vector<unsigned char> serializeErrorResponse(const ErrorResponse& response) 
+    static std::vector<unsigned char> serializeResponse(const ErrorResponse& response) 
     {
         json j = { {"message", response.message} };
+        return createBuffer(3, j.dump());
+    }
+
+    static std::vector<unsigned char> serializeResponse(const LogoutResponse& response)
+    {
+        json j = { {"status", response.status} };
+        return createBuffer(3, j.dump());
+    }
+
+    static std::vector<unsigned char> serializeResponse(const GetRoomsResponse& response)
+    {
+        std::vector<json> r;
+        json j = { {"status", response.status}};
+        for (int i = 0; i < response.rooms.size(); i++) {
+            r.push_back(json{ {"id" , response.rooms[i].id}, {"isActive" , response.rooms[i].isActive}, {"maxPlayers", response.rooms[i].maxPlayers}, {"name", response.rooms[i].name}, {"numOfQuestionsInGame", response.rooms[i].numOfQuestionsInGame}, {"timePerQuestion", response.rooms[i].timePerQuestion} });
+        }
+        j["rooms"] = r;
+        return createBuffer(3, j.dump());
+    }
+
+    static std::vector<unsigned char> serializeResponse(const GetPlayesInRoomResponse& response)
+    {
+        json j = {};
+        j["players"] = response.players;
+        return createBuffer(3, j.dump());
+    }
+
+    static std::vector<unsigned char> serializeResponse(const JoinRoomResponse& response)
+    {
+        json j = { {"status", response.status} };
+        return createBuffer(3, j.dump());
+    }
+
+    static std::vector<unsigned char> serializeResponse(const CreateRoomResponse& response)
+    {
+        json j = { { "status", response.status} };
+        return createBuffer(3, j.dump());
+    }
+
+    static std::vector<unsigned char> serializeResponse(const getHighScoreResponse& response)
+    {
+        json j = { {"status", response.status }, {"HighScores", response.statistics}};
+        return createBuffer(3, j.dump());
+    }
+
+    static std::vector<unsigned char> serializeResponse(const getPersonalStatsResponse& response)
+    {
+        json j = { {"status", response.status }, {"statistics", response.statistics} };
         return createBuffer(3, j.dump());
     }
 

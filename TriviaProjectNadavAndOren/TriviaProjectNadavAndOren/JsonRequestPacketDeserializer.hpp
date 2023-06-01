@@ -30,4 +30,31 @@ public:
         request.email = j.at("email").get<std::string>();
         return request;
     }
+
+    static GetPlayersInRoomRequest deserializeGetPlayersRequest(const RequestInfo& requestInfo) {
+        std::string jsonString(requestInfo.messageContent.begin(), requestInfo.messageContent.end());
+        json j = json::parse(jsonString);
+        GetPlayersInRoomRequest request;
+        request.roomId = j.at("roomId").get<unsigned int>();
+        return request;
+    }
+
+    static JoinRoomRequest deserializeJoinRoomRequest(const RequestInfo& requestInfo) {
+        std::string jsonString(requestInfo.messageContent.begin(), requestInfo.messageContent.end());
+        json j = json::parse(jsonString);
+        JoinRoomRequest request;
+        request.roomId = j.at("roomId").get<unsigned int>();
+        return request;
+    }
+
+    static CreateRoomRequest deserializeCreateRoomRequest(const RequestInfo& requestInfo) {
+        std::string jsonString(requestInfo.messageContent.begin(), requestInfo.messageContent.end());
+        json j = json::parse(jsonString);
+        CreateRoomRequest request;
+        request.answerTimeout = j.at("answerTimeout").get<unsigned int>();
+        request.maxUsers = j.at("maxUsers").get<unsigned int>();
+        request.questionCount = j.at("questionCount").get<unsigned int>();
+        request.roomName = j.at("roomName").get<std::string>();
+        return request;
+    }
 };
