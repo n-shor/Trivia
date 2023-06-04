@@ -1,0 +1,13 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GUI.CreateRoomPage">
+    <StackLayout Padding="20">
+        <Label Text="Create Room" />
+        <Entry Placeholder="Room Name" x:Name="RoomNameEntry"/>
+        <Entry Placeholder="Time for Question" x:Name="TimeQuestionEntry"/>
+        <Entry Placeholder="Number of Players" x:Name="PlayersNumberEntry"/>
+        <Button Text="Create" Clicked="OnCreateButtonClicked"/>
+        <Label x:Name="PlayersLabel" Text=""/>
+        <Label x:Name="AdminLabel" Text=""/>
+    </StackLayout>
+</ContentPage>

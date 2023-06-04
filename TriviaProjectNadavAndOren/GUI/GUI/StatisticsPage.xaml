@@ -1,0 +1,8 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GUI.StatisticsPage">
+	<StackLayout Padding="20">
+		<Button Text="Personal Statistics" Clicked="OnPersonalStatisticsButtonClicked"/>
+		<Button Text="High Scores" Clicked="OnHighScoresButtonClicked"/>
+	</StackLayout>
+</ContentPage>

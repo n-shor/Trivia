@@ -69,7 +69,7 @@ def main():
         print(f"Received from server (type {response_type}): {response_data}")
 
         # Send "end" message when done
-        end_data = {"message": "end"}
+        end_data = {"message" : "end"}
         send_message(client_socket, 3, end_data)
 
     except socket.error as e:
