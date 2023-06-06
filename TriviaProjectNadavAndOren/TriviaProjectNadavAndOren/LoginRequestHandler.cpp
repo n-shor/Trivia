@@ -34,8 +34,6 @@ RequestResult LoginRequestHandler::handleRequest(const RequestInfo& requestInfo)
         return r;
     }
 
-    // Handle other message codes here
-
     // Return an irrelevant response for unrecognized message codes
     RequestResult r;
     ErrorResponse e;
@@ -54,7 +52,14 @@ RequestResult LoginRequestHandler::login(const RequestInfo& requestInfo)
     LoginResponse l;
     l.status = m_handlerFactory->getLoginManager().login(loginRequest.username, loginRequest.password);
     r.response = JsonResponsePacketSerializer::serializeResponse(l);
-    r.newHandler = (IRequestHandler*)m_handlerFactory->createMenuRequestHandler(loginRequest.username);
+    if (l.status == LoggedIn)
+    {
+        r.newHandler = (IRequestHandler*)m_handlerFactory->createMenuRequestHandler(loginRequest.username);
+    }
+    else
+    {
+        r.newHandler = (IRequestHandler*)m_handlerFactory->createLoginRequestHandler();
+    }
     return r;
 }
 
@@ -65,6 +70,13 @@ RequestResult LoginRequestHandler::signup(const RequestInfo& requestInfo)
     SignupResponse l;
     l.status = m_handlerFactory->getLoginManager().signup(signupRequest.username, signupRequest.password, signupRequest.email);
     r.response = JsonResponsePacketSerializer::serializeResponse(l);
-    r.newHandler = m_handlerFactory->createLoginRequestHandler();
+    if (l.status == SignedUp)
+    {
+        r.newHandler = (IRequestHandler*)m_handlerFactory->createMenuRequestHandler(signupRequest.username);
+    }
+    else
+    {
+        r.newHandler = (IRequestHandler*)m_handlerFactory->createLoginRequestHandler();
+    }
     return r;
 }

@@ -1,7 +1,5 @@
 #include "MenuRequestHandler.h"
 
-// TODO: Implement the members and methods for this class
-
 MenuRequestHandler::MenuRequestHandler(std::string username, RequestHandlerFactory rhf, RoomManager rm) : m_user(username), m_handlerFactory(rhf)
 {
 	m_user = LoggedUser(username);
@@ -55,7 +53,7 @@ RequestResult MenuRequestHandler::getRooms(RequestInfo)
 	RequestResult r;
 	GetRoomsResponse grr;
 	grr.rooms = m_handlerFactory.getRoomManager().getRooms();
-	grr.status = GetRoomsSuccesfull;
+	grr.status = GetRoomsSuccessful;
 	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
 	r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	return r;
@@ -77,7 +75,7 @@ RequestResult MenuRequestHandler::getPersonalStats(RequestInfo)
 	RequestResult r;
 	getPersonalStatsResponse grr;
 	grr.statistics = m_handlerFactory.getStatisticsManager().getUserStatistics(m_user.getUsername());
-	grr.status = GetPersonalStatsSuccesfull;
+	grr.status = GetPersonalStatsSuccessful;
 	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
 	r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	return r;
@@ -88,7 +86,7 @@ RequestResult MenuRequestHandler::getHighScore(RequestInfo)
 	RequestResult r;
 	getHighScoreResponse grr;
 	grr.statistics = m_handlerFactory.getStatisticsManager().getHighScore();
-	grr.status = GetHighScoreSuccesfull;
+	grr.status = GetHighScoreSuccessful;
 	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
 	r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	return r;
@@ -102,11 +100,11 @@ RequestResult MenuRequestHandler::joinRoom(RequestInfo ri)
 	if (m_handlerFactory.getRoomManager().getRoomState(gpir.roomId) == isActive)
 	{
 		r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
-		grr.status = joinRoomUnsuccesfull;
+		grr.status = joinRoomUnSuccessful;
 		r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	}
 	m_handlerFactory.getRoomManager().getRoom(gpir.roomId).addUser(m_user);
-	grr.status = joinRoomUnsuccesfull;
+	grr.status = joinRoomUnSuccessful;
 	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
 	r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	return r;
@@ -138,7 +136,7 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo ri)
 	rd.id = max + 1;
 
 	m_handlerFactory.getRoomManager().createRoom(m_user, rd);
-	grr.status = CreateRoomSuccesfull;
+	grr.status = CreateRoomSuccessful;
 	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
 	r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	return r;

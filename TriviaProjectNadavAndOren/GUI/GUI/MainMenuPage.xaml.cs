@@ -28,6 +28,10 @@ namespace GUI
         private void OnLogoutButtonClicked(object sender, EventArgs e)
         {
             // TODO: Implement logout logic here
+            Serielizer s = new Serielizer();
+            s.sendMessage(ClientSocket.sock,
+                                   (int)5,
+                                   "end");
             // After logging out, navigate back to LoginPage
             Navigation.PushAsync(new LoginPage());
         }

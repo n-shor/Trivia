@@ -5,6 +5,7 @@
         <Label Text="Create Room" />
         <Entry Placeholder="Room Name" x:Name="RoomNameEntry"/>
         <Entry Placeholder="Time for Question" x:Name="TimeQuestionEntry"/>
+        <Entry Placeholder="Amount of players" x:Name="questionCountEntry"/>
         <Entry Placeholder="Number of Players" x:Name="PlayersNumberEntry"/>
         <Button Text="Create" Clicked="OnCreateButtonClicked"/>
         <Label x:Name="PlayersLabel" Text=""/>

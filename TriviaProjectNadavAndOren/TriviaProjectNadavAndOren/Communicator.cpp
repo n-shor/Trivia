@@ -31,10 +31,9 @@ std::pair<int, std::string> recvMessage(int clientSocket) {
     recv(clientSocket, headerData, 5, 0);
 
     int messageType = headerData[0];
-    int messageSize;
-    memcpy(&messageSize, &headerData[1], 4);
-    messageSize = ntohl(messageSize);
 
+    int messageSize = (headerData[1] - '0') * 1000 + (headerData[2] - '0') * 100 + (headerData[3] - '0') * 10 + (headerData[4] - '0');
+    
     std::vector<char> messageJson(messageSize);
     int bytesToReceive = messageSize;
     int bytesReceived = 0;
@@ -60,23 +59,26 @@ void Communicator::handleNewClient(SOCKET s)
     {
         // Receives the JSON message from the client
         auto [messageCode, messageData] = recvMessage(s);
+        messageCode -= '0'; //turning char into int
 
-        if (messageCode == 3 && messageData == "{\"message\": \"end\"}")
+        std::cout << "Received message (type " << static_cast<int>(messageCode) << "): " << messageData << std::endl;
+
+        if ((messageCode == 3 || messageCode == 5) && messageData == "end") //END_CODE = 3, Logout = 5.
         {
             std::cout << "End of client messages.\n";
             continueReceiving = false;
         }
         else
         {
-            std::cout << "Received message (type " << static_cast<int>(messageCode) << "): " << messageData << std::endl;
-
             // Prepare the RequestInfo object
             RequestInfo ri;
             ri.messageCode = messageCode;
             ri.messageContent = std::vector<unsigned char>(messageData.begin(), messageData.end());
 
             // Process the received JSON message
-            std::vector<unsigned char> res = m_clients[s]->handleRequest(ri).response;
+            RequestResult reqRes = m_clients[s]->handleRequest(ri);
+            std::vector<unsigned char> res = reqRes.response;
+            m_clients[s] = reqRes.newHandler;
             std::string msg(res.begin(), res.end());
             std::cout << msg << std::endl;
             send(s, msg.c_str(), msg.size(), 0);

@@ -15,8 +15,8 @@
                 Text="Statistics"
                 Clicked="OnStatisticsButtonClicked" />
 
-        <Button x:Name="ExitButton"
-                Text="Exit"
+        <Button x:Name="LogOutButton"
+                Text="Log Out"
                 Clicked="OnLogoutButtonClicked" />
 
     </StackLayout>
