@@ -10,18 +10,15 @@
                Placeholder="Password"
                IsPassword="true" />
 
-        <Entry x:Name="EmailEntry"
-               Placeholder="Email" />
-
         <Button x:Name="LoginButton"
                 Text="Login"
                 Clicked="OnLoginButtonClicked" 
                 BackgroundColor="Orange" 
                 TextColor="White" />
 
-        <Button x:Name="RegisterButton"
-                Text="Register"
-                Clicked="OnRegisterButtonClicked" 
+        <Button x:Name="BackButton"
+                Text="Back"
+                Clicked="OnBackButtonClicked" 
                 BackgroundColor="Orange" 
                 TextColor="White" />
     </StackLayout>

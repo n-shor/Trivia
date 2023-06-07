@@ -63,7 +63,7 @@ void Communicator::handleNewClient(SOCKET s)
 
         std::cout << "Received message (type " << static_cast<int>(messageCode) << "): " << messageData << std::endl;
 
-        if ((messageCode == 3 || messageCode == 5) && messageData == "end") //END_CODE = 3, Logout = 5.
+        if (messageData == "end")
         {
             std::cout << "End of client messages.\n";
             continueReceiving = false;
