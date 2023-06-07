@@ -1,6 +1,10 @@
 ﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="GUI.LoginPage">
+             x:Class="GUI.LoginPage"
+             NavigationPage.HasBackButton="False">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False" IsEnabled="False" />
+    </Shell.BackButtonBehavior>
     <StackLayout Padding="20" VerticalOptions="CenterAndExpand">
 
         <Entry x:Name="UsernameEntry"

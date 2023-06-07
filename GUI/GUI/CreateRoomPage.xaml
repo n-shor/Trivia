@@ -1,6 +1,10 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="GUI.CreateRoomPage">
+             x:Class="GUI.CreateRoomPage"
+             NavigationPage.HasBackButton="False">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False" IsEnabled="False" />
+    </Shell.BackButtonBehavior>
     <StackLayout Padding="20">
         <Label Text="Create Room" />
         <Entry Placeholder="Room Name" x:Name="RoomNameEntry"/>
