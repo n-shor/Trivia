@@ -82,7 +82,9 @@ public class JoinRoomResponse
 public class CreateRoomResponse
 {
     public int status { get; set; }
-};
+    public int roomId { get; set; }
+    public string adminName { get; set; }
+}
 
 public class GetRoomsResponse
 {

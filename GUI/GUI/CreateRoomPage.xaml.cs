@@ -56,7 +56,16 @@ namespace GUI
                 return;
             }
 
-            await Navigation.PushAsync(new RoomPage());
+            Room createdRoom = new Room
+            {
+                RoomName = RoomNameEntry.Text,
+                PlayerCount = 1, // as the room just created, only admin is there.
+                AdminName = response.adminName, // put the username here.
+                Id = response.roomId // you need to include the roomId in the response.
+            };
+
+            await Navigation.PushAsync(new RoomPage(createdRoom));
+
         }
 
     }

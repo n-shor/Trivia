@@ -33,11 +33,14 @@ namespace GUI
     {
         public string RoomName { get; set; }
         public int PlayerCount { get; set; }
+        public string AdminName { get; set; }
         public int Id { get; set; }
         public bool IsActive { get; set; }
 
+        // This property combines the room name and player count into a single string for display purposes
         public string DisplayText => $"{RoomName} (Players: {PlayerCount})";
     }
+
 
     public partial class JoinRoomPage : ContentPage
     {
@@ -90,7 +93,7 @@ namespace GUI
                 s.sendMessage(ClientSocket.sock, (int)3, jsonString);
 
                 // After joining the room, navigate to RoomPage
-                await Navigation.PushAsync(new RoomPage());
+                await Navigation.PushAsync(new RoomPage(_selectedRoom));
             }
         }
 

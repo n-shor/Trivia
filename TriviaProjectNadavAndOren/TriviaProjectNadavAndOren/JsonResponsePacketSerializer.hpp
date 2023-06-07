@@ -61,9 +61,14 @@ public:
 
     static std::vector<unsigned char> serializeResponse(const CreateRoomResponse& response)
     {
-        json j = { { "status", response.status} };
+        json j = {
+            { "status", response.status },
+            { "roomId", response.roomId },
+            { "adminName", response.adminName }
+        };
         return createBuffer(3, j.dump());
     }
+
 
     static std::vector<unsigned char> serializeResponse(const getHighScoreResponse& response)
     {

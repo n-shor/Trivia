@@ -11,5 +11,6 @@
         <ListView x:Name="UsersListView">
             <!-- ListView items will be filled programmatically -->
         </ListView>
+        <Button Text="Refresh" Clicked="OnRefreshButtonClicked" />
     </StackLayout>
 </ContentPage>

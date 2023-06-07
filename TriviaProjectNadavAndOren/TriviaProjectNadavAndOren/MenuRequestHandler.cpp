@@ -137,6 +137,8 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo ri)
 
 	m_handlerFactory.getRoomManager().createRoom(m_user, rd);
 	grr.status = CreateRoomSuccessful;
+	grr.roomId = rd.id;
+	grr.adminName = m_user.getUsername();
 	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
 	r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	return r;
