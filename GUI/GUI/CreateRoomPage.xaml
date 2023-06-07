@@ -4,9 +4,9 @@
     <StackLayout Padding="20">
         <Label Text="Create Room" />
         <Entry Placeholder="Room Name" x:Name="RoomNameEntry"/>
-        <Entry Placeholder="Time for Question" x:Name="TimeQuestionEntry"/>
-        <Entry Placeholder="Amount of players" x:Name="questionCountEntry"/>
-        <Entry Placeholder="Number of Players" x:Name="PlayersNumberEntry"/>
+        <Entry Placeholder="Time for Question" x:Name="TimeQuestionEntry" Keyboard="Numeric"/>
+        <Entry Placeholder="Number of Questions" x:Name="QuestionCountEntry" Keyboard="Numeric"/>
+        <Entry Placeholder="Number of Players" x:Name="PlayersNumberEntry" Keyboard="Numeric"/>
         <Button Text="Create" Clicked="OnCreateButtonClicked"/>
         <Label x:Name="PlayersLabel" Text=""/>
         <Label x:Name="AdminLabel" Text=""/>

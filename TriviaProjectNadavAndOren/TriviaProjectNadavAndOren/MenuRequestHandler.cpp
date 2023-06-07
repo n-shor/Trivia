@@ -104,7 +104,7 @@ RequestResult MenuRequestHandler::joinRoom(RequestInfo ri)
 		r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	}
 	m_handlerFactory.getRoomManager().getRoom(gpir.roomId).addUser(m_user);
-	grr.status = joinRoomUnSuccessful;
+	grr.status = joinRoomSuccessful;
 	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
 	r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	return r;
