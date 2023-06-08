@@ -93,8 +93,13 @@ namespace GUI
                 s.sendMessage(ClientSocket.sock, (int)3, jsonString);
 
                 // After joining the room, navigate to RoomPage
-                await Navigation.PushAsync(new RoomPage(_selectedRoom));
+                await Navigation.PushAsync(new RoomPage(_selectedRoom, OriginPage.JoinRoomPage));
             }
+        }
+
+        private async void OnBackButtonClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new MainMenuPage());
         }
 
     }

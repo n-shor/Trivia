@@ -16,5 +16,6 @@
             <!-- ListView items will be filled programmatically -->
         </ListView>
         <Button Text="Refresh" Clicked="OnRefreshButtonClicked" />
+        <Button Text="Back" Clicked="OnBackButtonClicked" />
     </StackLayout>
 </ContentPage>

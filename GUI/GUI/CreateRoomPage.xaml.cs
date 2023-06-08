@@ -64,9 +64,15 @@ namespace GUI
                 Id = response.roomId // you need to include the roomId in the response.
             };
 
-            await Navigation.PushAsync(new RoomPage(createdRoom));
+            await Navigation.PushAsync(new RoomPage(createdRoom, OriginPage.CreateRoomPage));
 
         }
+
+        private async void OnBackButtonClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new MainMenuPage());
+        }
+
 
     }
 }

@@ -7,6 +7,13 @@
     </Shell.BackButtonBehavior>
     <StackLayout Padding="20">
         <Label Text="High Scores" />
-        <!-- TODO: Display the high scores. This could be a ListView, for example -->
+        <ListView x:Name="HighScoresList">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding .}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Button Text="Back" Clicked="OnBackButtonClicked" />
     </StackLayout>
 </ContentPage>

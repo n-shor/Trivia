@@ -19,6 +19,12 @@ namespace GUI
         {
             await Navigation.PushAsync(new HighScoresPage());
         }
+
+        private async void OnBackButtonClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new MainMenuPage());
+        }
+
     }
 }
 

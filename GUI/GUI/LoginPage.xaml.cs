@@ -47,10 +47,10 @@ namespace GUI
             }
         }
 
-        private void OnBackButtonClicked(object sender, EventArgs e)
+        private async void OnBackButtonClicked(object sender, EventArgs e)
         {
             // Navigate back to the starting page
-            Navigation.PopAsync();
+            await Navigation.PopAsync();
         }
 
     }

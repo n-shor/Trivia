@@ -26,7 +26,7 @@ namespace GUI
             Navigation.PushAsync(new StatisticsPage());
         }
 
-        private void OnLogoutButtonClicked(object sender, EventArgs e)
+        private async void OnLogoutButtonClicked(object sender, EventArgs e)
         {
             Serielizer s = new Serielizer();
             s.sendMessage(ClientSocket.sock,
@@ -39,12 +39,12 @@ namespace GUI
             // Now we check if the logout was successful.
             if (json.status == 0)
             {
-                Navigation.PushAsync(new LoginPage());
+                await Navigation.PushAsync(new LoginPage());
             }
             else
             {
                 // If login failed, display an alert
-                DisplayAlert("Alert", "Logout Failed", "OK");
+                await DisplayAlert("Alert", "Logout Failed", "OK");
             }
         }
         

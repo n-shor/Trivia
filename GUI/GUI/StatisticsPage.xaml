@@ -10,5 +10,6 @@
     <StackLayout Padding="20">
 		<Button Text="Personal Statistics" Clicked="OnPersonalStatisticsButtonClicked"/>
 		<Button Text="High Scores" Clicked="OnHighScoresButtonClicked"/>
-	</StackLayout>
+        <Button Text="Back" Clicked="OnBackButtonClicked" />
+    </StackLayout>
 </ContentPage>

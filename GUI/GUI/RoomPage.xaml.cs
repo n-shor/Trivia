@@ -10,15 +10,23 @@ namespace GUI
         public string Username { get; set; }
     }
 
+    public enum OriginPage
+    {
+        CreateRoomPage,
+        JoinRoomPage,
+    }
+
     public partial class RoomPage : ContentPage
     {
         private Room _currentRoom;
+        private OriginPage _originPage;
 
-        public RoomPage(Room room)
+        public RoomPage(Room room, OriginPage originPage)
         {
             InitializeComponent();
 
             _currentRoom = room;
+            _originPage = originPage;
 
             RoomNameLabel.Text += _currentRoom.RoomName;
             AdminNameLabel.Text += _currentRoom.AdminName;
@@ -62,5 +70,19 @@ namespace GUI
         {
             updateUserList();
         }
+
+        private void OnBackButtonClicked(object sender, EventArgs e)
+        {
+            switch (_originPage)
+            {
+                case OriginPage.CreateRoomPage:
+                    Navigation.PushAsync(new CreateRoomPage());
+                    break;
+                case OriginPage.JoinRoomPage:
+                    Navigation.PushAsync(new JoinRoomPage());
+                    break;
+            }
+        }
+
     }
 }

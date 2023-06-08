@@ -5,8 +5,15 @@
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="False" IsEnabled="False" />
     </Shell.BackButtonBehavior>
-	<StackLayout Padding="20">
-		<Label Text="Personal Statistics" />
-		<!-- TODO: Display the player's statistics. This could be a series of Labels, for example -->
-	</StackLayout>
+    <StackLayout Padding="20">
+        <Label Text="Personal Statistics" />
+        <ListView x:Name="PersonalStatsList">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding .}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Button Text="Back" Clicked="OnBackButtonClicked" />
+    </StackLayout>
 </ContentPage>
