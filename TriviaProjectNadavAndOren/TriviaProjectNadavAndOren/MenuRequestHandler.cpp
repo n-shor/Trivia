@@ -1,6 +1,6 @@
 #include "MenuRequestHandler.h"
 
-MenuRequestHandler::MenuRequestHandler(std::string username, RequestHandlerFactory rhf, RoomManager rm) : m_user(username), m_handlerFactory(rhf)
+MenuRequestHandler::MenuRequestHandler(std::string username, RequestHandlerFactory& rhf, RoomManager& rm) : m_user(username), m_handlerFactory(rhf)
 {
 	m_user = LoggedUser(username);
 }

@@ -25,6 +25,6 @@ private:
     RequestResult createRoom(RequestInfo);
 
 public:
-    MenuRequestHandler(std::string username, RequestHandlerFactory rhf, RoomManager rm);
+    MenuRequestHandler(std::string username, RequestHandlerFactory& rhf, RoomManager& rm);
     RequestResult handleRequest(const RequestInfo& requestInfo) override;
 };

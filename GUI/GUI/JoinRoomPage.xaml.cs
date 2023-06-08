@@ -96,7 +96,10 @@ namespace GUI
                 await Navigation.PushAsync(new RoomPage(_selectedRoom, OriginPage.JoinRoomPage));
             }
         }
-
+        private void OnRefreshButtonClicked(object sender, EventArgs e) //IMPORTANT!!!! REMEMBER TO NOT LET THE USER ENTER A ROOM THAT WAS DELETED BEFORE REFRESHING.
+        {
+            LoadRooms();
+        }
         private async void OnBackButtonClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new MainMenuPage());

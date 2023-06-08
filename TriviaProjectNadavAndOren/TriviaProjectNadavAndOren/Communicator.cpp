@@ -118,7 +118,8 @@ void Communicator::startHandleRequests()
         std::cout << "Accepted client connection" << std::endl;
 
         // handle the client connection in a separate thread
-        m_clients[clientSocket] = new LoginRequestHandler();
+        RequestHandlerFactory rhf;
+        m_clients[clientSocket] = new LoginRequestHandler(rhf);
         std::thread(&Communicator::handleNewClient, this, clientSocket).detach();
     }
 }

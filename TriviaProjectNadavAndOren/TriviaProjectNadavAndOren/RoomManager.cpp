@@ -25,8 +25,11 @@ unsigned int RoomManager::getRoomState(int ID)
 std::vector<RoomData> RoomManager::getRooms()
 {
     std::vector<RoomData> ret;
-    for (auto it = m_rooms.begin(); it != m_rooms.end(); ++it) {
-        ret.push_back(it->second.getRoomData());
+    if (!m_rooms.empty()) //for some reason the loop runs even when it's empty
+    {
+        for (auto it = m_rooms.begin(); it != m_rooms.end(); ++it) {
+            ret.push_back(it->second.getRoomData());
+        }
     }
     return ret;
 }

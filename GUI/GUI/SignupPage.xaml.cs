@@ -76,8 +76,7 @@ namespace GUI
 
         private async void OnBackButtonClicked(object sender, EventArgs e)
         {
-            // Navigate back to the starting page
-            await Navigation.PopAsync();
+            await Navigation.PushAsync(new StartPage());
         }
 
     }

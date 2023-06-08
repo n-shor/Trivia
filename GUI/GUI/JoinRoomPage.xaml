@@ -27,6 +27,7 @@
         </ListView>
 
         <Button x:Name="JoinButton" Text="Join" Clicked="OnJoinButtonClicked" IsEnabled="false"/>
+        <Button x:Name="RefreshButton" Text="Refresh" Clicked="OnRefreshButtonClicked"/>
         <Button Text="Back" Clicked="OnBackButtonClicked"/>
         <Label x:Name="PlayersLabel" Text=""/>
         <Label x:Name="AdminLabel" Text=""/>

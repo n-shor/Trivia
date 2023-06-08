@@ -8,9 +8,14 @@ namespace GUI
 {
     public partial class StartPage : ContentPage
     {
+        static bool firstTime = true;
         public StartPage()
         {
             InitializeComponent();
+
+            if (!firstTime) //make sure to not run the connection code twice
+                return;
+
             IPHostEntry ipHost = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddr = System.Net.IPAddress.Parse("127.0.0.1");
             IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 8080); // choose port and ip here
@@ -18,8 +23,9 @@ namespace GUI
                    SocketType.Stream, ProtocolType.Tcp);
             sender.Connect(localEndPoint);
             ClientSocket.sock = sender;
-        }
 
+            firstTime = false;
+        }
 
         private async void OnLoginButtonClicked(object sender, EventArgs e)
         {

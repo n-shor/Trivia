@@ -73,7 +73,6 @@ public:
             }
         }
 
-        std::cout << "SQLite database connection opened and tables created if they didn't exist." << std::endl;
         return true;
     }
 
