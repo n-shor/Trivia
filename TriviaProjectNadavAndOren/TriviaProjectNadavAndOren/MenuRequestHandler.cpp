@@ -135,7 +135,7 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo ri)
 
 	rd.id = max + 1;
 
-	m_handlerFactory.getRoomManager().createRoom(m_user, rd);
+	m_handlerFactory.getRoomManager().createRoom(rd, m_user);
 	grr.status = CreateRoomSuccessful;
 	grr.roomId = rd.id;
 	grr.adminName = m_user.getUsername();

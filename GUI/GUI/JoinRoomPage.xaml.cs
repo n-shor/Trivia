@@ -51,13 +51,13 @@ namespace GUI
             LoadRooms();
         }
 
-        private async void LoadRooms()
+        private void LoadRooms()
         {
             Serielizer s = new Serielizer();
             s.sendMessage(ClientSocket.sock,
                                    (int)1,
                                    "");
-            dynamic data = await Deserielizer.getResponse(ClientSocket.sock);
+            dynamic data = Deserielizer.getResponse(ClientSocket.sock);
 
             GetRoomsResponse json = JsonSerializer.Deserialize<GetRoomsResponse>(data.jsonData);
 

@@ -27,8 +27,9 @@ void Communicator::bindAndListen()
 
 //helper function in order to parse the message properly
 std::pair<int, std::string> recvMessage(int clientSocket) {
-    char headerData[5];
+    char headerData[6] = { 0 }; // 5 for data and 1 for null terminator
     recv(clientSocket, headerData, 5, 0);
+    headerData[5] = '\0'; // Null-terminate the string
 
     int messageType = headerData[0];
 

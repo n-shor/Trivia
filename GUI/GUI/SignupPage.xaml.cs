@@ -46,13 +46,13 @@ namespace GUI
                 else
                 {
                     // If registration failed (user already exists), display an alert
-                    DisplayAlert("Alert", "User already exists", "OK");
+                    DisplayAlert("Signup Failed", "User already exists", "OK");
                 }
             }
             else
             {
                 // If email is invalid, display an alert
-                DisplayAlert("Alert", "Invalid email address", "OK");
+                DisplayAlert("Signup Failed", "Invalid email address", "OK");
             }
         }
 

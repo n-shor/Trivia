@@ -43,7 +43,7 @@ namespace GUI
             else
             {
                 // If login failed, display an alert
-                DisplayAlert("Alert", "Invalid username or password", "OK");
+                DisplayAlert("Login Failed", "Invalid username or password", "OK");
             }
         }
 
