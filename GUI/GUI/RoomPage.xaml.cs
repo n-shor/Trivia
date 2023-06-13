@@ -36,7 +36,7 @@ namespace GUI
         }
 
 
-        private async void updateUserList()
+        private void updateUserList()
         {
             // Create a request to get the players in the room
             var request = new GetPlayersInRoomRequest { roomId = _currentRoom.Id };
@@ -49,7 +49,7 @@ namespace GUI
             s.sendMessage(ClientSocket.sock, (int)2, jsonString);
 
             // Receive and deserialize the response
-            dynamic data = await Deserielizer.getResponse(ClientSocket.sock);
+            dynamic data = Deserielizer.getResponse(ClientSocket.sock);
             GetPlayesInRoomResponse response = JsonSerializer.Deserialize<GetPlayesInRoomResponse>(data.jsonData);
 
             // Populate the user list, excluding the admin

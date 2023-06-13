@@ -46,11 +46,11 @@ namespace GUI
             Serielizer s = new Serielizer();
             s.sendMessage(ClientSocket.sock, (int)0, jsonString);
 
-            dynamic data = await Deserielizer.getResponse(ClientSocket.sock);
+            dynamic data = Deserielizer.getResponse(ClientSocket.sock);
 
             CreateRoomResponse response = JsonSerializer.Deserialize<CreateRoomResponse>(data.jsonData);
 
-            if (response.status != 1)
+            if (response.status != 7)
             {
                 await DisplayAlert("Error", "Room could not be created. Please try again.", "OK");
                 return;

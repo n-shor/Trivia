@@ -81,7 +81,7 @@ void Communicator::handleNewClient(SOCKET s)
             std::vector<unsigned char> res = reqRes.response;
             m_clients[s] = reqRes.newHandler;
             std::string msg(res.begin(), res.end());
-            std::cout << msg << std::endl;
+            std::cout << msg.substr(5) << std::endl; //printing the message without the bytes at the start
             send(s, msg.c_str(), msg.size(), 0);
         }
     }
