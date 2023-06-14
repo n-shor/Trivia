@@ -97,16 +97,25 @@ RequestResult MenuRequestHandler::joinRoom(RequestInfo ri)
 	JoinRoomRequest gpir = JsonRequestPacketDeserializer::deserializeJoinRoomRequest(ri);
 	RequestResult r;
 	JoinRoomResponse grr;
-	if (m_handlerFactory.getRoomManager().getRoomState(gpir.roomId) == isActive)
+	if (m_handlerFactory.getRoomManager().getRoomState(gpir.roomId) == isActive ||
+		m_handlerFactory.getRoomManager().getRoom(gpir.roomId).getRoomData().currentPlayers == 
+		m_handlerFactory.getRoomManager().getRoom(gpir.roomId).getRoomData().maxPlayers) //checking if the room is active or full
 	{
 		r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
 		grr.status = joinRoomUnSuccessful;
 		r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	}
-	m_handlerFactory.getRoomManager().getRoom(gpir.roomId).addUser(m_user);
-	grr.status = joinRoomSuccessful;
-	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
-	r.response = JsonResponsePacketSerializer::serializeResponse(grr);
+
+	else
+	{
+		std::lock_guard<std::mutex> lock(m_handlerFactory.getRoomManager().m_roomsMutex);
+
+		m_handlerFactory.getRoomManager().getRoom(gpir.roomId).addUser(m_user);
+		grr.status = joinRoomSuccessful;
+		r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+		r.response = JsonResponsePacketSerializer::serializeResponse(grr);
+	}
+
 	return r;
 }
 
@@ -118,8 +127,10 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo ri)
 
 	RoomData rd;
 	rd.isActive = isntActive;
+	rd.currentPlayers = 0; //we will add the creator later and then it'll be 1
 	rd.maxPlayers = gpir.maxUsers;
 	rd.name = gpir.roomName;
+	rd.adminName = m_user.getUsername();
 	rd.numOfQuestionsInGame = gpir.questionCount;
 	rd.timePerQuestion = gpir.answerTimeout;
 

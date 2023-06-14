@@ -11,6 +11,8 @@ struct RoomData
 {
     unsigned int id;
     std::string name;
+    std::string adminName;
+    unsigned int currentPlayers;
     unsigned int maxPlayers;
     unsigned int numOfQuestionsInGame;
     unsigned int timePerQuestion;

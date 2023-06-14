@@ -37,6 +37,10 @@ public class RoomData
     public int numOfQuestionsInGame { get; set; }
     public int timePerQuestion { get; set; }
     public int isActive { get; set; }
+    public int currentPlayers { get; set; }
+    public string adminName { get; set; }
+    public string DisplayText => $"{name} (Max Players: {maxPlayers})";
+
 };
 
 public class CreateRoomRequest

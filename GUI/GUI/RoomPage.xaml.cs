@@ -8,7 +8,13 @@ namespace GUI
     public class User
     {
         public string Username { get; set; }
+
+        public override string ToString()
+        {
+            return Username;
+        }
     }
+
 
     public enum OriginPage
     {
@@ -18,19 +24,19 @@ namespace GUI
 
     public partial class RoomPage : ContentPage
     {
-        private Room _currentRoom;
+        private RoomData _currentRoom;
         private OriginPage _originPage;
 
-        public RoomPage(Room room, OriginPage originPage)
+        public RoomPage(RoomData room, OriginPage originPage)
         {
             InitializeComponent();
 
             _currentRoom = room;
             _originPage = originPage;
 
-            RoomNameLabel.Text += _currentRoom.RoomName;
-            AdminNameLabel.Text += _currentRoom.AdminName;
-
+            RoomNameLabel.Text += _currentRoom.name;
+            AdminNameLabel.Text += _currentRoom.adminName;
+            
             // Call updateUserList to populate the user list
             updateUserList();
         }
@@ -39,7 +45,7 @@ namespace GUI
         private void updateUserList()
         {
             // Create a request to get the players in the room
-            var request = new GetPlayersInRoomRequest { roomId = _currentRoom.Id };
+            var request = new GetPlayersInRoomRequest { roomId = _currentRoom.id };
 
             // Serialize the request to JSON
             var jsonString = JsonSerializer.Serialize(request);
@@ -56,7 +62,7 @@ namespace GUI
             List<User> users = new List<User>();
             foreach (var username in response.players)
             {
-                if (username != _currentRoom.AdminName)  // Exclude the admin
+                if (username != _currentRoom.adminName)  // Exclude the admin
                 {
                     users.Add(new User { Username = username });
                 }

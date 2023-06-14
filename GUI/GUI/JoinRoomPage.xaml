@@ -13,23 +13,11 @@
     </ContentPage.Resources>
     <StackLayout Padding="20">
         <Label Text="Join Room" />
-
-        <ListView x:Name="RoomsListView" ItemSelected="OnRoomSelected">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <StackLayout BackgroundColor="{Binding IsActive, Converter={StaticResource BoolToColorConverter}}">
-                            <Label Text="{Binding DisplayText}" TextColor="White"/>
-                        </StackLayout>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-
+        <ScrollView>
+            <StackLayout x:Name="RoomsStackLayout" />
+        </ScrollView>
         <Button x:Name="JoinButton" Text="Join" Clicked="OnJoinButtonClicked" IsEnabled="false"/>
         <Button x:Name="RefreshButton" Text="Refresh" Clicked="OnRefreshButtonClicked"/>
         <Button Text="Back" Clicked="OnBackButtonClicked"/>
-        <Label x:Name="PlayersLabel" Text=""/>
-        <Label x:Name="AdminLabel" Text=""/>
     </StackLayout>
 </ContentPage>

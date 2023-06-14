@@ -3,6 +3,8 @@ using System;
 using System.Globalization;
 using System.Text.Json;
 using Microsoft.Maui.Graphics;
+using System.Collections.ObjectModel;
+using System.Text;
 
 namespace GUI.Converters
 {
@@ -12,11 +14,11 @@ namespace GUI.Converters
         {
             if (value is bool && (bool)value)
             {
-                return new SolidColorBrush(Colors.Red);
+                return Colors.Red;
             }
             else
             {
-                return new SolidColorBrush(Colors.Grey);
+                return Colors.Gray;
             }
         }
 
@@ -27,24 +29,16 @@ namespace GUI.Converters
     }
 }
 
+
 namespace GUI
 {
-    public class Room
-    {
-        public string RoomName { get; set; }
-        public int PlayerCount { get; set; }
-        public string AdminName { get; set; }
-        public int Id { get; set; }
-        public bool IsActive { get; set; }
-
-        // This property combines the room name and player count into a single string for display purposes
-        public string DisplayText => $"{RoomName} (Players: {PlayerCount})";
-    }
-
-
     public partial class JoinRoomPage : ContentPage
     {
-        private Room _selectedRoom;
+        private RoomData _selectedRoom;
+        private Frame _selectedFrame;
+        SolidColorBrush darkRedBrush = new SolidColorBrush(Colors.DarkRed);
+        SolidColorBrush darkGrayBrush = new SolidColorBrush(Colors.DarkGray);
+
         public JoinRoomPage()
         {
             InitializeComponent();
@@ -53,25 +47,47 @@ namespace GUI
 
         private void LoadRooms()
         {
+            JoinButton.IsEnabled = false;
             Serielizer s = new Serielizer();
-            s.sendMessage(ClientSocket.sock,
-                                   (int)1,
-                                   "");
+            s.sendMessage(ClientSocket.sock, (int)1, "");
             dynamic data = Deserielizer.getResponse(ClientSocket.sock);
 
             GetRoomsResponse json = JsonSerializer.Deserialize<GetRoomsResponse>(data.jsonData);
 
-            // Update the ListView with the received rooms
-            RoomsListView.ItemsSource = json.rooms;
+            // Clear the existing items
+            RoomsStackLayout.Children.Clear();
+
+            // Add the received rooms
+            foreach (RoomData room in json.rooms)
+            {
+                var roomFrame = new Frame
+                {
+                    BorderColor = Colors.Black,
+                    Content = new Label { Text = $"Room Name: {room.name}, Admin: {room.adminName}, Players: {room.currentPlayers}/{room.maxPlayers}" },
+                    BackgroundColor = room.isActive != 0 ? Colors.Red : Colors.Gray,
+                };
+
+                var tapGesture = new TapGestureRecognizer();
+                tapGesture.Tapped += (s, e) => { OnRoomSelected(room, roomFrame); };
+                roomFrame.GestureRecognizers.Add(tapGesture);
+
+                RoomsStackLayout.Children.Add(roomFrame);
+            }
         }
 
-        private void OnRoomSelected(object sender, SelectedItemChangedEventArgs e)
+        private void OnRoomSelected(RoomData room, Frame selectedFrame)
         {
-            // Save the selected room
-            _selectedRoom = e.SelectedItem as Room;
+            // Reset color of previously selected frame
+            if (_selectedFrame != null)
+            {
+                _selectedFrame.BackgroundColor = (_selectedRoom.isActive != 0) ? Colors.Red : Colors.Gray;
+            }
 
-            // Enable the Join button
-            JoinButton.IsEnabled = _selectedRoom != null;
+            _selectedRoom = room;
+            _selectedFrame = selectedFrame;
+            _selectedFrame.BackgroundColor = (_selectedRoom.isActive != 0) ? Colors.DarkRed : Colors.DarkGray;
+
+            JoinButton.IsEnabled = true;
         }
 
         private async void OnJoinButtonClicked(object sender, EventArgs e)
@@ -81,7 +97,7 @@ namespace GUI
                 return;
             }
 
-            if (_selectedRoom.IsActive)
+            if (_selectedRoom.isActive != 0)
             {
                 await DisplayAlert("Cannot join", "The selected room is currently active. Please select a different room.", "OK");
             }
@@ -89,21 +105,35 @@ namespace GUI
             {
                 Serielizer s = new Serielizer();
 
-                string jsonString = JsonSerializer.Serialize(new { roomId = _selectedRoom.Id });
+                string jsonString = JsonSerializer.Serialize(new { roomId = _selectedRoom.id });
                 s.sendMessage(ClientSocket.sock, (int)3, jsonString);
 
-                // After joining the room, navigate to RoomPage
-                await Navigation.PushAsync(new RoomPage(_selectedRoom, OriginPage.JoinRoomPage));
+                // Receive and handle the response from the server
+                dynamic data = Deserielizer.getResponse(ClientSocket.sock);
+                JoinRoomResponse response = JsonSerializer.Deserialize<JoinRoomResponse>(data.jsonData);
+
+                if (response.status == 5) // Assuming your response object has a "success" property
+                {
+                    // After successfully joining the room, navigate to RoomPage
+                    await Navigation.PushAsync(new RoomPage(_selectedRoom, OriginPage.JoinRoomPage));
+                }
+                else
+                {
+                    await DisplayAlert("Cannot join", "The room is currently full. Please try again later.", "OK");
+                }
             }
         }
-        private void OnRefreshButtonClicked(object sender, EventArgs e) //IMPORTANT!!!! REMEMBER TO NOT LET THE USER ENTER A ROOM THAT WAS DELETED BEFORE REFRESHING.
+
+    
+
+    private void OnRefreshButtonClicked(object sender, EventArgs e)
         {
             LoadRooms();
         }
+
         private async void OnBackButtonClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new MainMenuPage());
         }
-
     }
 }

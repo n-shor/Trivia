@@ -38,12 +38,21 @@ public:
     static std::vector<unsigned char> serializeResponse(const GetRoomsResponse& response)
     {
         std::vector<json> r;
-        json j = { {"status", response.status}};
+        json j = { {"status", response.status} };
         for (int i = 0; i < response.rooms.size(); i++) {
-            r.push_back(json{ {"id" , response.rooms[i].id}, {"isActive" , response.rooms[i].isActive}, {"maxPlayers", response.rooms[i].maxPlayers}, {"name", response.rooms[i].name}, {"numOfQuestionsInGame", response.rooms[i].numOfQuestionsInGame}, {"timePerQuestion", response.rooms[i].timePerQuestion} });
+            r.push_back(json{ {"id" , response.rooms[i].id},
+                              {"isActive" , response.rooms[i].isActive},
+                              {"maxPlayers", response.rooms[i].maxPlayers},
+                              {"name", response.rooms[i].name},
+                              {"adminName", response.rooms[i].adminName},
+                              {"currentPlayers", response.rooms[i].currentPlayers},
+                              {"numOfQuestionsInGame", response.rooms[i].numOfQuestionsInGame},
+                              {"timePerQuestion", response.rooms[i].timePerQuestion}
+                });
         }
         j["rooms"] = r;
         return createBuffer(3, j.dump());
+
     }
 
     static std::vector<unsigned char> serializeResponse(const GetPlayesInRoomResponse& response)

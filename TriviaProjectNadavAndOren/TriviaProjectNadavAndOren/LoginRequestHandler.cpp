@@ -27,7 +27,7 @@ RequestResult LoginRequestHandler::handleRequest(const RequestInfo& requestInfo)
     {
         RequestResult r;
         ErrorResponse response;
-        response.message = "End of messages";
+        response.message = "End of messages from client";
         r.response = JsonResponsePacketSerializer::serializeResponse(response);
         r.newHandler = nullptr;
         return r;
