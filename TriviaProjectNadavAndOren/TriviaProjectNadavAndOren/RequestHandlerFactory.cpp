@@ -8,12 +8,12 @@ RequestHandlerFactory::RequestHandlerFactory() : m_StatisticsManager()
 {
 }
 
-LoginRequestHandler* RequestHandlerFactory::createLoginRequestHandler()
+IRequestHandler* RequestHandlerFactory::createLoginRequestHandler()
 {
     return new LoginRequestHandler(*this);
 }
 
-MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler(std::string username)
+IRequestHandler* RequestHandlerFactory::createMenuRequestHandler(std::string username)
 {
     return new MenuRequestHandler(username, *this, this->m_roomManager);
 }
@@ -33,12 +33,12 @@ RoomManager& RequestHandlerFactory::getRoomManager()
     return m_roomManager;
 }
 
-RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(LoggedUser lu, Room r)
+IRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(LoggedUser lu, Room r)
 {
     return new RoomAdminRequestHandler(lu.getUsername(), *this, r);
 }
 
-RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler(LoggedUser lu, Room r)
+IRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler(LoggedUser lu, Room r)
 {
     return new RoomMemberRequestHandler(lu.getUsername(), *this, r);
 }

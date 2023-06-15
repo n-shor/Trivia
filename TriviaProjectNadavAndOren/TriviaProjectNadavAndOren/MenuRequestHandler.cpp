@@ -113,7 +113,7 @@ RequestResult MenuRequestHandler::joinRoom(RequestInfo ri)
 
 		m_handlerFactory.getRoomManager().getRoom(gpir.roomId).addUser(m_user);
 		grr.status = joinRoomSuccessful;
-		r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+		r.newHandler = m_handlerFactory.createRoomMemberRequestHandler(m_user, m_handlerFactory.getRoomManager().getRoom(gpir.roomId));
 		r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	}
 
@@ -151,7 +151,7 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo ri)
 	grr.status = CreateRoomSuccessful;
 	grr.roomId = rd.id;
 	grr.adminName = m_user.getUsername();
-	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+	r.newHandler = m_handlerFactory.createRoomAdminRequestHandler(m_user, m_handlerFactory.getRoomManager().getRoom(rd.id));
 	r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	return r;
 }

@@ -31,13 +31,10 @@
                 </DataTemplate>
              </ListView.ItemTemplate>
         </ListView>
-            <Button x:Name="StartGameButton" Text="Start Game" Clicked="OnStartGameButtonClicked" 
+        <Button x:Name="StartGameButton" Text="Start Game" Clicked="OnStartGameButtonClicked" 
                 BackgroundColor="MediumBlue"
                 TextColor="White" />
-            <Button Text="Refresh" Clicked="OnRefreshButtonClicked" 
-                BackgroundColor="MediumBlue"
-                TextColor="White" />
-            <Button x:Name="CloseRoomButton" Text="Close Room" Clicked="OnCloseRoomButtonClicked"
+        <Button x:Name="CloseRoomButton" Text="Close Room" Clicked="OnCloseRoomButtonClicked"
                 BackgroundColor="MediumBlue"
                 TextColor="White" />
             <Button x:Name="LeaveRoomButton" Text="Leave Room" Clicked="OnLeaveRoomButtonClicked" 

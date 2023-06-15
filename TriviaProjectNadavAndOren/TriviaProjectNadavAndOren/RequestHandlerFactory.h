@@ -15,11 +15,11 @@ protected:
     LoginManager m_loginManager;
 public:
     RequestHandlerFactory();
-    LoginRequestHandler* createLoginRequestHandler();
-    MenuRequestHandler* createMenuRequestHandler(std::string username);
+    IRequestHandler* createLoginRequestHandler();
+    IRequestHandler* createMenuRequestHandler(std::string username);
     LoginManager& getLoginManager();
     StatisticsManager& getStatisticsManager();
     RoomManager& getRoomManager();
-    RoomAdminRequestHandler* createRoomAdminRequestHandler(LoggedUser, Room);
-    RoomMemberRequestHandler* createRoomMemberRequestHandler(LoggedUser, Room);
+    IRequestHandler* createRoomAdminRequestHandler(LoggedUser, Room);
+    IRequestHandler* createRoomMemberRequestHandler(LoggedUser, Room);
 };

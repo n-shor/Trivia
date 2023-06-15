@@ -58,7 +58,7 @@ RequestResult RoomAdminRequestHandler::getRoomsState(RequestInfo)
 		grsr.status = getRoomsStateRes;
 		r.response = JsonResponsePacketSerializer::serializeResponse(grsr);
 		r.newHandler = m_handlerFactory.createRoomMemberRequestHandler(m_user, m_roomManager.getRoom(m_room.getRoomData().id));
-		//
+		
 		return r;
 	}
 	catch(int a){
