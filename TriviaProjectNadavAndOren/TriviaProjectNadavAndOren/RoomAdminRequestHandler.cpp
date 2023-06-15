@@ -61,7 +61,8 @@ RequestResult RoomAdminRequestHandler::getRoomsState(RequestInfo)
 		
 		return r;
 	}
-	catch(int a){
+	catch(...) //we should check if this causes problems with the sudden disconnects later
+	{
 		RequestResult r;
 		ErrorResponse e;
 		e.message = "room closed";

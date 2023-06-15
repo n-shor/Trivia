@@ -42,7 +42,8 @@ RequestResult RoomMemberRequestHandler::getRoomsState(RequestInfo)
 			r.response = JsonResponsePacketSerializer::serializeResponse(grsr);
 		return r;
     }
-	catch (int a) {
+	catch (...) //we should check if this causes problems with the sudden disconnects later, or just check what error we should be catching
+	{
 		RequestResult r;
 		ErrorResponse e;
 		e.message = "room closed";
