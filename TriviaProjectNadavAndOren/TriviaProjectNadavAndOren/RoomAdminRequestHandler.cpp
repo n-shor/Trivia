@@ -48,17 +48,27 @@ RequestResult RoomAdminRequestHandler::startGame(RequestInfo)
 
 RequestResult RoomAdminRequestHandler::getRoomsState(RequestInfo)
 {
-	RequestResult r;
-	GetRoomStateResponse grsr;
-	grsr.answerTimeout = m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().timePerQuestion;
-	grsr.hasGameBegun = m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().isActive;
-	grsr.questionCount = m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().numOfQuestionsInGame;
-	grsr.players = m_roomManager.getRoom(m_room.getRoomData().id).getAllUsers();
-	grsr.status = getRoomsStateRes;
-	r.response = JsonResponsePacketSerializer::serializeResponse(grsr);
-	r.newHandler = m_handlerFactory.createRoomMemberRequestHandler(m_user, m_roomManager.getRoom(m_room.getRoomData().id));
-	//
-	return r;
+	try {
+		RequestResult r;
+		GetRoomStateResponse grsr;
+		grsr.answerTimeout = m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().timePerQuestion;
+		grsr.hasGameBegun = m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().isActive;
+		grsr.questionCount = m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().numOfQuestionsInGame;
+		grsr.players = m_roomManager.getRoom(m_room.getRoomData().id).getAllUsers();
+		grsr.status = getRoomsStateRes;
+		r.response = JsonResponsePacketSerializer::serializeResponse(grsr);
+		r.newHandler = m_handlerFactory.createRoomMemberRequestHandler(m_user, m_roomManager.getRoom(m_room.getRoomData().id));
+		//
+		return r;
+	}
+	catch(int a){
+		RequestResult r;
+		ErrorResponse e;
+		e.message = "room closed";
+		r.response = JsonResponsePacketSerializer::serializeResponse(e);
+		r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+		return r;
+	}
 }
 
 RoomAdminRequestHandler::RoomAdminRequestHandler(std::string username, RequestHandlerFactory& rhf, Room room) : m_room(room), m_user(username), m_handlerFactory(rhf), m_roomManager(rhf.getRoomManager())

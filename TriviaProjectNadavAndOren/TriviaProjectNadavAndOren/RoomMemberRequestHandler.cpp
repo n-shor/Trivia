@@ -19,16 +19,37 @@ RequestResult RoomMemberRequestHandler::leaveRoom(RequestInfo)
 
 RequestResult RoomMemberRequestHandler::getRoomsState(RequestInfo)
 {
-	RequestResult r;
-	GetRoomStateResponse grsr;
-	grsr.answerTimeout = m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().timePerQuestion;
-	grsr.hasGameBegun = m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().isActive;
-	grsr.questionCount = m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().numOfQuestionsInGame;
-	grsr.players = m_roomManager.getRoom(m_room.getRoomData().id).getAllUsers();
-	grsr.status = getRoomsStateRes;
-	r.newHandler = m_handlerFactory.createRoomMemberRequestHandler(m_user, m_roomManager.getRoom(m_room.getRoomData().id));
-	r.response = JsonResponsePacketSerializer::serializeResponse(grsr);
-	return r;
+	try{
+		RequestResult r;
+		GetRoomStateResponse grsr;
+		grsr.answerTimeout = m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().timePerQuestion;
+		grsr.hasGameBegun = m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().isActive;
+		grsr.questionCount = m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().numOfQuestionsInGame;
+		grsr.players = m_roomManager.getRoom(m_room.getRoomData().id).getAllUsers();
+		grsr.status = getRoomsStateRes;
+		if (m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().isActive != 0)
+		{
+			//!!!!!
+			//!!!!!
+			r.newHandler = nullptr; //later this will point to handler for game
+			//!!!!!
+			//!!!!!
+
+		}
+		else {
+			r.newHandler = m_handlerFactory.createRoomMemberRequestHandler(m_user, m_roomManager.getRoom(m_room.getRoomData().id));
+		}
+			r.response = JsonResponsePacketSerializer::serializeResponse(grsr);
+		return r;
+    }
+	catch (int a) {
+		RequestResult r;
+		ErrorResponse e;
+		e.message = "room closed";
+		r.response = JsonResponsePacketSerializer::serializeResponse(e);
+		r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+		return r;
+	}
 }
 
 RoomMemberRequestHandler::RoomMemberRequestHandler(std::string username, RequestHandlerFactory& rhf, Room room) : m_room(room), m_user(username), m_handlerFactory(rhf), m_roomManager(rhf.getRoomManager())
