@@ -1,8 +1,9 @@
 #include "MenuRequestHandler.h"
+#include "RequestHandlerFactory.h"
 
 MenuRequestHandler::MenuRequestHandler(std::string username, RequestHandlerFactory& rhf, RoomManager& rm) : m_user(username), m_handlerFactory(rhf)
 {
-	m_user = LoggedUser(username);
+	//m_user = LoggedUser(username);
 }
 
 RequestResult MenuRequestHandler::handleRequest(const RequestInfo& requestInfo)

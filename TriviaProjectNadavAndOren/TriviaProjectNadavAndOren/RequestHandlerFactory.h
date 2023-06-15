@@ -4,6 +4,8 @@
 #include "LoginManager.h"
 class LoginRequestHandler; // Forward declarations to avoid circular dependency problems
 class MenuRequestHandler;
+class RoomAdminRequestHandler;
+class RoomMemberRequestHandler;
 
 class RequestHandlerFactory
 {
@@ -18,4 +20,6 @@ public:
     LoginManager& getLoginManager();
     StatisticsManager& getStatisticsManager();
     RoomManager& getRoomManager();
+    RoomAdminRequestHandler* createRoomAdminRequestHandler(LoggedUser, Room);
+    RoomMemberRequestHandler* createRoomMemberRequestHandler(LoggedUser, Room);
 };

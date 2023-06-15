@@ -91,6 +91,30 @@ public:
         return createBuffer(3, j.dump());
     }
 
+    static std::vector<unsigned char> serializeResponse(const LeaveRoomResponse& response)
+    {
+        json j = { {"status", response.status} };
+        return createBuffer(1, j.dump()); //ask nadav of code
+    }
+
+    static std::vector<unsigned char> serializeResponse(const GetRoomStateResponse& response)
+    {
+        json j = { {"status", response.status}, {"players", response.players}, {"hasGameBegun", response.hasGameBegun}, {"questionCount", response.questionCount}, {"answerTimeout", response.answerTimeout}};
+        return createBuffer(1, j.dump()); //ask nadav of code
+    }
+
+    static std::vector<unsigned char> serializeResponse(const StartGameResponse& response)
+    {
+        json j = { {"status", response.status} };
+        return createBuffer(1, j.dump()); //ask nadav of code
+    }
+
+    static std::vector<unsigned char> serializeResponse(const CloseRoomResponse& response)
+    {
+        json j = { {"status", response.status} };
+        return createBuffer(1, j.dump()); //ask nadav of code
+    }
+
 private:
     static std::vector<unsigned char> createBuffer(uint8_t code, const std::string& jsonString)
     {
