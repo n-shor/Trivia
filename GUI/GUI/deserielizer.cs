@@ -61,7 +61,7 @@ public class JoinRoomRequest
     public int roomId { get; set; }
 };
 
-public class GetPlayesInRoomResponse
+public class GetPlayersInRoomResponse
 {
     public List<string> players { get; set; }
 };
