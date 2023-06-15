@@ -20,6 +20,7 @@ Room::Room(RoomData d)
 void Room::addUser(LoggedUser u)
 {
 	m_users.push_back(u);
+    this->m_metadata.currentPlayers++;
 }
 
 void Room::removeUser(LoggedUser u)

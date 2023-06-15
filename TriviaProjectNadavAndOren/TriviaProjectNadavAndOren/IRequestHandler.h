@@ -11,6 +11,8 @@ struct RoomData
 {
     unsigned int id;
     std::string name;
+    std::string adminName;
+    unsigned int currentPlayers;
     unsigned int maxPlayers;
     unsigned int numOfQuestionsInGame;
     unsigned int timePerQuestion;
@@ -66,6 +68,8 @@ struct JoinRoomResponse
 struct CreateRoomResponse
 {
     unsigned int status;
+    unsigned int roomId;
+    std::string adminName;
 };
 
 struct GetRoomsResponse

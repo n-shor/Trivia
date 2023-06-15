@@ -1,9 +1,8 @@
 #include "LoginRequestHandler.h"
 #include "RequestHandlerFactory.h"
 
-LoginRequestHandler::LoginRequestHandler()
+LoginRequestHandler::LoginRequestHandler(RequestHandlerFactory& rhf) : m_handlerFactory(rhf)
 {
-    m_handlerFactory = new RequestHandlerFactory();
 }
 
 
@@ -28,20 +27,18 @@ RequestResult LoginRequestHandler::handleRequest(const RequestInfo& requestInfo)
     {
         RequestResult r;
         ErrorResponse response;
-        response.message = "End of messages";
+        response.message = "End of messages from client";
         r.response = JsonResponsePacketSerializer::serializeResponse(response);
         r.newHandler = nullptr;
         return r;
     }
-
-    // Handle other message codes here
 
     // Return an irrelevant response for unrecognized message codes
     RequestResult r;
     ErrorResponse e;
     e.message = "Irrelevant message";
     r.response = JsonResponsePacketSerializer::serializeResponse(e);
-    r.newHandler = m_handlerFactory->createLoginRequestHandler();
+    r.newHandler = m_handlerFactory.createLoginRequestHandler();
     return r;
 }
 
@@ -52,9 +49,16 @@ RequestResult LoginRequestHandler::login(const RequestInfo& requestInfo)
     LoginRequest loginRequest = JsonRequestPacketDeserializer::deserializeLoginRequest(requestInfo);
     RequestResult r;
     LoginResponse l;
-    l.status = m_handlerFactory->getLoginManager().login(loginRequest.username, loginRequest.password);
+    l.status = m_handlerFactory.getLoginManager().login(loginRequest.username, loginRequest.password);
     r.response = JsonResponsePacketSerializer::serializeResponse(l);
-    r.newHandler = (IRequestHandler*)m_handlerFactory->createMenuRequestHandler(loginRequest.username);
+    if (l.status == LoggedIn)
+    {
+        r.newHandler = (IRequestHandler*)m_handlerFactory.createMenuRequestHandler(loginRequest.username);
+    }
+    else
+    {
+        r.newHandler = (IRequestHandler*)m_handlerFactory.createLoginRequestHandler();
+    }
     return r;
 }
 
@@ -63,8 +67,15 @@ RequestResult LoginRequestHandler::signup(const RequestInfo& requestInfo)
     SignupRequest signupRequest = JsonRequestPacketDeserializer::deserializeSignUpRequest(requestInfo);
     RequestResult r;
     SignupResponse l;
-    l.status = m_handlerFactory->getLoginManager().signup(signupRequest.username, signupRequest.password, signupRequest.email);
+    l.status = m_handlerFactory.getLoginManager().signup(signupRequest.username, signupRequest.password, signupRequest.email);
     r.response = JsonResponsePacketSerializer::serializeResponse(l);
-    r.newHandler = m_handlerFactory->createLoginRequestHandler();
+    if (l.status == SignedUp)
+    {
+        r.newHandler = (IRequestHandler*)m_handlerFactory.createMenuRequestHandler(signupRequest.username);
+    }
+    else
+    {
+        r.newHandler = (IRequestHandler*)m_handlerFactory.createLoginRequestHandler();
+    }
     return r;
 }

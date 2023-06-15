@@ -73,7 +73,6 @@ public:
             }
         }
 
-        std::cout << "SQLite database connection opened and tables created if they didn't exist." << std::endl;
         return true;
     }
 
@@ -194,7 +193,7 @@ public:
 
         float avgAnswerTime = 0.0;
         if (sqlite3_step(stmt) == SQLITE_ROW) {
-            avgAnswerTime = sqlite3_column_double(stmt, 0);
+            avgAnswerTime = (float)sqlite3_column_double(stmt, 0);
         }
 
         sqlite3_finalize(stmt);

@@ -11,7 +11,8 @@ private:
 public:
     StatisticsManager()
     {
-        IDatabase* m_database = new SqliteDatabase();
+        m_database = new SqliteDatabase();
+        m_database->open();
     }
 
     std::vector<std::string> getHighScore()

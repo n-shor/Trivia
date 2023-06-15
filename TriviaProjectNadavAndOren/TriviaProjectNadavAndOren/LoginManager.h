@@ -8,7 +8,7 @@
 
 class LoggedUser;
 
-enum statuses { Error = -1, FailedLogin = 1234, UserAlreadyExists = 42, LoggedIn = 69, SignedUp = 420, NoSuchLoggedUser = 567, LoggedOut = 890 };
+enum statuses { Error = -1, FailedLogin = 21, UserAlreadyExists = 22, LoggedIn = 11, SignedUp = 12, NoSuchLoggedUser = 23, LoggedOut = 13 };
 
 class LoginManager
 {

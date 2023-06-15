@@ -8,13 +8,13 @@
 class LoginRequestHandler : public IRequestHandler
 {
 private:
-    RequestHandlerFactory* m_handlerFactory;
+    RequestHandlerFactory& m_handlerFactory;
     static const int LOGIN_CODE = 1;
     static const int SIGNUP_CODE = 2;
     static const int END_CODE = 3;
 
 public:
-    LoginRequestHandler();
+    LoginRequestHandler(RequestHandlerFactory& rhf);
     bool isRequestRelevant(const RequestInfo& requestInfo) override;
     RequestResult handleRequest(const RequestInfo& requestInfo) override;
 
