@@ -6,7 +6,7 @@
 #include "JsonRequestPacketDeserializer.hpp"
 
 enum menuRequestTypes { CreateRoom, GetRooms, GetPlayersInRoom, JoinRoom, GetStatistics, Logout, GetHighScore};
-enum status {signedOut, GetRoomsSuccesfull, GetPlayersInRoomSuccesfull, GetPersonalStatsSuccesfull, GetHighScoreSuccesfull, joinRoomSuccesfull, joinRoomUnsuccesfull, CreateRoomSuccesfull};
+enum status {signedOut, GetRoomsSuccessful, GetPlayersInRoomSuccessful, GetPersonalStatsSuccessful, GetHighScoreSuccessful, joinRoomSuccessful, joinRoomUnSuccessful, CreateRoomSuccessful};
 
 class MenuRequestHandler : public IRequestHandler
 {
@@ -25,6 +25,6 @@ private:
     RequestResult createRoom(RequestInfo);
 
 public:
-    MenuRequestHandler(std::string username, RequestHandlerFactory rhf, RoomManager rm);
+    MenuRequestHandler(std::string username, RequestHandlerFactory& rhf, RoomManager& rm);
     RequestResult handleRequest(const RequestInfo& requestInfo) override;
 };

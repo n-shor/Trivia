@@ -1,0 +1,27 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GUI.MainMenuPage"
+             NavigationPage.HasBackButton="False">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False" IsEnabled="False" />
+    </Shell.BackButtonBehavior>
+    <StackLayout Padding="20">
+
+        <Button x:Name="CreateRoomButton"
+                Text="Create Room"
+                Clicked="OnCreateRoomButtonClicked" />
+
+        <Button x:Name="JoinRoomButton"
+                Text="Join Room"
+                Clicked="OnJoinRoomButtonClicked" />
+
+        <Button x:Name="StatisticsButton"
+                Text="Statistics"
+                Clicked="OnStatisticsButtonClicked" />
+
+        <Button x:Name="LogOutButton"
+                Text="Log Out"
+                Clicked="OnLogoutButtonClicked" />
+
+    </StackLayout>
+</ContentPage>

@@ -2,7 +2,7 @@
 #include "IRequestHandler.h"
 #include "LoggedUser.h"
 
-enum roomStates {isActive, isntActive};
+enum roomStates {isActive = 1, isntActive = 0};
 
 class Room
 {

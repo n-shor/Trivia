@@ -5,11 +5,13 @@
 class RoomManager
 {
 private:
-	std::map<unsigned int, Room> m_rooms;
+	static std::map<unsigned int, Room> m_rooms;
+
 public:
-	void createRoom(LoggedUser, RoomData);
+	void createRoom(RoomData rd, LoggedUser lu);
 	void deleteRoom(int ID);
 	unsigned int getRoomState(int ID);
 	std::vector<RoomData> getRooms();
 	Room& getRoom(int ID);
+	std::mutex m_roomsMutex;
 };

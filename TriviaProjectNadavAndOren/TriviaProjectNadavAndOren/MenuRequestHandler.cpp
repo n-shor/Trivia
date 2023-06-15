@@ -1,8 +1,6 @@
 #include "MenuRequestHandler.h"
 
-// TODO: Implement the members and methods for this class
-
-MenuRequestHandler::MenuRequestHandler(std::string username, RequestHandlerFactory rhf, RoomManager rm) : m_user(username), m_handlerFactory(rhf)
+MenuRequestHandler::MenuRequestHandler(std::string username, RequestHandlerFactory& rhf, RoomManager& rm) : m_user(username), m_handlerFactory(rhf)
 {
 	m_user = LoggedUser(username);
 }
@@ -55,7 +53,7 @@ RequestResult MenuRequestHandler::getRooms(RequestInfo)
 	RequestResult r;
 	GetRoomsResponse grr;
 	grr.rooms = m_handlerFactory.getRoomManager().getRooms();
-	grr.status = GetRoomsSuccesfull;
+	grr.status = GetRoomsSuccessful;
 	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
 	r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	return r;
@@ -77,7 +75,7 @@ RequestResult MenuRequestHandler::getPersonalStats(RequestInfo)
 	RequestResult r;
 	getPersonalStatsResponse grr;
 	grr.statistics = m_handlerFactory.getStatisticsManager().getUserStatistics(m_user.getUsername());
-	grr.status = GetPersonalStatsSuccesfull;
+	grr.status = GetPersonalStatsSuccessful;
 	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
 	r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	return r;
@@ -88,7 +86,7 @@ RequestResult MenuRequestHandler::getHighScore(RequestInfo)
 	RequestResult r;
 	getHighScoreResponse grr;
 	grr.statistics = m_handlerFactory.getStatisticsManager().getHighScore();
-	grr.status = GetHighScoreSuccesfull;
+	grr.status = GetHighScoreSuccessful;
 	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
 	r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	return r;
@@ -99,16 +97,25 @@ RequestResult MenuRequestHandler::joinRoom(RequestInfo ri)
 	JoinRoomRequest gpir = JsonRequestPacketDeserializer::deserializeJoinRoomRequest(ri);
 	RequestResult r;
 	JoinRoomResponse grr;
-	if (m_handlerFactory.getRoomManager().getRoomState(gpir.roomId) == isActive)
+	if (m_handlerFactory.getRoomManager().getRoomState(gpir.roomId) == isActive ||
+		m_handlerFactory.getRoomManager().getRoom(gpir.roomId).getRoomData().currentPlayers == 
+		m_handlerFactory.getRoomManager().getRoom(gpir.roomId).getRoomData().maxPlayers) //checking if the room is active or full
 	{
 		r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
-		grr.status = joinRoomUnsuccesfull;
+		grr.status = joinRoomUnSuccessful;
 		r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	}
-	m_handlerFactory.getRoomManager().getRoom(gpir.roomId).addUser(m_user);
-	grr.status = joinRoomUnsuccesfull;
-	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
-	r.response = JsonResponsePacketSerializer::serializeResponse(grr);
+
+	else
+	{
+		std::lock_guard<std::mutex> lock(m_handlerFactory.getRoomManager().m_roomsMutex);
+
+		m_handlerFactory.getRoomManager().getRoom(gpir.roomId).addUser(m_user);
+		grr.status = joinRoomSuccessful;
+		r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+		r.response = JsonResponsePacketSerializer::serializeResponse(grr);
+	}
+
 	return r;
 }
 
@@ -120,8 +127,10 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo ri)
 
 	RoomData rd;
 	rd.isActive = isntActive;
+	rd.currentPlayers = 0; //we will add the creator later and then it'll be 1
 	rd.maxPlayers = gpir.maxUsers;
 	rd.name = gpir.roomName;
+	rd.adminName = m_user.getUsername();
 	rd.numOfQuestionsInGame = gpir.questionCount;
 	rd.timePerQuestion = gpir.answerTimeout;
 
@@ -137,8 +146,10 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo ri)
 
 	rd.id = max + 1;
 
-	m_handlerFactory.getRoomManager().createRoom(m_user, rd);
-	grr.status = CreateRoomSuccesfull;
+	m_handlerFactory.getRoomManager().createRoom(rd, m_user);
+	grr.status = CreateRoomSuccessful;
+	grr.roomId = rd.id;
+	grr.adminName = m_user.getUsername();
 	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
 	r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	return r;
