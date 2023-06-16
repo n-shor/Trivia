@@ -17,7 +17,6 @@
             <StackLayout x:Name="RoomsStackLayout" />
         </ScrollView>
         <Button x:Name="JoinButton" Text="Join" Clicked="OnJoinButtonClicked" IsEnabled="false"/>
-        <Button x:Name="RefreshButton" Text="Refresh" Clicked="OnRefreshButtonClicked"/>
         <Button Text="Back" Clicked="OnBackButtonClicked"/>
     </StackLayout>
 </ContentPage>

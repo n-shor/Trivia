@@ -5,6 +5,8 @@ using System.Text.Json;
 using Microsoft.Maui.Graphics;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Maui;
 
 namespace GUI.Converters
 {
@@ -29,7 +31,6 @@ namespace GUI.Converters
     }
 }
 
-
 namespace GUI
 {
     public partial class JoinRoomPage : ContentPage
@@ -43,6 +44,21 @@ namespace GUI
         {
             InitializeComponent();
             LoadRooms();
+
+            // Start the task to keep updating the rooms list
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    await MainThread.InvokeOnMainThreadAsync(() =>
+                    {
+                        LoadRooms();
+                        return Task.CompletedTask;
+                    });
+
+                    await Task.Delay(3000);
+                }
+            });
         }
 
         private void LoadRooms()
@@ -124,9 +140,7 @@ namespace GUI
             }
         }
 
-    
-
-    private void OnRefreshButtonClicked(object sender, EventArgs e)
+        private void OnRefreshButtonClicked(object sender, EventArgs e)
         {
             LoadRooms();
         }
