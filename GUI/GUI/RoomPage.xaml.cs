@@ -177,26 +177,59 @@ namespace GUI
             }
         }
 
-
-        private void OnStartGameButtonClicked(object sender, EventArgs e)
+        private async void OnStartGameButtonClicked(object sender, EventArgs e)
         {
             Serielizer s = new Serielizer();
             s.sendMessage(ClientSocket.sock, 2, "");
-            //Navigation.PushAsync(new GamePage());
+
+            dynamic data = Deserielizer.getResponse(ClientSocket.sock);
+            StartGameResponse response = JsonSerializer.Deserialize<StartGameResponse>(data.jsonData);
+
+            if (response.status == 1)
+            {
+                //Navigation.PushAsync(new GamePage());
+            }
+            else
+            {
+                await DisplayAlert("Game Start Failed", "Unable to start the game, please try again later.", "OK");
+            }
         }
 
         private async void OnCloseRoomButtonClicked(object sender, EventArgs e)
         {
             Serielizer s = new Serielizer();
             s.sendMessage(ClientSocket.sock, 0, "");
-            await Navigation.PushAsync(new MainMenuPage());
+
+            dynamic data = Deserielizer.getResponse(ClientSocket.sock);
+            CloseRoomResponse response = JsonSerializer.Deserialize<CloseRoomResponse>(data.jsonData);
+
+            if (response.status == 0)
+            {
+                await Navigation.PushAsync(new MainMenuPage());
+            }
+            else
+            {
+                await DisplayAlert("Room Close Failed", "Unable to close the room, please try again later.", "OK");
+            }
         }
 
         private async void OnLeaveRoomButtonClicked(object sender, EventArgs e)
         {
             Serielizer s = new Serielizer();
             s.sendMessage(ClientSocket.sock, 0, "");
-            await Navigation.PushAsync(new MainMenuPage());
+
+            dynamic data = Deserielizer.getResponse(ClientSocket.sock);
+            LeaveRoomResponse response = JsonSerializer.Deserialize<LeaveRoomResponse>(data.jsonData);
+
+            if (response.status == 0)
+            {
+                await Navigation.PushAsync(new MainMenuPage());
+            }
+            else
+            {
+                await DisplayAlert("Room Leave Failed", "Unable to leave the room, please try again later.", "OK");
+            }
         }
+
     }
 }

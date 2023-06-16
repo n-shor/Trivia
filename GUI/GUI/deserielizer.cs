@@ -83,12 +83,27 @@ public class JoinRoomResponse
     public int status { get; set; }
 };
 
+public class LeaveRoomResponse
+{
+    public int status;
+};
+
 public class CreateRoomResponse
 {
     public int status { get; set; }
     public int roomId { get; set; }
     public string adminName { get; set; }
 }
+
+public class CloseRoomResponse
+{
+    public int status;
+};
+
+public class StartGameResponse
+{
+    public int status;
+};
 
 public class GetRoomsResponse
 {
@@ -101,7 +116,7 @@ public class ErrorResponse
     public string message { get; set; }
 };
 
-struct GetRoomStateResponse
+public class GetRoomStateResponse
 {
     public int status { get; set; }
     public bool hasGameBegun { get; set; }
