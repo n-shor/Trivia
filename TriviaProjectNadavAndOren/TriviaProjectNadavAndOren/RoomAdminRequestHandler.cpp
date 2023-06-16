@@ -61,7 +61,7 @@ RequestResult RoomAdminRequestHandler::getRoomsState(RequestInfo)
 		
 		return r;
 	}
-	catch(...) //we should check if this causes problems with the sudden disconnects later
+	catch(...) //we should check if this causes problems with the sudden disconnects later, or just check what error we should be catching
 	{
 		RequestResult r;
 		ErrorResponse e;

@@ -28,19 +28,28 @@ void Communicator::bindAndListen()
 //helper function in order to parse the message properly
 std::pair<int, std::string> recvMessage(int clientSocket) {
     char headerData[6] = { 0 }; // 5 for data and 1 for null terminator
-    recv(clientSocket, headerData, 5, 0);
+    if (recv(clientSocket, headerData, 5, 0) <= 0)
+    {
+        //handle error or disconnection here
+        throw std::runtime_error("Failed to receive message from client: " + std::to_string(WSAGetLastError()) + " (The client's thread has been closed)");
+    }
     headerData[5] = '\0'; // Null-terminate the string
 
     int messageType = headerData[0];
 
     int messageSize = (headerData[1] - '0') * 1000 + (headerData[2] - '0') * 100 + (headerData[3] - '0') * 10 + (headerData[4] - '0');
-    
+
     std::vector<char> messageJson(messageSize);
     int bytesToReceive = messageSize;
     int bytesReceived = 0;
 
     while (bytesReceived < messageSize) {
         int received = recv(clientSocket, &messageJson[bytesReceived], bytesToReceive, 0);
+        if (received <= 0)
+        {
+            //handle error or disconnection here
+            throw std::runtime_error("Failed to receive message: " + std::to_string(WSAGetLastError()));
+        }
         bytesReceived += received;
         bytesToReceive -= received;
     }
@@ -50,40 +59,47 @@ std::pair<int, std::string> recvMessage(int clientSocket) {
     return { messageType, messageData };
 }
 
+
 void Communicator::handleNewClient(SOCKET s)
 {
     std::cout << "Client connected." << std::endl;
 
     bool continueReceiving = true;
-
-    while (continueReceiving)
+    try
     {
-        // Receives the JSON message from the client
-        auto [messageCode, messageData] = recvMessage(s);
-        messageCode -= '0'; //turning char into int
-
-        std::cout << "Received message (type " << static_cast<int>(messageCode) << "): " << messageData << std::endl;
-
-        if (messageData == "end")
+        while (continueReceiving)
         {
-            std::cout << "End of client messages.\n";
-            continueReceiving = false;
-        }
-        else
-        {
-            // Prepare the RequestInfo object
-            RequestInfo ri;
-            ri.messageCode = messageCode;
-            ri.messageContent = std::vector<unsigned char>(messageData.begin(), messageData.end());
+            // Receives the JSON message from the client
+            auto [messageCode, messageData] = recvMessage(s);
+            messageCode -= '0'; //turning char into int
 
-            // Process the received JSON message
-            RequestResult reqRes = m_clients[s]->handleRequest(ri);
-            std::vector<unsigned char> res = reqRes.response;
-            m_clients[s] = reqRes.newHandler;
-            std::string msg(res.begin(), res.end());
-            std::cout << msg.substr(5) << std::endl; //printing the message without the bytes at the start
-            send(s, msg.c_str(), msg.size(), 0);
+            std::cout << "Received message (type " << static_cast<int>(messageCode) << "): " << messageData << std::endl;
+
+            if (messageData == "end")
+            {
+                std::cout << "End of client messages.\n";
+                continueReceiving = false;
+            }
+            else
+            {
+                // Prepare the RequestInfo object
+                RequestInfo ri;
+                ri.messageCode = messageCode;
+                ri.messageContent = std::vector<unsigned char>(messageData.begin(), messageData.end());
+
+                // Process the received JSON message
+                RequestResult reqRes = m_clients[s]->handleRequest(ri);
+                std::vector<unsigned char> res = reqRes.response;
+                m_clients[s] = reqRes.newHandler;
+                std::string msg(res.begin(), res.end());
+                std::cout << msg.substr(5) << std::endl; //printing the message without the bytes at the start
+                send(s, msg.c_str(), msg.size(), 0);
+            }
         }
+    }
+    catch (std::runtime_error e)
+    {
+        std::cout << e.what() << std::endl;
     }
 
     // Closes the client socket
@@ -121,6 +137,8 @@ void Communicator::startHandleRequests()
         // handle the client connection in a separate thread
         RequestHandlerFactory rhf;
         m_clients[clientSocket] = new LoginRequestHandler(rhf);
+
         std::thread(&Communicator::handleNewClient, this, clientSocket).detach();
+
     }
 }
