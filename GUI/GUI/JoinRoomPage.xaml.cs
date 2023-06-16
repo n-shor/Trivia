@@ -40,15 +40,18 @@ namespace GUI
         SolidColorBrush darkRedBrush = new SolidColorBrush(Colors.DarkRed);
         SolidColorBrush darkGrayBrush = new SolidColorBrush(Colors.DarkGray);
 
+        CancellationTokenSource cts;
         public JoinRoomPage()
         {
             InitializeComponent();
             LoadRooms();
 
+            cts = new CancellationTokenSource();
+
             // Start the task to keep updating the rooms list
             Task.Run(async () =>
             {
-                while (true)
+                while (!cts.IsCancellationRequested)
                 {
                     await MainThread.InvokeOnMainThreadAsync(() =>
                     {
@@ -59,6 +62,12 @@ namespace GUI
                     await Task.Delay(3000);
                 }
             });
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            cts.Cancel();
         }
 
         private void LoadRooms()

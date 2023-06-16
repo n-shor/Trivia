@@ -83,12 +83,14 @@ namespace GUI
             StartUpdating();
         }
 
+        CancellationTokenSource cts;
         private void StartUpdating()
         {
+            cts = new CancellationTokenSource();
             // Start the task to keep updating the room data
             Task.Run(async () =>
             {
-                while (true)
+                while (!cts.IsCancellationRequested)
                 {
                     await MainThread.InvokeOnMainThreadAsync(() =>
                     {
@@ -99,6 +101,13 @@ namespace GUI
                     await Task.Delay(3000);
                 }
             });
+
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            cts.Cancel();
         }
 
         private async void updateRoomData()

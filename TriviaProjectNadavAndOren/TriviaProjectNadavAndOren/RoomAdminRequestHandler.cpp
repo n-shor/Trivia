@@ -46,9 +46,24 @@ RequestResult RoomAdminRequestHandler::startGame(RequestInfo)
 	return r;
 }
 
+template <typename T>
+bool contains(std::vector<T> vec, const T& elem)
+{
+	bool result = false;
+	if (find(vec.begin(), vec.end(), elem) != vec.end())
+	{
+		result = true;
+	}
+	return result;
+}
+
 RequestResult RoomAdminRequestHandler::getRoomsState(RequestInfo)
 {
 	try {
+		if (!contains(m_roomManager.getRoom(m_room.getRoomData().id).getAllUsers(), m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().adminName))
+		{
+			throw 69;
+		}
 		RequestResult r;
 		GetRoomStateResponse grsr;
 		grsr.answerTimeout = m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().timePerQuestion;
@@ -57,7 +72,7 @@ RequestResult RoomAdminRequestHandler::getRoomsState(RequestInfo)
 		grsr.players = m_roomManager.getRoom(m_room.getRoomData().id).getAllUsers();
 		grsr.status = getRoomsStateRes;
 		r.response = JsonResponsePacketSerializer::serializeResponse(grsr);
-		r.newHandler = m_handlerFactory.createRoomMemberRequestHandler(m_user, m_roomManager.getRoom(m_room.getRoomData().id));
+		r.newHandler = m_handlerFactory.createRoomAdminRequestHandler(m_user, m_roomManager.getRoom(m_room.getRoomData().id));
 		
 		return r;
 	}

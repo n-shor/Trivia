@@ -17,9 +17,24 @@ RequestResult RoomMemberRequestHandler::leaveRoom(RequestInfo)
 	return r;
 }
 
+template <typename T>
+bool contains(std::vector<T> vec, const T& elem)
+{
+	bool result = false;
+	if (find(vec.begin(), vec.end(), elem) != vec.end())
+	{
+		result = true;
+	}
+	return result;
+}
+
 RequestResult RoomMemberRequestHandler::getRoomsState(RequestInfo)
 {
 	try{
+		if (!contains(m_roomManager.getRoom(m_room.getRoomData().id).getAllUsers(), m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().adminName))
+		{
+			throw 69;
+		}
 		RequestResult r;
 		GetRoomStateResponse grsr;
 		grsr.answerTimeout = m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().timePerQuestion;
