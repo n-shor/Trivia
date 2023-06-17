@@ -1,6 +1,7 @@
 #include "LoginManager.h"
 #include "LoggedUser.h"
 #include <mutex>
+#include <map>
 
 std::unique_ptr<IDatabase> LoginManager::m_database = nullptr;
 std::mutex LoginManager::m_database_mutex;
@@ -24,11 +25,27 @@ int LoginManager::signup(std::string username, std::string password, std::string
     return UserAlreadyExists;
 }
 
+bool containsUser(std::vector<LoggedUser>& LoggedUsers, std::string& user)
+{
+    for (int i = 0; i < LoggedUsers.size(); i++)
+    {
+        if (LoggedUsers[i].getUsername() == user)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 int LoginManager::login(std::string username, std::string password)
 {
     std::lock_guard<std::mutex> lock(m_database_mutex);
     if (m_database->doesUserExist(username) && m_database->doesPasswordMatch(username, password))
     {
+        if (containsUser(m_LoggedUsers, username))
+        {
+            return AlreadyLoggedIn;
+        }
         m_LoggedUsers.push_back(LoggedUser(username));
         return LoggedIn;
     }
