@@ -2,6 +2,8 @@
 #define PORT 8080
 #define TEMP_STATUS_VAL 69
 
+RequestHandlerFactory rhf;
+
 void Communicator::bindAndListen()
 {
     // bind the server socket to a port
@@ -99,6 +101,13 @@ void Communicator::handleNewClient(SOCKET s)
     }
     catch (std::runtime_error e)
     {
+        for (auto it = rhf.getLoginManager().m_loggedUsers.begin(); it != rhf.getLoginManager().m_loggedUsers.end(); ++it)
+        {
+            if (it->getUsername() == ) //!!!!!HERE!!!!!//
+            {
+                m_LoggedUsers.erase(it); 
+            }
+        }
         std::cout << e.what() << std::endl;
     }
 
@@ -135,7 +144,6 @@ void Communicator::startHandleRequests()
         std::cout << "Accepted client connection" << std::endl;
 
         // handle the client connection in a separate thread
-        RequestHandlerFactory rhf;
         m_clients[clientSocket] = new LoginRequestHandler(rhf);
 
         std::thread(&Communicator::handleNewClient, this, clientSocket).detach();

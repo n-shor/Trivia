@@ -21,6 +21,7 @@ RequestResult MenuRequestHandler::handleRequest(const RequestInfo& requestInfo)
 	case GetStatistics:
 		return getPersonalStats(requestInfo);
 	case Logout:
+		m_handlerFactory.getLoginManager().logout(); //!!!!!HERE!!!!!//
 		return signout(requestInfo);
 	case GetHighScore:
 		return getHighScore(requestInfo);

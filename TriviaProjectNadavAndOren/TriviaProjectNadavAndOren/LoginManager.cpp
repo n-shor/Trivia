@@ -20,6 +20,7 @@ int LoginManager::signup(std::string username, std::string password, std::string
     std::lock_guard<std::mutex> lock(m_database_mutex);
     if (!m_database->doesUserExist(username)) {
         m_database->addNewUser(username, password, email);
+        m_loggedUsers.push_back(LoggedUser(username));
         return SignedUp;
     }
     return UserAlreadyExists;
@@ -42,11 +43,11 @@ int LoginManager::login(std::string username, std::string password)
     std::lock_guard<std::mutex> lock(m_database_mutex);
     if (m_database->doesUserExist(username) && m_database->doesPasswordMatch(username, password))
     {
-        if (containsUser(m_LoggedUsers, username))
+        if (containsUser(m_loggedUsers, username))
         {
             return AlreadyLoggedIn;
         }
-        m_LoggedUsers.push_back(LoggedUser(username));
+        m_loggedUsers.push_back(LoggedUser(username));
         return LoggedIn;
     }
     return FailedLogin;
@@ -55,11 +56,11 @@ int LoginManager::login(std::string username, std::string password)
 int LoginManager::logout(std::string username)
 {
     std::lock_guard<std::mutex> lock(m_database_mutex);
-    for (auto it = m_LoggedUsers.begin(); it != m_LoggedUsers.end(); ++it)
+    for (auto it = m_loggedUsers.begin(); it != m_loggedUsers.end(); ++it)
     {
         if (it->getUsername() == username)
         {
-            m_LoggedUsers.erase(it);
+            m_loggedUsers.erase(it);
             return LoggedOut;
         }
     }
