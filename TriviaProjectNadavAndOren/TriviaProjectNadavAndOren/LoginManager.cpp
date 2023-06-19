@@ -3,8 +3,9 @@
 #include <mutex>
 #include <map>
 
-std::unique_ptr<IDatabase> LoginManager::m_database = nullptr;
+std::unique_ptr<IDatabase> LoginManager::m_database;
 std::mutex LoginManager::m_database_mutex;
+std::vector<LoggedUser> LoginManager::m_loggedUsers;
 
 LoginManager::LoginManager()
 {

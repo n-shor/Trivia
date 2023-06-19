@@ -15,7 +15,6 @@ private:
     Room m_room;
     RoomManager& m_roomManager;
     LoggedUser m_user;
-    RequestHandlerFactory& m_handlerFactory;
 
     bool isRequestRelevant(const RequestInfo& requestInfo) override;
 
@@ -24,6 +23,6 @@ private:
     RequestResult getRoomsState(RequestInfo);
 
 public:
-    RoomAdminRequestHandler(std::string username, RequestHandlerFactory& rhf, Room room);
+    RoomAdminRequestHandler(std::string username, Room room);
     RequestResult handleRequest(const RequestInfo& requestInfo) override;
 };

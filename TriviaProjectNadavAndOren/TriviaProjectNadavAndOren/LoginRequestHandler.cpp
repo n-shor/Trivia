@@ -1,11 +1,6 @@
 #include "LoginRequestHandler.h"
 #include "RequestHandlerFactory.h"
 
-LoginRequestHandler::LoginRequestHandler(RequestHandlerFactory& rhf) : m_handlerFactory(rhf)
-{
-}
-
-
 bool LoginRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
 {
     return requestInfo.messageCode == LOGIN_CODE
@@ -38,7 +33,7 @@ RequestResult LoginRequestHandler::handleRequest(const RequestInfo& requestInfo)
     ErrorResponse e;
     e.message = "Irrelevant message";
     r.response = JsonResponsePacketSerializer::serializeResponse(e);
-    r.newHandler = m_handlerFactory.createLoginRequestHandler();
+    r.newHandler = RequestHandlerFactory::getInstance().createLoginRequestHandler();
     return r;
 }
 
@@ -49,15 +44,15 @@ RequestResult LoginRequestHandler::login(const RequestInfo& requestInfo)
     LoginRequest loginRequest = JsonRequestPacketDeserializer::deserializeLoginRequest(requestInfo);
     RequestResult r;
     LoginResponse l;
-    l.status = m_handlerFactory.getLoginManager().login(loginRequest.username, loginRequest.password);
+    l.status = RequestHandlerFactory::getInstance().getLoginManager().login(loginRequest.username, loginRequest.password);
     r.response = JsonResponsePacketSerializer::serializeResponse(l);
     if (l.status == LoggedIn)
     {
-        r.newHandler = (IRequestHandler*)m_handlerFactory.createMenuRequestHandler(loginRequest.username);
+        r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(loginRequest.username);
     }
     else
     {
-        r.newHandler = (IRequestHandler*)m_handlerFactory.createLoginRequestHandler();
+        r.newHandler = RequestHandlerFactory::getInstance().createLoginRequestHandler();
     }
     return r;
 }
@@ -67,15 +62,15 @@ RequestResult LoginRequestHandler::signup(const RequestInfo& requestInfo)
     SignupRequest signupRequest = JsonRequestPacketDeserializer::deserializeSignUpRequest(requestInfo);
     RequestResult r;
     SignupResponse l;
-    l.status = m_handlerFactory.getLoginManager().signup(signupRequest.username, signupRequest.password, signupRequest.email);
+    l.status = RequestHandlerFactory::getInstance().getLoginManager().signup(signupRequest.username, signupRequest.password, signupRequest.email);
     r.response = JsonResponsePacketSerializer::serializeResponse(l);
     if (l.status == SignedUp)
     {
-        r.newHandler = (IRequestHandler*)m_handlerFactory.createMenuRequestHandler(signupRequest.username);
+        r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(signupRequest.username);
     }
     else
     {
-        r.newHandler = (IRequestHandler*)m_handlerFactory.createLoginRequestHandler();
+        r.newHandler = RequestHandlerFactory::getInstance().createLoginRequestHandler();
     }
     return r;
 }

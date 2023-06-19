@@ -2,8 +2,6 @@
 #define PORT 8080
 #define TEMP_STATUS_VAL 69
 
-RequestHandlerFactory rhf;
-
 void Communicator::bindAndListen()
 {
     // bind the server socket to a port
@@ -92,20 +90,20 @@ void Communicator::handleNewClient(SOCKET s)
                 // Process the received JSON message
                 RequestResult reqRes = m_clients[s]->handleRequest(ri);
                 std::vector<unsigned char> res = reqRes.response;
-                m_clients[s] = reqRes.newHandler;
+                m_clients[s] = std::move(reqRes.newHandler);
                 std::string msg(res.begin(), res.end());
                 std::cout << msg.substr(5) << std::endl; //printing the message without the bytes at the start
                 send(s, msg.c_str(), msg.size(), 0);
             }
         }
     }
-    catch (std::runtime_error e)
+    catch (const std::runtime_error& e)
     {
-        for (auto it = rhf.getLoginManager().m_loggedUsers.begin(); it != rhf.getLoginManager().m_loggedUsers.end(); ++it)
+        for (auto it = RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.begin(); it != RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.end(); ++it)
         {
-            if (it->getUsername() == ) //!!!!!HERE!!!!!//
+            //if (it->getUsername() == ) //!!!!!HERE!!!!!//
             {
-                m_LoggedUsers.erase(it); 
+            //    RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.erase(it);
             }
         }
         std::cout << e.what() << std::endl;
@@ -144,7 +142,7 @@ void Communicator::startHandleRequests()
         std::cout << "Accepted client connection" << std::endl;
 
         // handle the client connection in a separate thread
-        m_clients[clientSocket] = new LoginRequestHandler(rhf);
+        m_clients[clientSocket] = std::make_unique<LoginRequestHandler>();
 
         std::thread(&Communicator::handleNewClient, this, clientSocket).detach();
 

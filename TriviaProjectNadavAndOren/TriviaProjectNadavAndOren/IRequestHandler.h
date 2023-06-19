@@ -64,7 +64,7 @@ struct JoinRoomRequest
 struct RequestResult
 {
     std::vector<unsigned char> response;
-    IRequestHandler* newHandler;
+    std::unique_ptr<IRequestHandler> newHandler;
 };
 
 struct GetPlayesInRoomResponse

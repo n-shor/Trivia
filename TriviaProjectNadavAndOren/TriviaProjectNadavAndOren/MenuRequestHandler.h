@@ -11,7 +11,6 @@ class MenuRequestHandler : public IRequestHandler
 {
 private:
     LoggedUser m_user;
-    RequestHandlerFactory& m_handlerFactory;
 
     bool isRequestRelevant(const RequestInfo& requestInfo) override;
 
@@ -24,6 +23,6 @@ private:
     RequestResult createRoom(RequestInfo);
 
 public:
-    MenuRequestHandler(std::string username, RequestHandlerFactory& rhf, RoomManager& rm);
+    MenuRequestHandler(std::string username);
     RequestResult handleRequest(const RequestInfo& requestInfo) override;
 };

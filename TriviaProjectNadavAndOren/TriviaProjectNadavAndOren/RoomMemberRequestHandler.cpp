@@ -12,7 +12,7 @@ RequestResult RoomMemberRequestHandler::leaveRoom(RequestInfo)
 	RequestResult r;
 	LeaveRoomResponse lrr;
 	lrr.status = leaveRoomSuccessful;
-	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+	r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
 	r.response = JsonResponsePacketSerializer::serializeResponse(lrr);
 	return r;
 }
@@ -52,7 +52,7 @@ RequestResult RoomMemberRequestHandler::getRoomsState(RequestInfo)
 
 		}
 		else {
-			r.newHandler = m_handlerFactory.createRoomMemberRequestHandler(m_user, m_roomManager.getRoom(m_room.getRoomData().id));
+			r.newHandler = RequestHandlerFactory::getInstance().createRoomMemberRequestHandler(m_user, m_roomManager.getRoom(m_room.getRoomData().id));
 		}
 			r.response = JsonResponsePacketSerializer::serializeResponse(grsr);
 		return r;
@@ -63,12 +63,12 @@ RequestResult RoomMemberRequestHandler::getRoomsState(RequestInfo)
 		ErrorResponse e;
 		e.message = "room closed";
 		r.response = JsonResponsePacketSerializer::serializeResponse(e);
-		r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+		r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
 		return r;
 	}
 }
 
-RoomMemberRequestHandler::RoomMemberRequestHandler(std::string username, RequestHandlerFactory& rhf, Room room) : m_room(room), m_user(username), m_handlerFactory(rhf), m_roomManager(rhf.getRoomManager())
+RoomMemberRequestHandler::RoomMemberRequestHandler(std::string username, Room room) : m_room(room), m_user(username), m_roomManager(RequestHandlerFactory::getInstance().getRoomManager())
 {
 }
 
@@ -88,6 +88,6 @@ RequestResult RoomMemberRequestHandler::handleRequest(const RequestInfo& request
 	ErrorResponse e;
 	e.message = "irrelevant message";
 	r.response = JsonResponsePacketSerializer::serializeResponse(e);
-	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+	r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
 	return r;
 }

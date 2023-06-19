@@ -4,18 +4,20 @@
 #include "RoomAdminRequestHandler.h"
 #include "RoomMemberRequestHandler.h"
 
+std::unique_ptr<RequestHandlerFactory> RequestHandlerFactory::instance;
+
 RequestHandlerFactory::RequestHandlerFactory() : m_StatisticsManager()
 {
 }
 
-IRequestHandler* RequestHandlerFactory::createLoginRequestHandler()
+std::unique_ptr<IRequestHandler> RequestHandlerFactory::createLoginRequestHandler()
 {
-    return new LoginRequestHandler(*this);
+    return std::make_unique<LoginRequestHandler>();
 }
 
-IRequestHandler* RequestHandlerFactory::createMenuRequestHandler(std::string username)
+std::unique_ptr<IRequestHandler> RequestHandlerFactory::createMenuRequestHandler(std::string username)
 {
-    return new MenuRequestHandler(username, *this, this->m_roomManager);
+    return std::make_unique<MenuRequestHandler>(username);
 }
 
 LoginManager& RequestHandlerFactory::getLoginManager()
@@ -33,12 +35,12 @@ RoomManager& RequestHandlerFactory::getRoomManager()
     return m_roomManager;
 }
 
-IRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(LoggedUser lu, Room r)
+std::unique_ptr<IRequestHandler> RequestHandlerFactory::createRoomAdminRequestHandler(LoggedUser lu, Room r)
 {
-    return new RoomAdminRequestHandler(lu.getUsername(), *this, r);
+    return std::make_unique<RoomAdminRequestHandler>(lu.getUsername(), r);
 }
 
-IRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler(LoggedUser lu, Room r)
+std::unique_ptr<IRequestHandler> RequestHandlerFactory::createRoomMemberRequestHandler(LoggedUser lu, Room r)
 {
-    return new RoomMemberRequestHandler(lu.getUsername(), *this, r);
+    return std::make_unique<RoomMemberRequestHandler>(lu.getUsername(), r);
 }

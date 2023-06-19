@@ -1,9 +1,8 @@
 #include "MenuRequestHandler.h"
 #include "RequestHandlerFactory.h"
 
-MenuRequestHandler::MenuRequestHandler(std::string username, RequestHandlerFactory& rhf, RoomManager& rm) : m_user(username), m_handlerFactory(rhf)
+MenuRequestHandler::MenuRequestHandler(std::string username) : m_user(username)
 {
-	//m_user = LoggedUser(username);
 }
 
 RequestResult MenuRequestHandler::handleRequest(const RequestInfo& requestInfo)
@@ -21,7 +20,7 @@ RequestResult MenuRequestHandler::handleRequest(const RequestInfo& requestInfo)
 	case GetStatistics:
 		return getPersonalStats(requestInfo);
 	case Logout:
-		m_handlerFactory.getLoginManager().logout(); //!!!!!HERE!!!!!//
+		//RequestHandlerFactory::getInstance().getLoginManager().logout(); //!!!!!HERE!!!!!//
 		return signout(requestInfo);
 	case GetHighScore:
 		return getHighScore(requestInfo);
@@ -31,7 +30,7 @@ RequestResult MenuRequestHandler::handleRequest(const RequestInfo& requestInfo)
 	ErrorResponse e;
 	e.message = "irrelevant message";
 	r.response = JsonResponsePacketSerializer::serializeResponse(e);
-	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+	r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
 	return r;
 }
 
@@ -45,7 +44,7 @@ RequestResult MenuRequestHandler::signout(RequestInfo)
 	RequestResult r;
 	LogoutResponse lr;
 	lr.status = signedOut;
-	r.newHandler = m_handlerFactory.createLoginRequestHandler();
+	r.newHandler = RequestHandlerFactory::getInstance().createLoginRequestHandler();
 	r.response = JsonResponsePacketSerializer::serializeResponse(lr);
 	return r;
 }
@@ -54,9 +53,9 @@ RequestResult MenuRequestHandler::getRooms(RequestInfo)
 {
 	RequestResult r;
 	GetRoomsResponse grr;
-	grr.rooms = m_handlerFactory.getRoomManager().getRooms();
+	grr.rooms = RequestHandlerFactory::getInstance().getRoomManager().getRooms();
 	grr.status = GetRoomsSuccessful;
-	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+	r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
 	r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	return r;
 }
@@ -66,8 +65,8 @@ RequestResult MenuRequestHandler::getPlayersInRoom(RequestInfo ri)
 	GetPlayersInRoomRequest gpir = JsonRequestPacketDeserializer::deserializeGetPlayersRequest(ri);
 	RequestResult r;
 	GetPlayesInRoomResponse grr;
-	grr.players = m_handlerFactory.getRoomManager().getRoom(gpir.roomId).getAllUsers();
-	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+	grr.players = RequestHandlerFactory::getInstance().getRoomManager().getRoom(gpir.roomId).getAllUsers();
+	r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
 	r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	return r;
 }
@@ -76,9 +75,9 @@ RequestResult MenuRequestHandler::getPersonalStats(RequestInfo)
 {
 	RequestResult r;
 	getPersonalStatsResponse grr;
-	grr.statistics = m_handlerFactory.getStatisticsManager().getUserStatistics(m_user.getUsername());
+	grr.statistics = RequestHandlerFactory::getInstance().getStatisticsManager().getUserStatistics(m_user.getUsername());
 	grr.status = GetPersonalStatsSuccessful;
-	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+	r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
 	r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	return r;
 }
@@ -87,9 +86,9 @@ RequestResult MenuRequestHandler::getHighScore(RequestInfo)
 {
 	RequestResult r;
 	getHighScoreResponse grr;
-	grr.statistics = m_handlerFactory.getStatisticsManager().getHighScore();
+	grr.statistics = RequestHandlerFactory::getInstance().getStatisticsManager().getHighScore();
 	grr.status = GetHighScoreSuccessful;
-	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+	r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
 	r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	return r;
 }
@@ -99,22 +98,22 @@ RequestResult MenuRequestHandler::joinRoom(RequestInfo ri)
 	JoinRoomRequest gpir = JsonRequestPacketDeserializer::deserializeJoinRoomRequest(ri);
 	RequestResult r;
 	JoinRoomResponse grr;
-	if (m_handlerFactory.getRoomManager().getRoomState(gpir.roomId) == isActive ||
-		m_handlerFactory.getRoomManager().getRoom(gpir.roomId).getRoomData().currentPlayers == 
-		m_handlerFactory.getRoomManager().getRoom(gpir.roomId).getRoomData().maxPlayers) //checking if the room is active or full
+	if (RequestHandlerFactory::getInstance().getRoomManager().getRoomState(gpir.roomId) == isActive ||
+		RequestHandlerFactory::getInstance().getRoomManager().getRoom(gpir.roomId).getRoomData().currentPlayers == 
+		RequestHandlerFactory::getInstance().getRoomManager().getRoom(gpir.roomId).getRoomData().maxPlayers) //checking if the room is active or full
 	{
-		r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+		r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
 		grr.status = joinRoomUnSuccessful;
 		r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	}
 
 	else
 	{
-		std::lock_guard<std::mutex> lock(m_handlerFactory.getRoomManager().m_roomsMutex);
+		std::lock_guard<std::mutex> lock(RequestHandlerFactory::getInstance().getRoomManager().m_roomsMutex);
 
-		m_handlerFactory.getRoomManager().getRoom(gpir.roomId).addUser(m_user);
+		RequestHandlerFactory::getInstance().getRoomManager().getRoom(gpir.roomId).addUser(m_user);
 		grr.status = joinRoomSuccessful;
-		r.newHandler = m_handlerFactory.createRoomMemberRequestHandler(m_user, m_handlerFactory.getRoomManager().getRoom(gpir.roomId));
+		r.newHandler = RequestHandlerFactory::getInstance().createRoomMemberRequestHandler(m_user, RequestHandlerFactory::getInstance().getRoomManager().getRoom(gpir.roomId));
 		r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	}
 
@@ -138,21 +137,21 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo ri)
 
 	unsigned int max = 0;
 
-	for (int i = 0; i < m_handlerFactory.getRoomManager().getRooms().size(); i++)
+	for (int i = 0; i < RequestHandlerFactory::getInstance().getRoomManager().getRooms().size(); i++)
 	{
-		if (m_handlerFactory.getRoomManager().getRooms()[i].id > max)
+		if (RequestHandlerFactory::getInstance().getRoomManager().getRooms()[i].id > max)
 		{
-			max = m_handlerFactory.getRoomManager().getRooms()[i].id;
+			max = RequestHandlerFactory::getInstance().getRoomManager().getRooms()[i].id;
 		}
 	}
 
 	rd.id = max + 1;
 
-	m_handlerFactory.getRoomManager().createRoom(rd, m_user);
+	RequestHandlerFactory::getInstance().getRoomManager().createRoom(rd, m_user);
 	grr.status = CreateRoomSuccessful;
 	grr.roomId = rd.id;
 	grr.adminName = m_user.getUsername();
-	r.newHandler = m_handlerFactory.createRoomAdminRequestHandler(m_user, m_handlerFactory.getRoomManager().getRoom(rd.id));
+	r.newHandler = RequestHandlerFactory::getInstance().createRoomAdminRequestHandler(m_user, RequestHandlerFactory::getInstance().getRoomManager().getRoom(rd.id));
 	r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	return r;
 }
