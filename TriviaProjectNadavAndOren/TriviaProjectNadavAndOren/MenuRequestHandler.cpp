@@ -134,18 +134,8 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo ri)
 	rd.adminName = m_user.getUsername();
 	rd.numOfQuestionsInGame = gpir.questionCount;
 	rd.timePerQuestion = gpir.answerTimeout;
-
-	unsigned int max = 0;
-
-	for (int i = 0; i < RequestHandlerFactory::getInstance().getRoomManager().getRooms().size(); i++)
-	{
-		if (RequestHandlerFactory::getInstance().getRoomManager().getRooms()[i].id > max)
-		{
-			max = RequestHandlerFactory::getInstance().getRoomManager().getRooms()[i].id;
-		}
-	}
-
-	rd.id = max + 1;
+	RequestHandlerFactory::getInstance().getRoomManager().currId++;
+	rd.id = RequestHandlerFactory::getInstance().getRoomManager().currId;
 
 	RequestHandlerFactory::getInstance().getRoomManager().createRoom(rd, m_user);
 	grr.status = CreateRoomSuccessful;

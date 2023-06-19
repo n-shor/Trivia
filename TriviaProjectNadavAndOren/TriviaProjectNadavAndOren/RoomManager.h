@@ -14,4 +14,5 @@ public:
 	std::vector<RoomData> getRooms();
 	Room& getRoom(int ID);
 	std::mutex m_roomsMutex;
+	static int currId;
 };

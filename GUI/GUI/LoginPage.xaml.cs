@@ -45,7 +45,7 @@ namespace GUI
                 if(json.status == (int)Statuses.AlreadyLoggedIn)
                 {
                     //if account is already logged in
-                    DisplayAlert("Login Failed", "The account you are attempting to log in as is already logged in", "OK");
+                    DisplayAlert("Login Failed", "The account you are attempting to log in as is already logged in.", "OK");
                 }
                 else
                 {

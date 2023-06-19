@@ -97,6 +97,12 @@ namespace GUI
                 roomFrame.GestureRecognizers.Add(tapGesture);
 
                 RoomsStackLayout.Children.Add(roomFrame);
+
+                // Re-select the previously selected room if it still exists
+                if (_selectedRoom != null && room.id == _selectedRoom.id)
+                {
+                    OnRoomSelected(room, roomFrame);
+                }
             }
         }
 

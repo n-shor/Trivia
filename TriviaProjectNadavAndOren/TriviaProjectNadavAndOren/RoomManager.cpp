@@ -2,6 +2,7 @@
 #include <iostream>
 
 std::map<unsigned int, Room> RoomManager::m_rooms;
+int RoomManager::currId = 0;
 
 void RoomManager::createRoom(RoomData rd, LoggedUser lu)
 {

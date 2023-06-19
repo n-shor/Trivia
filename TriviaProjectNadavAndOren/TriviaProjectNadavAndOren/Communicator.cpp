@@ -1,6 +1,5 @@
 #include "Communicator.h"
 #define PORT 8080
-#define TEMP_STATUS_VAL 69
 
 void Communicator::bindAndListen()
 {
