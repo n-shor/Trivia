@@ -2,19 +2,40 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using Microsoft.Maui.Graphics;
+using Microsoft.Maui.Controls;
+using System.Globalization;
+using System.Threading.Tasks;
 
 namespace GUI
 {
-    public class User
+    public class BoolToColorConverter : IValueConverter
     {
-        public string Username { get; set; }
-
-        public override string ToString()
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return Username;
+            if (value is bool isCurrentUser && isCurrentUser)
+            {
+                return Colors.Red;
+            }
+            else
+            {
+                return Colors.White;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 
+    public class User
+    {
+        public string Username { get; set; }
+        public Color TextColor { get; set; }
+
+        public override string ToString() => Username;
+    }
 
     public enum OriginPage
     {
@@ -26,6 +47,12 @@ namespace GUI
     {
         private RoomData _currentRoom;
         private OriginPage _originPage;
+        private string _currentUser;
+
+        // New properties for GetRoomStateResponse
+        private bool _hasGameBegun;
+        private int _questionCount;
+        private int _answerTimeout;
 
         public RoomPage(RoomData room, OriginPage originPage)
         {
@@ -33,60 +60,174 @@ namespace GUI
 
             _currentRoom = room;
             _originPage = originPage;
+            _currentUser = ClientSocket.username;
 
             RoomNameLabel.Text += _currentRoom.name;
             AdminNameLabel.Text += _currentRoom.adminName;
-            
-            // Call updateUserList to populate the user list
-            updateUserList();
+
+            if (_currentUser == _currentRoom.adminName)
+            {
+                AdminNameLabel.TextColor = Colors.Red;
+                StartGameButton.IsVisible = true;
+                CloseRoomButton.IsVisible = true;
+                LeaveRoomButton.IsVisible = false;
+            }
+            else
+            {
+                LeaveRoomButton.IsVisible = true;
+                StartGameButton.IsVisible = false;
+                CloseRoomButton.IsVisible = false;
+            }
+
+            // Start the task to keep updating the room data
+            StartUpdating();
         }
 
-
-        private void updateUserList()
+        CancellationTokenSource cts;
+        private void StartUpdating()
         {
-            // Create a request to get the players in the room
-            var request = new GetPlayersInRoomRequest { roomId = _currentRoom.id };
+            cts = new CancellationTokenSource();
+            // Start the task to keep updating the room data
+            Task.Run(async () =>
+            {
+                while (!cts.IsCancellationRequested)
+                {
+                    await MainThread.InvokeOnMainThreadAsync(() =>
+                    {
+                        updateRoomData();
+                        return Task.CompletedTask;
+                    });
 
-            // Serialize the request to JSON
+                    await Task.Delay(3000);
+                }
+            });
+
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            cts.Cancel();
+        }
+
+        private async void updateRoomData()
+        {
+            var request = new GetPlayersInRoomRequest { roomId = _currentRoom.id };
             var jsonString = JsonSerializer.Serialize(request);
 
-            // Send the request to the server
             Serielizer s = new Serielizer();
-            s.sendMessage(ClientSocket.sock, (int)2, jsonString);
+            s.sendMessage(ClientSocket.sock, 1, jsonString);
 
-            // Receive and deserialize the response
             dynamic data = Deserielizer.getResponse(ClientSocket.sock);
-            GetPlayesInRoomResponse response = JsonSerializer.Deserialize<GetPlayesInRoomResponse>(data.jsonData);
 
-            // Populate the user list, excluding the admin
+            // Attempt to deserialize to ErrorResponse and check for a message property
+            try
+            {
+                ErrorResponse errorResponse = JsonSerializer.Deserialize<ErrorResponse>(data.jsonData);
+
+                // If the error message indicates the room is closed, handle it accordingly
+                if (errorResponse.message == "room closed")
+                {
+                    // Handle room closing
+                    await MainThread.InvokeOnMainThreadAsync(async () =>
+                    {
+                        await Navigation.PushAsync(new MainMenuPage());
+                        await DisplayAlert("Room Closed", "The room has been closed by the admin.", "OK");
+                    });
+                    return;
+                }
+            }
+            catch (JsonException)
+            {
+                // If deserialization to ErrorResponse failed, it means it's not an ErrorResponse
+            }
+
+            GetRoomStateResponse response = JsonSerializer.Deserialize<GetRoomStateResponse>(data.jsonData);
+
             List<User> users = new List<User>();
             foreach (var username in response.players)
             {
-                if (username != _currentRoom.adminName)  // Exclude the admin
+                if (username != _currentRoom.adminName)
                 {
-                    users.Add(new User { Username = username });
+                    users.Add(new User
+                    {
+                        Username = username,
+                        TextColor = username == _currentUser ? Colors.Red : Colors.White
+                    });
                 }
             }
 
-            // Update the ListView
-            UsersListView.ItemsSource = users;
-        }
-
-        private void OnRefreshButtonClicked(object sender, EventArgs e)
-        {
-            updateUserList();
-        }
-
-        private void OnBackButtonClicked(object sender, EventArgs e)
-        {
-            switch (_originPage)
+            await MainThread.InvokeOnMainThreadAsync(() =>
             {
-                case OriginPage.CreateRoomPage:
-                    Navigation.PushAsync(new CreateRoomPage());
-                    break;
-                case OriginPage.JoinRoomPage:
-                    Navigation.PushAsync(new JoinRoomPage());
-                    break;
+                UsersListView.ItemsSource = users;
+            });
+
+            // Update the new properties
+            _hasGameBegun = response.hasGameBegun;
+            _questionCount = response.questionCount;
+            _answerTimeout = response.answerTimeout;
+
+            if (_hasGameBegun)
+            {
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    await DisplayAlert("Game Started", "The admin has started the game.", "OK");
+                });
+                //Navigation.PushAsync(new GamePage());
+            }
+        }
+
+        private async void OnStartGameButtonClicked(object sender, EventArgs e)
+        {
+            Serielizer s = new Serielizer();
+            s.sendMessage(ClientSocket.sock, 2, "");
+
+            dynamic data = Deserielizer.getResponse(ClientSocket.sock);
+            StartGameResponse response = JsonSerializer.Deserialize<StartGameResponse>(data.jsonData);
+
+            if (response.status == 1)
+            {
+                //Navigation.PushAsync(new GamePage());
+            }
+            else
+            {
+                await DisplayAlert("Game Start Failed", "Unable to start the game, please try again later.", "OK");
+            }
+        }
+
+        private async void OnCloseRoomButtonClicked(object sender, EventArgs e)
+        {
+            Serielizer s = new Serielizer();
+            s.sendMessage(ClientSocket.sock, 0, "");
+
+            dynamic data = Deserielizer.getResponse(ClientSocket.sock);
+            CloseRoomResponse response = JsonSerializer.Deserialize<CloseRoomResponse>(data.jsonData);
+
+            if (response.status == 0)
+            {
+                await Navigation.PushAsync(new MainMenuPage());
+            }
+            else
+            {
+                await DisplayAlert("Room Close Failed", "Unable to close the room, please try again later.", "OK");
+            }
+        }
+
+        private async void OnLeaveRoomButtonClicked(object sender, EventArgs e)
+        {
+            Serielizer s = new Serielizer();
+            s.sendMessage(ClientSocket.sock, 0, "");
+
+            dynamic data = Deserielizer.getResponse(ClientSocket.sock);
+            LeaveRoomResponse response = JsonSerializer.Deserialize<LeaveRoomResponse>(data.jsonData);
+
+            if (response.status == 0)
+            {
+                await Navigation.PushAsync(new MainMenuPage());
+            }
+            else
+            {
+                await DisplayAlert("Room Leave Failed", "Unable to leave the room, please try again later.", "OK");
             }
         }
 

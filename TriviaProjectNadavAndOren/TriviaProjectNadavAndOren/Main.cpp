@@ -2,7 +2,14 @@
 
 int main() 
 {
-	Server::getInstance().run();
-	Server::destroyInstance();
+	try
+	{
+		Server::getInstance().run();
+		Server::destroyInstance();
+	}
+	catch (std::exception e)
+	{
+		std::cout << e.what() << std::endl;
+	}
 	return 0;
 }

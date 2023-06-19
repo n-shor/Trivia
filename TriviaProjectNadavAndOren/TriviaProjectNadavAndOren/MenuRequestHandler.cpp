@@ -1,8 +1,9 @@
 #include "MenuRequestHandler.h"
+#include "RequestHandlerFactory.h"
 
 MenuRequestHandler::MenuRequestHandler(std::string username, RequestHandlerFactory& rhf, RoomManager& rm) : m_user(username), m_handlerFactory(rhf)
 {
-	m_user = LoggedUser(username);
+	//m_user = LoggedUser(username);
 }
 
 RequestResult MenuRequestHandler::handleRequest(const RequestInfo& requestInfo)
@@ -20,6 +21,7 @@ RequestResult MenuRequestHandler::handleRequest(const RequestInfo& requestInfo)
 	case GetStatistics:
 		return getPersonalStats(requestInfo);
 	case Logout:
+		m_handlerFactory.getLoginManager().logout(); //!!!!!HERE!!!!!//
 		return signout(requestInfo);
 	case GetHighScore:
 		return getHighScore(requestInfo);
@@ -112,7 +114,7 @@ RequestResult MenuRequestHandler::joinRoom(RequestInfo ri)
 
 		m_handlerFactory.getRoomManager().getRoom(gpir.roomId).addUser(m_user);
 		grr.status = joinRoomSuccessful;
-		r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+		r.newHandler = m_handlerFactory.createRoomMemberRequestHandler(m_user, m_handlerFactory.getRoomManager().getRoom(gpir.roomId));
 		r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	}
 
@@ -150,7 +152,7 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo ri)
 	grr.status = CreateRoomSuccessful;
 	grr.roomId = rd.id;
 	grr.adminName = m_user.getUsername();
-	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+	r.newHandler = m_handlerFactory.createRoomAdminRequestHandler(m_user, m_handlerFactory.getRoomManager().getRoom(rd.id));
 	r.response = JsonResponsePacketSerializer::serializeResponse(grr);
 	return r;
 }

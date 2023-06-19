@@ -61,7 +61,7 @@ public class JoinRoomRequest
     public int roomId { get; set; }
 };
 
-public class GetPlayesInRoomResponse
+public class GetPlayersInRoomResponse
 {
     public List<string> players { get; set; }
 };
@@ -83,12 +83,27 @@ public class JoinRoomResponse
     public int status { get; set; }
 };
 
+public class LeaveRoomResponse
+{
+    public int status;
+};
+
 public class CreateRoomResponse
 {
     public int status { get; set; }
     public int roomId { get; set; }
     public string adminName { get; set; }
 }
+
+public class CloseRoomResponse
+{
+    public int status;
+};
+
+public class StartGameResponse
+{
+    public int status;
+};
 
 public class GetRoomsResponse
 {
@@ -100,6 +115,16 @@ public class ErrorResponse
 {
     public string message { get; set; }
 };
+
+public class GetRoomStateResponse
+{
+    public int status { get; set; }
+    public bool hasGameBegun { get; set; }
+    public List<string> players { get; set; }
+    public int questionCount { get; set; }
+    public int answerTimeout { get; set; }
+};
+
 
 namespace GUI
 {

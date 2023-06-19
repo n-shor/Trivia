@@ -6,7 +6,7 @@ using System.Net.Sockets;
 
 namespace GUI
 {
-    enum Statuses { Error = -1, FailedLogin = 21, UserAlreadyExists = 22, LoggedIn = 11, SignedUp = 12, NoSuchLoggedUser = 23, LoggedOut = 13 };
+    enum Statuses {AlreadyLoggedIn = 17,  Error = -1, FailedLogin = 21, UserAlreadyExists = 22, LoggedIn = 11, SignedUp = 12, NoSuchLoggedUser = 23, LoggedOut = 13 };
     public partial class LoginPage : ContentPage
     {
         public LoginPage()
@@ -42,8 +42,16 @@ namespace GUI
             }
             else
             {
-                // If login failed, display an alert
-                DisplayAlert("Login Failed", "Invalid username or password", "OK");
+                if(json.status == (int)Statuses.AlreadyLoggedIn)
+                {
+                    //if account is already logged in
+                    DisplayAlert("Login Failed", "The account you are attempting to log in as is already logged in", "OK");
+                }
+                else
+                {
+                    // If login failed, display an alert
+                    DisplayAlert("Login Failed", "Invalid username or password", "OK");
+                }
             }
         }
 

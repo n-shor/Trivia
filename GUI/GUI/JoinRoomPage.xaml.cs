@@ -5,6 +5,8 @@ using System.Text.Json;
 using Microsoft.Maui.Graphics;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Maui;
 
 namespace GUI.Converters
 {
@@ -29,7 +31,6 @@ namespace GUI.Converters
     }
 }
 
-
 namespace GUI
 {
     public partial class JoinRoomPage : ContentPage
@@ -39,10 +40,34 @@ namespace GUI
         SolidColorBrush darkRedBrush = new SolidColorBrush(Colors.DarkRed);
         SolidColorBrush darkGrayBrush = new SolidColorBrush(Colors.DarkGray);
 
+        CancellationTokenSource cts;
         public JoinRoomPage()
         {
             InitializeComponent();
             LoadRooms();
+
+            cts = new CancellationTokenSource();
+
+            // Start the task to keep updating the rooms list
+            Task.Run(async () =>
+            {
+                while (!cts.IsCancellationRequested)
+                {
+                    await MainThread.InvokeOnMainThreadAsync(() =>
+                    {
+                        LoadRooms();
+                        return Task.CompletedTask;
+                    });
+
+                    await Task.Delay(3000);
+                }
+            });
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            cts.Cancel();
         }
 
         private void LoadRooms()
@@ -124,9 +149,7 @@ namespace GUI
             }
         }
 
-    
-
-    private void OnRefreshButtonClicked(object sender, EventArgs e)
+        private void OnRefreshButtonClicked(object sender, EventArgs e)
         {
             LoadRooms();
         }

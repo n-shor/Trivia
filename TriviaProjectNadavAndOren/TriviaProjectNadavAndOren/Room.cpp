@@ -25,11 +25,13 @@ void Room::addUser(LoggedUser u)
 
 void Room::removeUser(LoggedUser u)
 {
+    auto temp = m_users.begin();
     for (auto it = m_users.begin(); it != m_users.end(); it++)
     {
         if (it->getUsername() == u.getUsername())
         {
             m_users.erase(it);
+            return;
         }
     }
 }
