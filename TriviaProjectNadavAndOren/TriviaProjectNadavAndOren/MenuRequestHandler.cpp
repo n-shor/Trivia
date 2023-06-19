@@ -20,7 +20,7 @@ RequestResult MenuRequestHandler::handleRequest(const RequestInfo& requestInfo)
 	case GetStatistics:
 		return getPersonalStats(requestInfo);
 	case Logout:
-		//RequestHandlerFactory::getInstance().getLoginManager().logout(); //!!!!!HERE!!!!!//
+		RequestHandlerFactory::getInstance().getLoginManager().logout(m_user.getUsername());
 		return signout(requestInfo);
 	case GetHighScore:
 		return getHighScore(requestInfo);

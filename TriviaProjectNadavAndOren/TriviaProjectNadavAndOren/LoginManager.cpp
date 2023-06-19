@@ -57,12 +57,16 @@ int LoginManager::login(std::string username, std::string password)
 int LoginManager::logout(std::string username)
 {
     std::lock_guard<std::mutex> lock(m_database_mutex);
-    for (auto it = m_loggedUsers.begin(); it != m_loggedUsers.end(); ++it)
+    for (auto it = m_loggedUsers.begin(); it != m_loggedUsers.end();)
     {
         if (it->getUsername() == username)
         {
             m_loggedUsers.erase(it);
             return LoggedOut;
+        }
+        else
+        {
+            ++it;
         }
     }
     return NoSuchLoggedUser;

@@ -65,6 +65,7 @@ struct RequestResult
 {
     std::vector<unsigned char> response;
     std::unique_ptr<IRequestHandler> newHandler;
+    std::string username;
 };
 
 struct GetPlayesInRoomResponse

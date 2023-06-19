@@ -88,9 +88,10 @@ void Communicator::handleNewClient(SOCKET s)
                 ri.messageContent = std::vector<unsigned char>(messageData.begin(), messageData.end());
 
                 // Process the received JSON message
-                RequestResult reqRes = m_clients[s]->handleRequest(ri);
+                RequestResult reqRes = m_clients[s].second->handleRequest(ri);
                 std::vector<unsigned char> res = reqRes.response;
-                m_clients[s] = std::move(reqRes.newHandler);
+                m_clients[s].second = std::move(reqRes.newHandler);
+                m_clients[s].first = reqRes.username;
                 std::string msg(res.begin(), res.end());
                 std::cout << msg.substr(5) << std::endl; //printing the message without the bytes at the start
                 send(s, msg.c_str(), msg.size(), 0);
@@ -99,11 +100,16 @@ void Communicator::handleNewClient(SOCKET s)
     }
     catch (const std::runtime_error& e)
     {
-        for (auto it = RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.begin(); it != RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.end(); ++it)
+        for (auto it = RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.begin(); it != RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.end();)
         {
-            //if (it->getUsername() == ) //!!!!!HERE!!!!!//
+            if (it->getUsername() == m_clients[s].first)
             {
-            //    RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.erase(it);
+                RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.erase(it);
+                break;
+            }
+            else
+            {
+                ++it;
             }
         }
         std::cout << e.what() << std::endl;
@@ -142,7 +148,7 @@ void Communicator::startHandleRequests()
         std::cout << "Accepted client connection" << std::endl;
 
         // handle the client connection in a separate thread
-        m_clients[clientSocket] = std::make_unique<LoginRequestHandler>();
+        m_clients[clientSocket] = std::make_pair("", std::make_unique<LoginRequestHandler>());
 
         std::thread(&Communicator::handleNewClient, this, clientSocket).detach();
 

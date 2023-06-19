@@ -13,12 +13,16 @@ void RoomManager::createRoom(RoomData rd, LoggedUser lu)
 void RoomManager::deleteRoom(int ID)
 {
     std::lock_guard<std::mutex> lock(m_roomsMutex);
-    for (auto it = m_rooms.begin(); it != m_rooms.end(); ++it)
+    for (auto it = m_rooms.begin(); it != m_rooms.end();)
     {
         if (it->first == ID)
         {
             m_rooms.erase(it);
             return;
+        }
+        else
+        {
+            ++it;
         }
     }
 }

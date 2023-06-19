@@ -49,6 +49,7 @@ RequestResult LoginRequestHandler::login(const RequestInfo& requestInfo)
     if (l.status == LoggedIn)
     {
         r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(loginRequest.username);
+        r.username = loginRequest.username;
     }
     else
     {
@@ -67,6 +68,7 @@ RequestResult LoginRequestHandler::signup(const RequestInfo& requestInfo)
     if (l.status == SignedUp)
     {
         r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(signupRequest.username);
+        r.username = signupRequest.username;
     }
     else
     {
