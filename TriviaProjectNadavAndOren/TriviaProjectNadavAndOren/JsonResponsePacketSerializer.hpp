@@ -139,7 +139,7 @@ public:
 
     static std::vector<unsigned char> serializeResponse(const GetQuestionResponse& response)
     {
-        json j = { {"status", response.status}, {"question", response.question}, {"answers", response.answers} }; // ask for help
+        json j = { {"status", response.status}, {"question", response.question}, {"answers", response.answers} };
         return createBuffer(1, j.dump());
     }
 

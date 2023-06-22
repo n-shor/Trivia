@@ -3,9 +3,17 @@
 #include <string>
 #include <chrono>
 #include <vector>
-#include "IRequestHandler.h"
+#include "Question.h"
 
 class IRequestHandler;
+
+struct GameData
+{
+    Question currentQuestion;
+    unsigned int correctAnswerCount;
+    unsigned int wrongAnswerCount;
+    unsigned intAverageAnswerTime;
+};
 
 struct PlayerResults
 {

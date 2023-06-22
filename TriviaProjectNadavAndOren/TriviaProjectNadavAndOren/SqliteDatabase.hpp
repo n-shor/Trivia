@@ -288,5 +288,10 @@ public:
         sqlite3_finalize(stmt);
         return highScoreNames;
     }
+
+    bool submitGameStatistics(GameData gd)
+    {
+        //continue here with nadav
+    }
 };
 

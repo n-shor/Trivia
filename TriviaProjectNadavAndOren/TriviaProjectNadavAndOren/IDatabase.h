@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include "Question.hpp"
+#include "IRequestHandler.h"
 
 class IDatabase 
 {
@@ -21,5 +22,6 @@ public:
     virtual int getNumOfPlayerGames(std::string username) = 0;
     virtual int getPlayerScore(std::string username) = 0;
     virtual std::vector<std::string> getHighScores() = 0;
+    virtual bool submitGameStatistics(GameData gd) = 0;
     virtual ~IDatabase() {}
 };
