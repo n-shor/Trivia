@@ -7,6 +7,38 @@
 
 class IRequestHandler;
 
+struct PlayerResults
+{
+    std::string username;
+    unsigned int correctAnswerCount;
+    unsigned int wrongAnswerCount;
+    unsigned int averageAnswerTime;
+};
+
+struct LeaveGameResponse
+{
+    unsigned int status;
+};
+
+struct GetQuestionResponse
+{
+    unsigned int status;
+    std::string question;
+    std::map<unsigned int, std::string> answers;
+};
+
+struct SubmitAnswerResponse
+{
+    unsigned int status;
+    unsigned int correctAnswerId;
+};
+
+struct GetGameResultsResponse
+{
+    unsigned int status;
+    std::vector<PlayerResults> results;
+};
+
 struct CloseRoomResponse
 {
     unsigned int status;

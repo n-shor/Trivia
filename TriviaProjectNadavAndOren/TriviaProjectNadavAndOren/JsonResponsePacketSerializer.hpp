@@ -94,25 +94,59 @@ public:
     static std::vector<unsigned char> serializeResponse(const LeaveRoomResponse& response)
     {
         json j = { {"status", response.status} };
-        return createBuffer(1, j.dump()); //ask nadav of code
+        return createBuffer(1, j.dump());
     }
 
     static std::vector<unsigned char> serializeResponse(const GetRoomStateResponse& response)
     {
         json j = { {"status", response.status}, {"players", response.players}, {"hasGameBegun", response.hasGameBegun}, {"questionCount", response.questionCount}, {"answerTimeout", response.answerTimeout}};
-        return createBuffer(1, j.dump()); //ask nadav of code
+        return createBuffer(1, j.dump());
     }
 
     static std::vector<unsigned char> serializeResponse(const StartGameResponse& response)
     {
         json j = { {"status", response.status} };
-        return createBuffer(1, j.dump()); //ask nadav of code
+        return createBuffer(1, j.dump());
     }
 
     static std::vector<unsigned char> serializeResponse(const CloseRoomResponse& response)
     {
         json j = { {"status", response.status} };
-        return createBuffer(1, j.dump()); //ask nadav of code
+        return createBuffer(1, j.dump());
+    }
+
+    static std::vector<unsigned char> serializeResponse(const GetGameResultsResponse& response)
+    {
+        std::vector<json> r;
+        json j = { {"status", response.status} };
+
+        for (int i = 0; i < response.results.size(); i++) {
+            r.push_back(json{ {"username" , response.results[i].username},
+                              {"correctAnswerCount" , response.results[i].correctAnswerCount},
+                              {"wrongAnswerCount" , response.results[i].wrongAnswerCount},
+                              {"averageAnswerTime" , response.results[i].averageAnswerTime}
+                });
+        }
+        j["results"] = r;
+        return createBuffer(1, j.dump());
+    }
+
+    static std::vector<unsigned char> serializeResponse(const SubmitAnswerResponse& response)
+    {
+        json j = { {"status", response.status}, {"correctAnswerId", response.correctAnswerId}};
+        return createBuffer(1, j.dump());
+    }
+
+    static std::vector<unsigned char> serializeResponse(const GetQuestionResponse& response)
+    {
+        json j = { {"status", response.status}, {"question", response.question}, {"answers", response.answers} }; // ask for help
+        return createBuffer(1, j.dump());
+    }
+
+    static std::vector<unsigned char> serializeResponse(const LeaveGameResponse& response)
+    {
+        json j = { {"status", response.status} };
+        return createBuffer(1, j.dump());
     }
 
 private:
