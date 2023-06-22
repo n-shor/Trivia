@@ -48,8 +48,6 @@ namespace GUI
         private RoomData _currentRoom;
         private OriginPage _originPage;
         private string _currentUser;
-
-        // New properties for GetRoomStateResponse
         private bool _hasGameBegun;
         private int _questionCount;
         private int _answerTimeout;
@@ -79,7 +77,6 @@ namespace GUI
                 CloseRoomButton.IsVisible = false;
             }
 
-            // Start the task to keep updating the room data
             StartUpdating();
         }
 
@@ -87,7 +84,6 @@ namespace GUI
         private void StartUpdating()
         {
             cts = new CancellationTokenSource();
-            // Start the task to keep updating the room data
             Task.Run(async () =>
             {
                 while (!cts.IsCancellationRequested)
@@ -120,15 +116,12 @@ namespace GUI
 
             dynamic data = Deserielizer.getResponse(ClientSocket.sock);
 
-            // Attempt to deserialize to ErrorResponse and check for a message property
             try
             {
                 ErrorResponse errorResponse = JsonSerializer.Deserialize<ErrorResponse>(data.jsonData);
 
-                // If the error message indicates the room is closed, handle it accordingly
                 if (errorResponse.message == "room closed")
                 {
-                    // Handle room closing
                     await MainThread.InvokeOnMainThreadAsync(async () =>
                     {
                         await Navigation.PushAsync(new MainMenuPage());
@@ -139,7 +132,6 @@ namespace GUI
             }
             catch (JsonException)
             {
-                // If deserialization to ErrorResponse failed, it means it's not an ErrorResponse
             }
 
             GetRoomStateResponse response = JsonSerializer.Deserialize<GetRoomStateResponse>(data.jsonData);
@@ -162,7 +154,6 @@ namespace GUI
                 UsersListView.ItemsSource = users;
             });
 
-            // Update the new properties
             _hasGameBegun = response.hasGameBegun;
             _questionCount = response.questionCount;
             _answerTimeout = response.answerTimeout;
@@ -173,7 +164,7 @@ namespace GUI
                 {
                     await DisplayAlert("Game Started", "The admin has started the game.", "OK");
                 });
-                //Navigation.PushAsync(new GamePage());
+                await Navigation.PushAsync(new GamePage(_currentRoom.timePerQuestion, _currentRoom.numOfQuestionsInGame));
             }
         }
 
@@ -187,7 +178,7 @@ namespace GUI
 
             if (response.status == 1)
             {
-                //Navigation.PushAsync(new GamePage());
+                await Navigation.PushAsync(new GamePage(_currentRoom.timePerQuestion, _currentRoom.numOfQuestionsInGame));
             }
             else
             {
@@ -230,6 +221,5 @@ namespace GUI
                 await DisplayAlert("Room Leave Failed", "Unable to leave the room, please try again later.", "OK");
             }
         }
-
     }
 }

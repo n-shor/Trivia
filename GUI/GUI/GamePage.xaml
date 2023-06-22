@@ -1,0 +1,23 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GUI.GamePage"
+             NavigationPage.HasBackButton="False"
+             BackgroundImageSource="Resources/createRoomPageBG.jpg">
+
+	<Shell.BackButtonBehavior>
+		<BackButtonBehavior IsVisible="False" IsEnabled="False" />
+	</Shell.BackButtonBehavior>
+
+	<StackLayout Padding="20">
+		<Label x:Name="QuestionLabel" Text="Question will appear here" />
+		<Button x:Name="Option1Button" Text="Option 1" Clicked="OnOptionButtonClicked"/>
+		<Button x:Name="Option2Button" Text="Option 2" Clicked="OnOptionButtonClicked"/>
+		<Button x:Name="Option3Button" Text="Option 3" Clicked="OnOptionButtonClicked"/>
+		<Button x:Name="Option4Button" Text="Option 4" Clicked="OnOptionButtonClicked"/>
+		<Label x:Name="RemainingQuestionsLabel" Text="Remaining questions: " />
+		<Label x:Name="CorrectAnswersLabel" Text="Correct answers: " />
+		<Label x:Name="RemainingTimeLabel" Text="Time left to answer: " />
+		<Label x:Name="WaitingLabel" Text="" />
+	</StackLayout>
+
+</ContentPage>

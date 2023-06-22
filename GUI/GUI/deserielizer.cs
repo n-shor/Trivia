@@ -125,6 +125,33 @@ public class GetRoomStateResponse
     public int answerTimeout { get; set; }
 };
 
+public class Question
+{
+    public string QuestionText { get; set; }
+    public List<string> PossibleAnswers { get; set; }
+    public int CorrectAnswerId { get; set; }
+
+    public Question()
+    {
+    }
+
+    public Question(string questionText, List<string> possibleAnswers, int correctAnswerId)
+    {
+        QuestionText = questionText;
+        PossibleAnswers = possibleAnswers;
+        CorrectAnswerId = correctAnswerId;
+    }
+}
+
+public class GameData
+{
+    public Question currentQuestion { get; set; }
+    public uint correctAnswerCount { get; set; }
+    public uint wrongAnswerCount { get; set; }
+    public double averageAnswerTime { get; set; }
+}
+
+
 
 namespace GUI
 {
