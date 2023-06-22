@@ -57,4 +57,12 @@ public:
         request.roomName = j.at("roomName").get<std::string>();
         return request;
     }
+
+    static SubmitAnswerRequest deserializeSubmitAnswerRequest(const RequestInfo& requestInfo) {
+        std::string jsonString(requestInfo.messageContent.begin(), requestInfo.messageContent.end());
+        json j = json::parse(jsonString);
+        SubmitAnswerRequest request;
+        request.answerId = j.at("answerId").get<unsigned int>();
+        return request;
+    }
 };

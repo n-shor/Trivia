@@ -7,6 +7,11 @@
 
 class IRequestHandler;
 
+struct SubmitAnswerRequest
+{
+    unsigned int answerId;
+};
+
 struct GameData
 {
     Question currentQuestion;
