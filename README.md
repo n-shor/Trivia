@@ -26,6 +26,6 @@ This project includes the following bonuses:
 
 - Bonus Feature 11: [The server detects client crashes and instead of crashing itself, prints a fitting message]
 
-- Bonus Feature 12: [The client detects server crashes and instead of crashing itself, pops a fitting message box]
+- Bonus Feature 12: [The client detects server crashes and instead of crashing itself, pops a fitting message box and closes the app automatically (which was super hard to do)]
 
 
