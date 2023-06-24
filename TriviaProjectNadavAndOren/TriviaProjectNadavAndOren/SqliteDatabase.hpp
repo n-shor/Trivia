@@ -5,14 +5,19 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
-#include "Question.hpp"
+#include "Question.h"
 
 class SqliteDatabase : public IDatabase {
 private:
     sqlite3* db;
-
+    int questionCount;
 public:
     SqliteDatabase() : db(nullptr) {}
+
+    int getQuestionCount() 
+    {
+        return questionCount;
+    }
 
     bool open() override {
         if (sqlite3_open("Trivia.sqlite", &db) != SQLITE_OK) {
@@ -32,7 +37,7 @@ public:
             "OptionB TEXT NOT NULL,"
             "OptionC TEXT NOT NULL,"
             "OptionD TEXT NOT NULL,"
-            "CorrectAnswer CHAR NOT NULL);";
+            "CorrectAnswerId INT NOT NULL);";
 
         const char* sqlStatistics = "CREATE TABLE IF NOT EXISTS STATISTICS("
             "USERNAME TEXT NOT NULL,"
@@ -53,17 +58,18 @@ public:
         }
 
         std::vector<std::string> questions = {
-        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (1, 'John has 8 apples, Susan is late to her train by 23.2 seconds and the air resistance equals 83 newtons. What is the mass of the sun?', '14.5 newtons', '5.972*10^24 kg', '1.989*10^30 kg', 'Louis XV', 'C');",
-        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (2, 'Who let the dogs out?', 'who, who, who, who, who?', 'who, who, who, who, who', 'Joe Mama', 'The Baha men', 'A');",
-        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (3, 'What’s the accurate color of the famous dress?', 'white and gold', 'black and blue', 'blue and gold', 'Israeli flag colors', 'B');",
-        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (4, 'why did the chicken cross the road?', 'BOOM SCHNITZEL!', 'What is America swimsuit?', 'Chaim and Moshe live in a building with 100 floors…', 'to get to the other side', 'D');",
-        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (5, 'If 23 people are in the same room, what’s the chance that 2 people have the same birthday?', '1.2% approximately', '50% approximately', '100% EXACTLY', '0.00534% approximately', 'B');",
-        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (6, 'What is the most streamed song on spotify?', 'Shape of you by ed sheeran', 'Bohemian rhapsody by queen', 'Blinding lights by the weeknd', 'One dance by drake', 'C');",
-        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (7, 'How many US presidents were assassinated?', '4', '0', '2', '3', 'A');",
-        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (8, 'What is the country with the highest Male to Female ratio?', 'UAE', 'Qatar', 'Bahrain', 'Kuwait', 'B');",
-        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (9, 'The richest woman in the world is the _ richest person', '5th', '23rd', '104th', '11th', 'D');",
-        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (10, 'Who is the chess player that was the world champion for the most years?', 'garry kasparov', 'magnus carlsen', 'emanuel lasker', 'Bobby fischer', 'C');"
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (1, 'John has 8 apples, Susan is late to her train by 23.2 seconds and the air resistance equals 83 newtons. What is the mass of the sun?', '14.5 newtons', '5.972*10^24 kg', '1.989*10^30 kg', 'Louis XV', 2);",
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (2, 'Who let the dogs out?', 'who, who, who, who, who?', 'who, who, who, who, who', 'Joe Mama', 'The Baha men', 0);",
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (3, 'What’s the accurate color of the famous dress?', 'white and gold', 'black and blue', 'blue and gold', 'Israeli flag colors', 1);",
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (4, 'why did the chicken cross the road?', 'BOOM SCHNITZEL!', 'What is America swimsuit?', 'Chaim and Moshe live in a building with 100 floors…', 'to get to the other side', 3);",
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (5, 'If 23 people are in the same room, what’s the chance that 2 people have the same birthday?', '1.2% approximately', '50% approximately', '100% EXACTLY', '0.00534% approximately', 1);",
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (6, 'What is the most streamed song on spotify?', 'Shape of you by ed sheeran', 'Bohemian rhapsody by queen', 'Blinding lights by the weeknd', 'One dance by drake', 2);",
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (7, 'How many US presidents were assassinated?', '4', '0', '2', '3', 0);",
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (8, 'What is the country with the highest Male to Female ratio?', 'UAE', 'Qatar', 'Bahrain', 'Kuwait', 1);",
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (9, 'The richest woman in the world is the _ richest person', '5th', '23rd', '104th', '11th', 3);",
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (10, 'Who is the chess player that was the world champion for the most years?', 'garry kasparov', 'magnus carlsen', 'emanuel lasker', 'Bobby fischer', 2);"
         };
+        questionCount = 10;
 
         for (const std::string& question : questions) {
             if (sqlite3_exec(db, question.c_str(), nullptr, 0, nullptr) != SQLITE_OK) {
@@ -138,7 +144,7 @@ public:
             std::cout << "Error inserting question" << std::endl;
             return false;
         }
-
+        questionCount++;
         std::cout << "Question added successfully to the database!" << std::endl;
         return true;
     }
@@ -151,19 +157,21 @@ public:
             throw std::runtime_error("Error preparing SQL statement");
         }
 
-        Question question;
+        std::vector<std::string> ans;
+        std::string question = "";
+        int correctAnswerId = -1;
         if (sqlite3_step(stmt) == SQLITE_ROW) {
-            question.id = sqlite3_column_int(stmt, 0);
-            question.question = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-            question.optionA = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
-            question.optionB = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
-            question.optionC = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
-            question.optionD = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 5));
-            question.correctAnswer = *reinterpret_cast<const char*>(sqlite3_column_text(stmt, 6));
+            //question.id = sqlite3_column_int(stmt, 0);
+            ans.push_back(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2)));
+            ans.push_back(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3)));
+            ans.push_back(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4)));
+            ans.push_back(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 5)));
+            question = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+            correctAnswerId = std::stoi(std::to_string(*reinterpret_cast<const char*>(sqlite3_column_text(stmt, 6))));
         }
 
         sqlite3_finalize(stmt);
-        return question;
+        return Question(question, ans, correctAnswerId);
     }
 
     char getCorrectAnswer(int id) {
@@ -289,9 +297,17 @@ public:
         return highScoreNames;
     }
 
-    bool submitGameStatistics(GameData gd)
+    bool submitGameStatistics(GameData gd, std::string username)
     {
-        //continue here with nadav
+        std::string sql = "INSERT INTO STATISTICS (USERNAME, TOTAL_ANSWERS, TOTAL_GAMES, CORRECT_ANSWERS, AVERAGE_ANSWER_TIME, SCORE) VALUES ('" + username + "', '" + std::to_string(getNumOfTotalAnswers(username) + gd.correctAnswerCount+ gd.wrongAnswerCount) + "', '" + std::to_string(getNumOfPlayerGames(username) + 1) + "', '" + std::to_string(getNumOfCorrectAnswers(username) + gd.correctAnswerCount) + "', '" + std::to_string((getNumOfTotalAnswers(username) * getPlayerAverageAnswerTime(username) + (gd.correctAnswerCount) * gd.AverageAnswerTime) / (getNumOfTotalAnswers(username) + gd.correctAnswerCount)) + "', '" + std::to_string(getPlayerScore(username) + ((gd.correctAnswerCount * gd.AverageAnswerTime * 1000) / (gd.correctAnswerCount + gd.wrongAnswerCount))) + "');";
+
+        if (sqlite3_exec(db, sql.c_str(), nullptr, 0, nullptr) != SQLITE_OK) {
+            std::cout << "Error inserting user" << std::endl;
+            return false;
+        }
+
+        std::cout << "User created successfully in the database!" << std::endl;
+        return true;
     }
 };
 

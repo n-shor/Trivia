@@ -3,6 +3,7 @@
 #include <string>
 #include <chrono>
 #include <vector>
+#include <map>
 #include "Question.h"
 
 class IRequestHandler;
@@ -17,7 +18,9 @@ struct GameData
     Question currentQuestion;
     unsigned int correctAnswerCount;
     unsigned int wrongAnswerCount;
-    unsigned intAverageAnswerTime;
+    double AverageAnswerTime;
+    GameData(Question currentQuestion, unsigned int correctAnswerCount, unsigned int wrongAnswerCount, double AverageAnswerTime) : currentQuestion(currentQuestion), correctAnswerCount(correctAnswerCount), wrongAnswerCount(wrongAnswerCount), AverageAnswerTime(AverageAnswerTime){}
+    GameData(){}
 };
 
 struct PlayerResults
@@ -25,7 +28,8 @@ struct PlayerResults
     std::string username;
     unsigned int correctAnswerCount;
     unsigned int wrongAnswerCount;
-    unsigned int averageAnswerTime;
+    double averageAnswerTime;
+    PlayerResults(std::string username, unsigned int correctAnswerCount, unsigned int wrongAnswerCount, double averageAnswerTime) : username(username), correctAnswerCount(correctAnswerCount), wrongAnswerCount(wrongAnswerCount), averageAnswerTime(averageAnswerTime){}
 };
 
 struct LeaveGameResponse

@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "Question.hpp"
+#include "Question.h"
 #include "IRequestHandler.h"
 
 class IDatabase 
@@ -22,6 +22,7 @@ public:
     virtual int getNumOfPlayerGames(std::string username) = 0;
     virtual int getPlayerScore(std::string username) = 0;
     virtual std::vector<std::string> getHighScores() = 0;
-    virtual bool submitGameStatistics(GameData gd) = 0;
+    virtual bool submitGameStatistics(GameData gd, std::string username) = 0;
+    virtual int getQuestionCount() = 0;
     virtual ~IDatabase() {}
 };

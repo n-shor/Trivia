@@ -2,10 +2,14 @@
 #include "RoomManager.h"
 #include "StatisticsManager.hpp"
 #include "LoginManager.h"
+#include "GameManager.h"
+
+
 class LoginRequestHandler;
 class MenuRequestHandler;
 class RoomAdminRequestHandler;
 class RoomMemberRequestHandler;
+class GameRequestHandler;
 
 class RequestHandlerFactory
 {
@@ -15,7 +19,7 @@ protected:
     StatisticsManager m_StatisticsManager;
     RoomManager m_roomManager;
     LoginManager m_loginManager;
-
+    GameManager m_gameManager;
     RequestHandlerFactory();
 
 public:
@@ -38,4 +42,6 @@ public:
     RoomManager& getRoomManager();
     std::unique_ptr<IRequestHandler> createRoomAdminRequestHandler(LoggedUser, Room);
     std::unique_ptr<IRequestHandler> createRoomMemberRequestHandler(LoggedUser, Room);
+    std::unique_ptr<GameRequestHandler> createGameRequestHandler(LoggedUser, Game);
+    GameManager& getGameManager();
 };

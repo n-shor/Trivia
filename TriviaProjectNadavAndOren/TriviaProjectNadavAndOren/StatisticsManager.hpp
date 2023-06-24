@@ -9,6 +9,11 @@ private:
     IDatabase* m_database;
 
 public:
+    IDatabase* getDB()
+    {
+        return m_database;
+    }
+
     StatisticsManager()
     {
         m_database = new SqliteDatabase();

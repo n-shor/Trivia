@@ -6,7 +6,7 @@
 #include "RoomMemberRequestHandler.h"
 
 enum RoomAdminRequestTypes { CloseRoom, StartGame = 2};
-enum RoomAdminRequeststatus { closeRoomSuccessful, startGameSuccessful};
+enum RoomAdminRequeststatus { closeRoomSuccessful, startGameSuccessful, startGameUnsuccessful, theServerDoesntHaveEnoughQuestions};
 
 class RoomAdminRequestHandler : public IRequestHandler
 {

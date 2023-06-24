@@ -1,8 +1,10 @@
 #include "RequestHandlerFactory.h"
+
 #include "LoginRequestHandler.h"
 #include "MenuRequestHandler.h"
 #include "RoomAdminRequestHandler.h"
 #include "RoomMemberRequestHandler.h"
+#include "GameRequestHandler.h"
 
 std::unique_ptr<RequestHandlerFactory> RequestHandlerFactory::instance;
 
@@ -43,4 +45,14 @@ std::unique_ptr<IRequestHandler> RequestHandlerFactory::createRoomAdminRequestHa
 std::unique_ptr<IRequestHandler> RequestHandlerFactory::createRoomMemberRequestHandler(LoggedUser lu, Room r)
 {
     return std::make_unique<RoomMemberRequestHandler>(lu.getUsername(), r);
+}
+
+std::unique_ptr<GameRequestHandler> RequestHandlerFactory::createGameRequestHandler(LoggedUser lu, Game g)
+{
+    return std::make_unique<GameRequestHandler>(lu.getUsername(), g);
+}
+
+GameManager& RequestHandlerFactory::getGameManager()
+{
+    return m_gameManager;
 }

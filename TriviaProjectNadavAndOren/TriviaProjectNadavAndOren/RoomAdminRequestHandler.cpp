@@ -1,5 +1,6 @@
 #include "RoomAdminRequestHandler.h"
 #include "RequestHandlerFactory.h"
+#include "GameRequestHandler.h"
 
 bool RoomAdminRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
 {
@@ -21,29 +22,38 @@ RequestResult RoomAdminRequestHandler::closeRoom(RequestInfo)
 RequestResult RoomAdminRequestHandler::startGame(RequestInfo)
 {
 	m_room =  Room(m_roomManager.getRoom(m_room.getRoomData().id).getRoomData());
-	for (int i = 0; i < m_room.getRoomData().currentPlayers; i++)
+	for (unsigned int i = 0; i < m_room.getRoomData().currentPlayers; i++)
 		m_room.addUser(m_roomManager.getRoom(m_room.getRoomData().id).getAllUsers()[i]);
 
 	m_roomManager.deleteRoom(m_room.getRoomData().id);
+	m_room.activateRoom();
 	m_roomManager.createRoom(m_room.getRoomData(), m_user);
 
-	for (int i = 0; i < m_room.getRoomData().currentPlayers; i++)
-		m_roomManager.getRoom(m_room.getRoomData().id).addUser(m_room.getAllUsers()[i]);
-	
 
 	RequestResult r;
 	StartGameResponse sgr;
-	sgr.status = startGameSuccessful;
 
 
-	//!!!!!!!
-	//!!!!!!!
-	r.newHandler = nullptr; //for now its null, later when we have a game handler, we will put it here
-	//!!!!!!!
-	//!!!!!!!
-	
-	r.response = JsonResponsePacketSerializer::serializeResponse(sgr);
-	return r;
+	try {
+		sgr.status = startGameSuccessful;
+		Game g = RequestHandlerFactory::getInstance().getGameManager().createGame(m_roomManager.getRoom(m_room.getRoomData().id));
+		r.newHandler = RequestHandlerFactory::getInstance().createGameRequestHandler(m_user, g);
+		r.response = JsonResponsePacketSerializer::serializeResponse(sgr);
+		return r;
+	}
+	catch (int sixtyNine)
+	{
+		if (sixtyNine == 69)
+		{
+			sgr.status = theServerDoesntHaveEnoughQuestions;
+		}
+		else {
+			sgr.status = startGameUnsuccessful;
+		}
+		r.newHandler = RequestHandlerFactory::getInstance().createRoomAdminRequestHandler(m_user, m_roomManager.getRoom(m_room.getRoomData().id));
+		r.response = JsonResponsePacketSerializer::serializeResponse(sgr);
+		return r;
+	}
 }
 
 template <typename T>

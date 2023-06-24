@@ -16,4 +16,5 @@ public:
     void removeUser(LoggedUser);
     std::vector<std::string> getAllUsers();
     RoomData getRoomData();
+    void activateRoom();
 };

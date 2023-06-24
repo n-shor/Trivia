@@ -3,10 +3,9 @@
 #include "IDatabase.h"
 #include "SqliteDatabase.hpp"
 #include <string>
+#include "LoggedUser.h"
 #include <vector>
 #include <mutex>
-
-class LoggedUser;
 
 enum statuses { AlreadyLoggedIn = 17, Error = -1, FailedLogin = 21, UserAlreadyExists = 22, LoggedIn = 11, SignedUp = 12, NoSuchLoggedUser = 23, LoggedOut = 13 };
 

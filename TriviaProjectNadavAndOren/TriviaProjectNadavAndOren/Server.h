@@ -3,7 +3,6 @@
 
 class Server {
 private:
-	Communicator m_communicator;
 	WSADATA m_wsaData;
 	static Server* m_instancePtr;
 
