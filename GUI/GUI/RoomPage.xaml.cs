@@ -164,7 +164,7 @@ namespace GUI
                 {
                     await DisplayAlert("Game Started", "The admin has started the game.", "OK");
                 });
-                await Navigation.PushAsync(new GamePage(_currentRoom.timePerQuestion, _currentRoom.numOfQuestionsInGame));
+                await Navigation.PushAsync(new GamePage(_currentRoom));
             }
         }
 
@@ -178,7 +178,7 @@ namespace GUI
 
             if (response.status == 1)
             {
-                await Navigation.PushAsync(new GamePage(_currentRoom.timePerQuestion, _currentRoom.numOfQuestionsInGame));
+                await Navigation.PushAsync(new GamePage(_currentRoom));
             }
             else
             {
