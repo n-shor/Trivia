@@ -6,7 +6,7 @@ GameManager::GameManager(IDatabase* db) : m_database(db)
 {
 }
 
-Game GameManager::createGame(Room& r)
+Game& GameManager::createGame(Room& r)
 {
     Game g(r, m_database, gameId);
     m_games.push_back(g);
@@ -31,11 +31,14 @@ void GameManager::deleteGame(int gameId)
     }
 }
 
-Game GameManager::findUserGame(std::string lu)
+Game& GameManager::findUserGame(std::string lu)
 {
+    std::lock_guard<std::mutex> lock(gameLock);
+    auto it = m_games[0].getPlayers().find(lu);
     for (int a = 0; a < m_games.size(); a++)
     {
-        auto it = m_games[a].getPlayers().find(lu);
+        it = m_games[a].getPlayers().find(lu);
+        //memory error nadav
         if (it != m_games[a].getPlayers().end()) {
             return m_games[a];
         }

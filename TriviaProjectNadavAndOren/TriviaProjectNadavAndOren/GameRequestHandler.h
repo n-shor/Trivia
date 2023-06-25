@@ -11,6 +11,7 @@ enum GameRequeststatus { getQuestionSuccessful, gameEnded, leaveGameResponse};
 class GameRequestHandler : public IRequestHandler
 {
 private:
+	bool m_cheatDetection;
 	Game& m_game;
 	LoggedUser m_user;
 	RequestResult getQuestion(RequestInfo);
@@ -19,6 +20,6 @@ private:
 	RequestResult leaveGame(RequestInfo);
 	bool isRequestRelevant(const RequestInfo& requestInfo) override;
 public:
-	GameRequestHandler(std::string, Game);
+	GameRequestHandler(std::string, Game&);
 	RequestResult handleRequest(const RequestInfo& requestInfo) override;
 };

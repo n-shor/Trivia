@@ -90,6 +90,8 @@ struct RoomData
     unsigned int numOfQuestionsInGame;
     unsigned int timePerQuestion;
     unsigned int isActive;
+    RoomData() {}
+    RoomData(unsigned int id, std::string name, std::string adminName, unsigned int currentPlayers, unsigned int maxPlayers, unsigned int numOfQuestionsInGame, unsigned int timePerQuestion, unsigned int isActive) : id(id), name(name), adminName(adminName), currentPlayers(currentPlayers), maxPlayers(maxPlayers), numOfQuestionsInGame(numOfQuestionsInGame), timePerQuestion(timePerQuestion), isActive(isActive) {}
 };
 
 struct CreateRoomRequest

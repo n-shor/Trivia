@@ -66,9 +66,22 @@ RequestResult GameRequestHandler::handleRequest(const RequestInfo& requestInfo)
 		switch (requestInfo.messageCode)
 		{
 		case getQuestionReq:
+			m_cheatDetection = true;
 			return this->getQuestion(requestInfo);
 		case submitAnswerReq:
-			return this->submitAnswer(requestInfo);
+			if (m_cheatDetection)
+			{
+				m_cheatDetection = false;
+				return this->submitAnswer(requestInfo);
+			}
+			else {
+				RequestResult r;
+				ErrorResponse e;
+				e.message = "irrelevant message";
+				r.response = JsonResponsePacketSerializer::serializeResponse(e);
+				r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
+				return r;
+			}
 		case getGameResultsReq:
 			return this->getGameResults(requestInfo);
 		case leaveGameReq:
@@ -88,6 +101,7 @@ bool GameRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
 	return requestInfo.messageCode >= 0 && requestInfo.messageCode <= 3;
 }
 
-GameRequestHandler::GameRequestHandler(std::string lu, Game g) : m_game(g), m_user(lu)
+GameRequestHandler::GameRequestHandler(std::string lu, Game& g) : m_game(g), m_user(lu)
 {
+	m_cheatDetection = false;
 }

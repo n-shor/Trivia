@@ -12,7 +12,7 @@ class RoomAdminRequestHandler : public IRequestHandler
 {
 private:
     
-    Room m_room;
+    Room& m_room;
     LoggedUser m_user;
 
     bool isRequestRelevant(const RequestInfo& requestInfo) override;
@@ -22,6 +22,6 @@ private:
     RequestResult getRoomsState(RequestInfo);
 
 public:
-    RoomAdminRequestHandler(std::string username, Room room);
+    RoomAdminRequestHandler(std::string username, Room& room);
     RequestResult handleRequest(const RequestInfo& requestInfo) override;
 };

@@ -8,7 +8,7 @@ private:
 	static std::map<unsigned int, Room> m_rooms;
 
 public:
-	void createRoom(RoomData rd, LoggedUser lu);
+	void createRoom(RoomData& rd, LoggedUser lu);
 	void deleteRoom(int ID);
 	unsigned int getRoomState(int ID);
 	std::vector<RoomData> getRooms();

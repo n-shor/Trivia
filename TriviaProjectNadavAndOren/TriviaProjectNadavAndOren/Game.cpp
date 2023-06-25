@@ -1,6 +1,9 @@
 #include "Game.h"
 #include "RequestHandlerFactory.h"
 
+std::map<std::string, clock_t> m_timeTracker;
+
+
 void Game::submitGameStatsToDB(GameData gd, IDatabase* db)
 {
 	for (auto it = m_players.begin(); it != m_players.end(); ++it)
@@ -11,6 +14,7 @@ void Game::submitGameStatsToDB(GameData gd, IDatabase* db)
 
 Game::Game(Room& r, IDatabase* db, unsigned int gameId)
 {
+
 	if (r.getRoomData().numOfQuestionsInGame > db->getQuestionCount())
 	{
 		throw(69);
@@ -91,7 +95,7 @@ int Game::getCorrectAnswerId(std::string lu)
 	return m_players[lu].currentQuestion.getCorrectAnswerId();
 }
 
-std::map<std::string, GameData> Game::getPlayers()
+std::map<std::string, GameData>& Game::getPlayers()
 {
 	return m_players;
 }

@@ -15,7 +15,7 @@ class Communicator
 {
 private:
 	SOCKET m_serverSocket;
-	std::map<SOCKET, std::pair<std::string, std::unique_ptr<IRequestHandler>>> m_clients;
+	std::map<SOCKET, std::pair<std::string, std::shared_ptr<IRequestHandler>>> m_clients;
 	void bindAndListen();
 	void handleNewClient(SOCKET s);
 public:

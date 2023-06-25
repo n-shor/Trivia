@@ -99,8 +99,7 @@ void Communicator::handleNewClient(SOCKET s)
     catch (const std::runtime_error& e)
     {
         std::cout << e.what() << " " << m_clients[s].first << ". Their thread has been closed." << std::endl;
-        //to oren:
-        //ADD MUTEX HERE
+        std::lock_guard<std::mutex> lock(RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers_mutex);
         //remove the user from the game they're in / the room they're in
         for (auto it = RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.begin();
             it != RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.end();)

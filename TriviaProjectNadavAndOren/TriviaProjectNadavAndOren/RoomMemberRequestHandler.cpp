@@ -39,14 +39,13 @@ RequestResult RoomMemberRequestHandler::getRoomsState(RequestInfo)
 		RequestResult r;
 		GetRoomStateResponse grsr;
 		grsr.answerTimeout = m_room.getRoomData().timePerQuestion;
-		grsr.hasGameBegun = m_room.getRoomData().isActive;
+		grsr.hasGameBegun = m_room.getRoomData().isActive == 1;
 		grsr.questionCount = m_room.getRoomData().numOfQuestionsInGame;
 		grsr.players = m_room.getAllUsers();
 		grsr.status = getRoomsStateRes;
 		if (m_room.getRoomData().isActive != 0)
 		{
 			r.newHandler = RequestHandlerFactory::getInstance().createGameRequestHandler(m_user, RequestHandlerFactory::getInstance().getGameManager().findUserGame(m_user.getUsername()));
-
 		}
 		else {
 			r.newHandler = RequestHandlerFactory::getInstance().createRoomMemberRequestHandler(m_user, m_room);
@@ -65,7 +64,7 @@ RequestResult RoomMemberRequestHandler::getRoomsState(RequestInfo)
 	}
 }
 
-RoomMemberRequestHandler::RoomMemberRequestHandler(std::string username, Room room) : m_room(room), m_user(username)
+RoomMemberRequestHandler::RoomMemberRequestHandler(std::string username, Room& room) : m_room(room), m_user(username)
 {
 }
 

@@ -36,17 +36,17 @@ RoomManager& RequestHandlerFactory::getRoomManager()
     return m_roomManager;
 }
 
-std::unique_ptr<IRequestHandler> RequestHandlerFactory::createRoomAdminRequestHandler(LoggedUser lu, Room r)
+std::unique_ptr<IRequestHandler> RequestHandlerFactory::createRoomAdminRequestHandler(LoggedUser lu, Room& r)
 {
     return std::make_unique<RoomAdminRequestHandler>(lu.getUsername(), r);
 }
 
-std::unique_ptr<IRequestHandler> RequestHandlerFactory::createRoomMemberRequestHandler(LoggedUser lu, Room r)
+std::unique_ptr<IRequestHandler> RequestHandlerFactory::createRoomMemberRequestHandler(LoggedUser lu, Room& r)
 {
     return std::make_unique<RoomMemberRequestHandler>(lu.getUsername(), r);
 }
 
-std::unique_ptr<IRequestHandler> RequestHandlerFactory::createGameRequestHandler(LoggedUser lu, Game g)
+std::unique_ptr<IRequestHandler> RequestHandlerFactory::createGameRequestHandler(LoggedUser lu, Game& g)
 {
     return std::make_unique<GameRequestHandler>(lu.getUsername(), g);
 }

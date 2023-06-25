@@ -2,19 +2,12 @@
 
 Room::Room()
 {
-    RoomData d;
-    d.id = 0;
-    d.isActive = false;
-    d.maxPlayers = 0;
-    d.name = "!!! Uninitialized Room !!!";
-    d.numOfQuestionsInGame = 0;
-    d.timePerQuestion = 0;
-    m_metadata = d;
+
 }
 
-Room::Room(RoomData d)
+Room::Room(RoomData& d) : m_metadata(d)
 {
-    m_metadata = d;
+    //m_metadata = d;
 }
 
 void Room::addUser(LoggedUser u)

@@ -6,7 +6,7 @@ int RoomManager::currId = 0;
 std::mutex RoomManager::m_roomsMutex;
 
 
-void RoomManager::createRoom(RoomData rd, LoggedUser lu)
+void RoomManager::createRoom(RoomData& rd, LoggedUser lu)
 {
     std::lock_guard<std::mutex> lock(m_roomsMutex);
     m_rooms[rd.id] = Room(rd);
