@@ -1,4 +1,5 @@
 #include "RoomMemberRequestHandler.h"
+#include "GameRequestHandler.h"
 
 bool RoomMemberRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
 {
@@ -7,7 +8,7 @@ bool RoomMemberRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
 
 RequestResult RoomMemberRequestHandler::leaveRoom(RequestInfo)
 {
-	m_roomManager.getRoom(m_room.getRoomData().id).removeUser(m_user.getUsername());
+	RequestHandlerFactory::getInstance().getRoomManager().getRoom(m_room.getRoomData().id).removeUser(m_user.getUsername());
 
 	RequestResult r;
 	LeaveRoomResponse lrr;
@@ -31,28 +32,24 @@ bool contains(std::vector<T> vec, const T& elem)
 RequestResult RoomMemberRequestHandler::getRoomsState(RequestInfo)
 {
 	try{
-		if (!contains(m_roomManager.getRoom(m_room.getRoomData().id).getAllUsers(), m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().adminName))
+		if (!contains(m_room.getAllUsers(), m_room.getRoomData().adminName))
 		{
 			throw 69;
 		}
 		RequestResult r;
 		GetRoomStateResponse grsr;
-		grsr.answerTimeout = m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().timePerQuestion;
-		grsr.hasGameBegun = m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().isActive;
-		grsr.questionCount = m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().numOfQuestionsInGame;
-		grsr.players = m_roomManager.getRoom(m_room.getRoomData().id).getAllUsers();
+		grsr.answerTimeout = m_room.getRoomData().timePerQuestion;
+		grsr.hasGameBegun = m_room.getRoomData().isActive;
+		grsr.questionCount = m_room.getRoomData().numOfQuestionsInGame;
+		grsr.players = m_room.getAllUsers();
 		grsr.status = getRoomsStateRes;
-		if (m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().isActive != 0)
+		if (m_room.getRoomData().isActive != 0)
 		{
-			//!!!!!
-			//!!!!!
-			r.newHandler = nullptr; //later this will point to handler for game
-			//!!!!!
-			//!!!!!
+			r.newHandler = RequestHandlerFactory::getInstance().createGameRequestHandler(m_user, RequestHandlerFactory::getInstance().getGameManager().findUserGame(m_user.getUsername()));
 
 		}
 		else {
-			r.newHandler = RequestHandlerFactory::getInstance().createRoomMemberRequestHandler(m_user, m_roomManager.getRoom(m_room.getRoomData().id));
+			r.newHandler = RequestHandlerFactory::getInstance().createRoomMemberRequestHandler(m_user, m_room);
 		}
 			r.response = JsonResponsePacketSerializer::serializeResponse(grsr);
 		return r;
@@ -68,7 +65,7 @@ RequestResult RoomMemberRequestHandler::getRoomsState(RequestInfo)
 	}
 }
 
-RoomMemberRequestHandler::RoomMemberRequestHandler(std::string username, Room room) : m_room(room), m_user(username), m_roomManager(RequestHandlerFactory::getInstance().getRoomManager())
+RoomMemberRequestHandler::RoomMemberRequestHandler(std::string username, Room room) : m_room(room), m_user(username)
 {
 }
 

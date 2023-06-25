@@ -3,6 +3,8 @@
 
 std::map<unsigned int, Room> RoomManager::m_rooms;
 int RoomManager::currId = 0;
+std::mutex RoomManager::m_roomsMutex;
+
 
 void RoomManager::createRoom(RoomData rd, LoggedUser lu)
 {
@@ -45,7 +47,7 @@ std::vector<RoomData> RoomManager::getRooms()
 }
 
 
-Room& RoomManager::getRoom(int ID)
+Room RoomManager::getRoom(int ID)
 {
     return m_rooms[ID];
 }

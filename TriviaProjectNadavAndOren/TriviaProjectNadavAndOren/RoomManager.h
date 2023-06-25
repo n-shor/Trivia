@@ -12,7 +12,7 @@ public:
 	void deleteRoom(int ID);
 	unsigned int getRoomState(int ID);
 	std::vector<RoomData> getRooms();
-	Room& getRoom(int ID);
-	std::mutex m_roomsMutex;
+	Room getRoom(int ID);
+	static std::mutex m_roomsMutex;
 	static int currId;
 };

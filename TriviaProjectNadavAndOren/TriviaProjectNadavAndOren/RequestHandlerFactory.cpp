@@ -1,5 +1,4 @@
 #include "RequestHandlerFactory.h"
-
 #include "LoginRequestHandler.h"
 #include "MenuRequestHandler.h"
 #include "RoomAdminRequestHandler.h"
@@ -8,7 +7,7 @@
 
 std::unique_ptr<RequestHandlerFactory> RequestHandlerFactory::instance;
 
-RequestHandlerFactory::RequestHandlerFactory() : m_StatisticsManager()
+RequestHandlerFactory::RequestHandlerFactory() : m_StatisticsManager(), m_gameManager(m_StatisticsManager.getDB())
 {
 }
 
@@ -47,7 +46,7 @@ std::unique_ptr<IRequestHandler> RequestHandlerFactory::createRoomMemberRequestH
     return std::make_unique<RoomMemberRequestHandler>(lu.getUsername(), r);
 }
 
-std::unique_ptr<GameRequestHandler> RequestHandlerFactory::createGameRequestHandler(LoggedUser lu, Game g)
+std::unique_ptr<IRequestHandler> RequestHandlerFactory::createGameRequestHandler(LoggedUser lu, Game g)
 {
     return std::make_unique<GameRequestHandler>(lu.getUsername(), g);
 }

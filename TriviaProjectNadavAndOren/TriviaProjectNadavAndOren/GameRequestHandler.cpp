@@ -88,6 +88,6 @@ bool GameRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
 	return requestInfo.messageCode >= 0 && requestInfo.messageCode <= 3;
 }
 
-GameRequestHandler::GameRequestHandler(std::string lu, Game g) : m_game(g), m_user(lu), m_gameManager(RequestHandlerFactory::getInstance().getGameManager())
+GameRequestHandler::GameRequestHandler(std::string lu, Game g) : m_game(g), m_user(lu)
 {
 }

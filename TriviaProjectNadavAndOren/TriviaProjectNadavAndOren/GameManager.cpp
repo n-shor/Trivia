@@ -1,8 +1,14 @@
 #include "GameManager.h"
-unsigned int gameId = 0;
-Game GameManager::createGame(Room r)
+unsigned int GameManager::gameId = 0;
+std::mutex GameManager::gameLock;
+
+GameManager::GameManager(IDatabase* db) : m_database(db)
 {
-    Game g = Game(r, m_database, gameId);
+}
+
+Game GameManager::createGame(Room& r)
+{
+    Game g(r, m_database, gameId);
     m_games.push_back(g);
     gameId++;
     return g;
@@ -21,6 +27,17 @@ void GameManager::deleteGame(int gameId)
         else
         {
             ++it;
+        }
+    }
+}
+
+Game GameManager::findUserGame(std::string lu)
+{
+    for (int a = 0; a < m_games.size(); a++)
+    {
+        auto it = m_games[a].getPlayers().find(lu);
+        if (it != m_games[a].getPlayers().end()) {
+            return m_games[a];
         }
     }
 }

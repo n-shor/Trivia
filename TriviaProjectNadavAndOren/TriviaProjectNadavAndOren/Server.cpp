@@ -21,6 +21,7 @@ void Server::destroyInstance()
 }
 
 Server::Server() :
+	m_communicator(),
 	m_wsaData()
 {	
 	// initialize Winsock
@@ -30,6 +31,9 @@ Server::Server() :
 		std::cerr << "WSAStartup failed: " << result << std::endl;
 		throw std::exception("WSAStartup failed");
 	}
+
+	// create a Communicator object
+	m_communicator = Communicator();
 }
 
 Server::~Server()
@@ -43,7 +47,7 @@ void Server::run()
 	try
 	{
 		// start handling requests
-		Communicator::getInstance().startHandleRequests();
+		m_communicator.startHandleRequests();
 	}
 	catch (std::exception& e)
 	{

@@ -7,8 +7,11 @@ class GameManager
 private:
 	IDatabase* m_database;
 	std::vector<Game> m_games;
+	static std::mutex gameLock;
+	static unsigned int gameId;
 public:
-	std::mutex gameLock;
-	Game createGame(Room);
+	GameManager(IDatabase*);
+	Game createGame(Room&);
 	void deleteGame(int gameId);
+	Game findUserGame(std::string);
 };

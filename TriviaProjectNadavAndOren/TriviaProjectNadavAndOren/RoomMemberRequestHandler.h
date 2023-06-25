@@ -13,7 +13,6 @@ class RoomMemberRequestHandler : public IRequestHandler
 private:
 
     Room m_room;
-    RoomManager& m_roomManager;
     LoggedUser m_user;
 
     bool isRequestRelevant(const RequestInfo& requestInfo) override;

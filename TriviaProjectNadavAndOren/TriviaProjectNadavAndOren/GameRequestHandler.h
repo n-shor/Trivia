@@ -13,7 +13,6 @@ class GameRequestHandler : public IRequestHandler
 private:
 	Game& m_game;
 	LoggedUser m_user;
-	GameManager& m_gameManager;
 	RequestResult getQuestion(RequestInfo);
 	RequestResult submitAnswer(RequestInfo);
 	RequestResult getGameResults(RequestInfo);

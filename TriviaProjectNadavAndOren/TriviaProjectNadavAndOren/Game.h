@@ -11,11 +11,12 @@ class Game
 {
 private:
 	std::vector<Question> m_questions;
+	std::map<std::string, clock_t> m_timeTracker;
 	std::map<std::string, GameData> m_players;
 	unsigned int gameId;
 	void submitGameStatsToDB(GameData, IDatabase*);
 public:
-	Game(Room, IDatabase*, unsigned int);
+	Game(Room&, IDatabase*, unsigned int);
 	Question getQuestionForUser(std::string);
 	int submitAnswer(std::string, unsigned int id);
 	void removePlayer(std::string);

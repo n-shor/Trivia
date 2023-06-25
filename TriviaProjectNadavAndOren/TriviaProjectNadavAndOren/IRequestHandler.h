@@ -20,7 +20,7 @@ struct GameData
     unsigned int wrongAnswerCount;
     double AverageAnswerTime;
     GameData(Question currentQuestion, unsigned int correctAnswerCount, unsigned int wrongAnswerCount, double AverageAnswerTime) : currentQuestion(currentQuestion), correctAnswerCount(correctAnswerCount), wrongAnswerCount(wrongAnswerCount), AverageAnswerTime(AverageAnswerTime){}
-    GameData(){}
+    GameData() : currentQuestion() {}
 };
 
 struct PlayerResults
