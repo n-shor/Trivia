@@ -97,12 +97,12 @@ public class CreateRoomResponse
 
 public class CloseRoomResponse
 {
-    public int status;
+    public int status { get; set; }
 };
 
 public class StartGameResponse
 {
-    public int status;
+    public int status { get; set; }
 };
 
 public class GetRoomsResponse

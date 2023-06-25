@@ -30,7 +30,7 @@ std::pair<int, std::string> recvMessage(int clientSocket) {
     if (recv(clientSocket, headerData, 5, 0) <= 0)
     {
         //handle error or disconnection here
-        throw std::runtime_error("Failed to receive message from client: " + std::to_string(WSAGetLastError()) + " (The client's thread has been closed)");
+        throw std::runtime_error("Failed to receive message from client");
     }
     headerData[5] = '\0'; // Null-terminate the string
 
@@ -46,7 +46,6 @@ std::pair<int, std::string> recvMessage(int clientSocket) {
         int received = recv(clientSocket, &messageJson[bytesReceived], bytesToReceive, 0);
         if (received <= 0)
         {
-            //handle error or disconnection here
             throw std::runtime_error("Failed to receive message: " + std::to_string(WSAGetLastError()));
         }
         bytesReceived += received;
@@ -99,19 +98,23 @@ void Communicator::handleNewClient(SOCKET s)
     }
     catch (const std::runtime_error& e)
     {
-        for (auto it = RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.begin(); it != RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.end();)
+        std::cout << e.what() << " " << m_clients[s].first << ". Their thread has been closed." << std::endl;
+        //to oren:
+        //ADD MUTEX HERE
+        //remove the user from the game they're in / the room they're in
+        for (auto it = RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.begin();
+            it != RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.end();)
         {
+            std::cout << it->getUsername() << "\n";
             if (it->getUsername() == m_clients[s].first)
             {
-                RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.erase(it);
-                break;
+                it = RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.erase(it);
             }
             else
             {
                 ++it;
             }
         }
-        std::cout << e.what() << std::endl;
     }
 
     // Closes the client socket

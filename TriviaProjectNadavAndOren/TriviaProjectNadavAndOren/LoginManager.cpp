@@ -41,6 +41,7 @@ bool containsUser(std::vector<LoggedUser>& LoggedUsers, std::string& user)
 
 int LoginManager::login(std::string username, std::string password)
 {
+    //to oren: add loggedUsers mutex here
     std::lock_guard<std::mutex> lock(m_database_mutex);
     if (m_database->doesUserExist(username) && m_database->doesPasswordMatch(username, password))
     {
@@ -56,6 +57,7 @@ int LoginManager::login(std::string username, std::string password)
 
 int LoginManager::logout(std::string username)
 {
+    //to oren: add loggedUsers mutex here
     std::lock_guard<std::mutex> lock(m_database_mutex);
     for (auto it = m_loggedUsers.begin(); it != m_loggedUsers.end();)
     {

@@ -87,7 +87,6 @@ RequestResult RoomAdminRequestHandler::getRoomsState(RequestInfo)
 	catch (const std::exception& e)
 	{
 		std::cout << e.what() << "\n";
-
 	}
 	catch(...)
 	{
