@@ -3,7 +3,7 @@
 
 bool RoomMemberRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
 {
-    return requestInfo.messageCode <= 1 || requestInfo.messageCode >= 0;
+    return requestInfo.messageCode == LeaveRoom || requestInfo.messageCode == GetRoomsState;
 }
 
 RequestResult RoomMemberRequestHandler::leaveRoom(RequestInfo)

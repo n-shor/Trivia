@@ -44,13 +44,13 @@ namespace GUI
             string jsonString = JsonSerializer.Serialize(request);
 
             Serielizer s = new Serielizer();
-            s.sendMessage(ClientSocket.sock, (int)0, jsonString);
+            s.sendMessage(ClientSocket.sock, (int)MenuRequestTypes.CreateRoom, jsonString);
 
-            dynamic data = Deserielizer.getResponse(ClientSocket.sock);
+            var data = Deserielizer.getResponse(ClientSocket.sock);
 
             CreateRoomResponse response = JsonSerializer.Deserialize<CreateRoomResponse>(data.jsonData);
 
-            if (response.status != 7)
+            if (response.status != (int)MenuRequestStatus.CreateRoomSuccessful)
             {
                 await DisplayAlert("Error", "Room could not be created. Please try again.", "OK");
                 return;

@@ -5,14 +5,14 @@
 #include "JsonRequestPacketDeserializer.hpp"
 #include "RoomMemberRequestHandler.h"
 
-enum GameRequestTypes { getQuestionReq, submitAnswerReq, getGameResultsReq, leaveGameReq};
-enum GameRequeststatus { getQuestionSuccessful, gameEnded, leaveGameResponse};
+enum GameRequestTypes { getQuestionReq = 4, submitAnswerReq, getGameResultsReq, leaveGameReq};
+enum GameRequeststatus { getQuestionSuccessful = 8, gameEnded, leaveGameResponse};
 
 class GameRequestHandler : public IRequestHandler
 {
 private:
 	bool m_cheatDetection;
-	Game& m_game;
+	Game m_game;
 	LoggedUser m_user;
 	RequestResult getQuestion(RequestInfo);
 	RequestResult submitAnswer(RequestInfo);

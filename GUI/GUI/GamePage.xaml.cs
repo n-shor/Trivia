@@ -2,18 +2,18 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-
-//ADD BACK BUTTON!!!!!!!!!!!!!!!!!!!!!!!!!!
+using System.Text.Json;
 
 namespace GUI
 {
     public partial class GamePage : ContentPage
     {
         private RoomData roomData;
-        private GameData gameData;
         private CancellationTokenSource timerCts;
         private int remainingTime;
         private bool gameEnded = false;
+        private int correctAnswerCount = 0;
+        private int answeredQuestionCount = 0;
 
         public GamePage(RoomData roomData)
         {
@@ -24,92 +24,92 @@ namespace GUI
 
         private void StartGame()
         {
-            // Fetch game data from the server
-            FetchGameData();
-
-            // Initialize and start the timer
             remainingTime = roomData.timePerQuestion;
             timerCts = new CancellationTokenSource();
-            StartTimer();
 
-            // Display the number of remaining questions
             RemainingQuestionsLabel.Text = $"Remaining questions: {roomData.numOfQuestionsInGame}";
+
+            FetchQuestionData();
+        }
+
+        private void FetchQuestionData()
+        {
+            Serielizer s = new Serielizer();
+            s.sendMessage(ClientSocket.sock, (int)GameRequestTypes.getQuestionReq, "");
+
+            var data = Deserielizer.getResponse(ClientSocket.sock);
+
+            GetQuestionResponse response = JsonSerializer.Deserialize<GetQuestionResponse>(data.jsonData);
+
+            QuestionLabel.Text = response.question;
+            Option1Button.Text = response.answers[0];
+            Option2Button.Text = response.answers[1];
+            Option3Button.Text = response.answers[2];
+            Option4Button.Text = response.answers[3];
+
+            StartTimer();
         }
 
         private async void StartTimer()
         {
+            timerCts = new CancellationTokenSource();
+            remainingTime = roomData.timePerQuestion;
+
             while (remainingTime > 0 && !timerCts.Token.IsCancellationRequested)
             {
                 await Task.Delay(1000);
                 remainingTime--;
-                RemainingTimeLabel.Text = "Time left to answer: " + remainingTime;
+                RemainingTimeLabel.Text = $"Time left to answer: {remainingTime}";
             }
 
             if (!timerCts.Token.IsCancellationRequested)
             {
-                // If the timer wasn't cancelled, it means that the time is up
-                // In this case, you might want to automatically send an answer to the server
-                // You can decide what you want to do in this situation
+                // The time is up. Send an answer with id 5 which is 100% false
+                SubmitAnswer(5);
             }
-        }
-
-        private void FetchGameData()
-        {
-            // Implement code to fetch game data from the server
-            // For the purpose of this example, I'll initialize it with some dummy data
-            gameData = new GameData
-            {
-                currentQuestion = new Question
-                {
-                    QuestionText = "Sample question",
-                    PossibleAnswers = new List<string> { "Option A", "Option B", "Option C", "Option D" },
-                    CorrectAnswerId = 0
-                },
-                correctAnswerCount = 0,
-                wrongAnswerCount = 0,
-                averageAnswerTime = 0
-            };
-
-            UpdateQuestion();
-        }
-
-        private void UpdateQuestion()
-        {
-            QuestionLabel.Text = gameData.currentQuestion.QuestionText;
-            Option1Button.Text = gameData.currentQuestion.PossibleAnswers[0];
-            Option2Button.Text = gameData.currentQuestion.PossibleAnswers[1];
-            Option3Button.Text = gameData.currentQuestion.PossibleAnswers[2];
-            Option4Button.Text = gameData.currentQuestion.PossibleAnswers[3];
         }
 
         private void OnOptionButtonClicked(object sender, EventArgs e)
         {
-            // Cancel the timer
             timerCts.Cancel();
 
-            // Determine which option was selected
-            int selectedOption = 0;
+            uint selectedOption = 0;
             if (sender == Option1Button) selectedOption = 0;
             else if (sender == Option2Button) selectedOption = 1;
             else if (sender == Option3Button) selectedOption = 2;
             else if (sender == Option4Button) selectedOption = 3;
 
-            // Send the selected option to the server
-            // You'll need to implement this
+            SubmitAnswer(selectedOption);
+        }
 
-            // Update correct answer count
-            if (selectedOption == gameData.currentQuestion.CorrectAnswerId)
-            {
-                gameData.correctAnswerCount++;
-                CorrectAnswersLabel.Text = $"Correct answers: {gameData.correctAnswerCount}";
+        private void SubmitAnswer(uint selectedOption)
+        {
+            var request = new SubmitAnswerRequest { answerId = selectedOption };
+            var jsonString = JsonSerializer.Serialize(request);
+
+            Serielizer s = new Serielizer();
+            s.sendMessage(ClientSocket.sock, (int)GameRequestTypes.submitAnswerReq, jsonString);
+
+            var data = Deserielizer.getResponse(ClientSocket.sock);
+
+            SubmitAnswerResponse response = JsonSerializer.Deserialize<SubmitAnswerResponse>(data.jsonData);
+
+            if (response.status == (int)SubmitAnswerStatus.correctAnswer)
+            { 
+                correctAnswerCount++;
+                CorrectAnswersLabel.Text = $"Correct answers: {correctAnswerCount}";
             }
+            answeredQuestionCount++;
+            RemainingQuestionsLabel.Text = $"Remaining questions: {roomData.numOfQuestionsInGame - answeredQuestionCount}";
 
-            // If game has ended, display the waiting message and navigate to the results page
-            if (gameEnded)
+            if (answeredQuestionCount < roomData.numOfQuestionsInGame)
             {
+                FetchQuestionData();
+            }
+            else
+            {
+                gameEnded = true;
                 WaitingLabel.Text = "Game has ended. Waiting for all players to finish...";
-                // Wait for a while and then navigate to the results page
-                // You'll need to decide when and how to navigate to the results page
             }
         }
     }

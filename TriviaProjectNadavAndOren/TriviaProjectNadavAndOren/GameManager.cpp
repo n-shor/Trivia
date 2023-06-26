@@ -6,7 +6,7 @@ GameManager::GameManager(IDatabase* db) : m_database(db)
 {
 }
 
-Game& GameManager::createGame(Room& r)
+Game GameManager::createGame(Room& r)
 {
     Game g(r, m_database, gameId);
     m_games.push_back(g);

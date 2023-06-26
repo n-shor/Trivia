@@ -4,7 +4,7 @@
 
 bool RoomAdminRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
 {
-	return requestInfo.messageCode >= 0 && requestInfo.messageCode <= 2;
+	return requestInfo.messageCode == CloseRoom || requestInfo.messageCode == StartGame || requestInfo.messageCode == GetRoomsState;
 }
 
 RequestResult RoomAdminRequestHandler::closeRoom(RequestInfo)

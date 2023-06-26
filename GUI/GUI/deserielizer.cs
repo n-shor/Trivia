@@ -42,6 +42,10 @@ public class RoomData
     public string DisplayText => $"{name} (Max Players: {maxPlayers})";
 
 };
+public class SubmitAnswerRequest
+{
+     public uint answerId { get; set; }
+};
 
 public class CreateRoomRequest
 {
@@ -116,6 +120,19 @@ public class ErrorResponse
     public string message { get; set; }
 };
 
+public class GetQuestionResponse
+{
+    public int status { get; set; }
+    public string question { get; set; }
+    public Dictionary<uint, string> answers { get; set; }
+}
+
+public class SubmitAnswerResponse
+{
+    public int status { get; set; }
+    public int correctAnswerId { get; set; }
+};
+
 public class GetRoomStateResponse
 {
     public int status { get; set; }
@@ -127,9 +144,9 @@ public class GetRoomStateResponse
 
 public class Question
 {
-    public string QuestionText { get; set; }
-    public List<string> PossibleAnswers { get; set; }
-    public int CorrectAnswerId { get; set; }
+    public string questionText { get; set; }
+    public List<string> possibleAnswers { get; set; }
+    public int correctAnswerId { get; set; }
 
     public Question()
     {
@@ -137,9 +154,9 @@ public class Question
 
     public Question(string questionText, List<string> possibleAnswers, int correctAnswerId)
     {
-        QuestionText = questionText;
-        PossibleAnswers = possibleAnswers;
-        CorrectAnswerId = correctAnswerId;
+        this.questionText = questionText;
+        this.possibleAnswers = possibleAnswers;
+        this.correctAnswerId = correctAnswerId;
     }
 }
 
@@ -157,7 +174,7 @@ namespace GUI
 {
     internal class Deserielizer
     {
-        public static dynamic getResponse(Socket sock)
+        public static ( int type, string jsonData ) getResponse(Socket sock)
         {
             // Receive the message type
             byte[] typeBuffer = new byte[1];
@@ -180,7 +197,7 @@ namespace GUI
             // Convert the bytes into string
             string jsonData = Encoding.ASCII.GetString(jsonBuffer);
 
-            return new { type, jsonData = jsonData };
+            return ( type, jsonData );
         }
 
     }

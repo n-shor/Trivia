@@ -7,7 +7,6 @@ Room::Room()
 
 Room::Room(RoomData& d) : m_metadata(d)
 {
-    //m_metadata = d;
 }
 
 void Room::addUser(LoggedUser u)

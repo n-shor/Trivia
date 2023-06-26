@@ -5,7 +5,7 @@
 #include "LoggedUser.h"
 #include "IDatabase.h"
 
-enum submitAnswerStatus { incorrectAnswer, correctAnswer};
+enum submitAnswerStatus { incorrectAnswer = 11, correctAnswer};
 
 class Game
 {

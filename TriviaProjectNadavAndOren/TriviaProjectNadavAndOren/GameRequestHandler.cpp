@@ -98,7 +98,8 @@ RequestResult GameRequestHandler::handleRequest(const RequestInfo& requestInfo)
 
 bool GameRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
 {
-	return requestInfo.messageCode >= 0 && requestInfo.messageCode <= 3;
+	return requestInfo.messageCode == getQuestionReq || requestInfo.messageCode == submitAnswerReq ||
+		requestInfo.messageCode == getGameResultsReq || requestInfo.messageCode == leaveGameReq;
 }
 
 GameRequestHandler::GameRequestHandler(std::string lu, Game& g) : m_game(g), m_user(lu)

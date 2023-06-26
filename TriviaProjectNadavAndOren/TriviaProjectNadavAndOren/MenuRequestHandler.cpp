@@ -36,7 +36,8 @@ RequestResult MenuRequestHandler::handleRequest(const RequestInfo& requestInfo)
 
 bool MenuRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
 {
-	return requestInfo.messageCode >= 0 && requestInfo.messageCode <= 6;
+	return requestInfo.messageCode == CreateRoom || requestInfo.messageCode == GetRooms || requestInfo.messageCode == GetPlayersInRoom ||
+		requestInfo.messageCode == JoinRoom || requestInfo.messageCode == GetStatistics || requestInfo.messageCode == Logout || requestInfo.messageCode == GetHighScore;
 }
 
 RequestResult MenuRequestHandler::signout(RequestInfo)

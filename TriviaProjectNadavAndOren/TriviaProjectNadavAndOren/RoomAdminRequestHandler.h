@@ -5,8 +5,8 @@
 #include "JsonRequestPacketDeserializer.hpp"
 #include "RoomMemberRequestHandler.h"
 
-enum RoomAdminRequestTypes { CloseRoom, StartGame = 2};
-enum RoomAdminRequeststatus { closeRoomSuccessful, startGameSuccessful, startGameUnsuccessful, theServerDoesntHaveEnoughQuestions};
+enum RoomAdminRequestTypes { CloseRoom = 43, StartGame = 2 };
+enum RoomAdminRequeststatus { closeRoomSuccessful = 13, startGameSuccessful, startGameUnsuccessful, theServerDoesntHaveEnoughQuestions };
 
 class RoomAdminRequestHandler : public IRequestHandler
 {

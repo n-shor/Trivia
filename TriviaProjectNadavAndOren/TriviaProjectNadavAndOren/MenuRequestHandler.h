@@ -4,8 +4,8 @@
 #include "JsonResponsePacketSerializer.hpp"
 #include "JsonRequestPacketDeserializer.hpp"
 
-enum menuRequestTypes { CreateRoom, GetRooms, GetPlayersInRoom, JoinRoom, GetStatistics, Logout, GetHighScore};
-enum status {signedOut, GetRoomsSuccessful, GetPlayersInRoomSuccessful, GetPersonalStatsSuccessful, GetHighScoreSuccessful, joinRoomSuccessful, joinRoomUnSuccessful, CreateRoomSuccessful};
+enum menuRequestTypes { CreateRoom = 21, GetRooms, GetPlayersInRoom, JoinRoom, GetStatistics, Logout, GetHighScore };
+enum status { signedOut = 28, GetRoomsSuccessful, GetPlayersInRoomSuccessful, GetPersonalStatsSuccessful, GetHighScoreSuccessful, joinRoomSuccessful, joinRoomUnSuccessful, CreateRoomSuccessful };
 
 class MenuRequestHandler : public IRequestHandler
 {

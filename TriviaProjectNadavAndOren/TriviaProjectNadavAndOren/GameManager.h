@@ -11,7 +11,7 @@ private:
 	static unsigned int gameId;
 public:
 	GameManager(IDatabase*);
-	Game& createGame(Room&);
+	Game createGame(Room&);
 	void deleteGame(int gameId);
 	Game& findUserGame(std::string);
 };

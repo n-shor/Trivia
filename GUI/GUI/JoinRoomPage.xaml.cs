@@ -74,8 +74,8 @@ namespace GUI
         {
             JoinButton.IsEnabled = false;
             Serielizer s = new Serielizer();
-            s.sendMessage(ClientSocket.sock, (int)1, "");
-            dynamic data = Deserielizer.getResponse(ClientSocket.sock);
+            s.sendMessage(ClientSocket.sock, (int)MenuRequestTypes.GetRooms, "");
+            var data = Deserielizer.getResponse(ClientSocket.sock);
 
             GetRoomsResponse json = JsonSerializer.Deserialize<GetRoomsResponse>(data.jsonData);
 
@@ -137,13 +137,13 @@ namespace GUI
                 Serielizer s = new Serielizer();
 
                 string jsonString = JsonSerializer.Serialize(new { roomId = _selectedRoom.id });
-                s.sendMessage(ClientSocket.sock, (int)3, jsonString);
+                s.sendMessage(ClientSocket.sock, (int)MenuRequestTypes.JoinRoom, jsonString);
 
                 // Receive and handle the response from the server
-                dynamic data = Deserielizer.getResponse(ClientSocket.sock);
+                var data = Deserielizer.getResponse(ClientSocket.sock);
                 JoinRoomResponse response = JsonSerializer.Deserialize<JoinRoomResponse>(data.jsonData);
 
-                if (response.status == 5) // Assuming your response object has a "success" property
+                if (response.status == (int)MenuRequestStatus.joinRoomSuccessful)
                 {
                     // After successfully joining the room, navigate to RoomPage
                     await Navigation.PushAsync(new RoomPage(_selectedRoom, OriginPage.JoinRoomPage));

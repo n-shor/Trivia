@@ -11,9 +11,9 @@ namespace GUI
         {
             InitializeComponent();
             Serielizer s = new Serielizer();
-            s.sendMessage(ClientSocket.sock, (int)6, "");
+            s.sendMessage(ClientSocket.sock, (int)MenuRequestTypes.GetHighScore, "");
 
-            dynamic data = Deserielizer.getResponse(ClientSocket.sock);
+            var data = Deserielizer.getResponse(ClientSocket.sock);
             GetHighScoreResponse json = JsonSerializer.Deserialize<GetHighScoreResponse>(data.jsonData);
 
             // Use the deserialized high scores list to populate the ListView

@@ -30,14 +30,14 @@ namespace GUI
         {
             Serielizer s = new Serielizer();
             s.sendMessage(ClientSocket.sock,
-                                   (int)5,
+                                   (int)MenuRequestTypes.Logout,
                                    "");
             
-            dynamic data = Deserielizer.getResponse(ClientSocket.sock);
+            var data = Deserielizer.getResponse(ClientSocket.sock);
             LoginResponse json = JsonSerializer.Deserialize<LoginResponse>(data.jsonData);
 
             // Now we check if the logout was successful.
-            if (json.status == 0)
+            if (json.status == (int)MenuRequestStatus.signedOut)
             {
                 await Navigation.PushAsync(new LoginPage());
             }

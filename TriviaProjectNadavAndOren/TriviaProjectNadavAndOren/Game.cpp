@@ -27,8 +27,8 @@ Game::Game(Room& r, IDatabase* db, unsigned int gameId)
 
 	for (int j = 0; j < r.getAllUsers().size(); j++)
 	{
-		auto& a = m_players[r.getAllUsers()[j]];
-		a = GameData(m_questions[0], 0, 0, 0);
+		auto& game = m_players[r.getAllUsers()[j]];
+		game = GameData(m_questions[0], 0, 0, 0);
 	}
 
 	this->gameId = gameId;
@@ -37,7 +37,8 @@ Game::Game(Room& r, IDatabase* db, unsigned int gameId)
 Question Game::getQuestionForUser(std::string lu)
 {
 	m_timeTracker[lu] = clock();
-	return m_players[lu].currentQuestion;
+	auto& game = m_players[lu];
+	return game.currentQuestion;
 }
 
 int getIndex(std::vector<Question> v, Question K)

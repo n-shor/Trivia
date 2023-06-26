@@ -7,7 +7,7 @@
 #include <vector>
 #include <mutex>
 
-enum statuses { AlreadyLoggedIn = 17, Error = -1, FailedLogin = 21, UserAlreadyExists = 22, LoggedIn = 11, SignedUp = 12, NoSuchLoggedUser = 23, LoggedOut = 13 };
+enum statuses { AlreadyLoggedIn = 36, Error = -1, FailedLogin = 37, UserAlreadyExists, LoggedIn, SignedUp, NoSuchLoggedUser, LoggedOut };
 
 class LoginManager
 {

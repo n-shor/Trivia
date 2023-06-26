@@ -26,17 +26,17 @@ void Communicator::bindAndListen()
 
 //helper function in order to parse the message properly
 std::pair<int, std::string> recvMessage(int clientSocket) {
-    char headerData[6] = { 0 }; // 5 for data and 1 for null terminator
+    char headerData[5] = { 0 };
+
     if (recv(clientSocket, headerData, 5, 0) <= 0)
     {
-        //handle error or disconnection here
         throw std::runtime_error("Failed to receive message from client");
     }
-    headerData[5] = '\0'; // Null-terminate the string
 
-    int messageType = headerData[0];
+    int messageType = headerData[0]; // Interpret the first byte as the status
 
-    int messageSize = (headerData[1] - '0') * 1000 + (headerData[2] - '0') * 100 + (headerData[3] - '0') * 10 + (headerData[4] - '0');
+    // Interpret the next 4 bytes as an integer for the length
+    int messageSize = *reinterpret_cast<int*>(headerData + 1);
 
     std::vector<char> messageJson(messageSize);
     int bytesToReceive = messageSize;
@@ -69,7 +69,6 @@ void Communicator::handleNewClient(SOCKET s)
         {
             // Receives the JSON message from the client
             auto [messageCode, messageData] = recvMessage(s);
-            messageCode -= '0'; //turning char into int
 
             std::cout << "Received message (type " << static_cast<int>(messageCode) << "): " << messageData << std::endl;
 

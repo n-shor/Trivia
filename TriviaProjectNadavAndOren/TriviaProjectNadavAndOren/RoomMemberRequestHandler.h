@@ -5,8 +5,8 @@
 #include "JsonResponsePacketSerializer.hpp"
 #include "JsonRequestPacketDeserializer.hpp"
 
-enum RoomMemberRequestTypes { LeaveRoom, GetRoomsState };
-enum RoomMemberRequeststatus { leaveRoomSuccessful, getRoomsStateRes};
+enum RoomMemberRequestTypes { LeaveRoom = 17, GetRoomsState };
+enum RoomMemberRequeststatus { leaveRoomSuccessful = 19, getRoomsStateRes };
 
 class RoomMemberRequestHandler : public IRequestHandler
 {

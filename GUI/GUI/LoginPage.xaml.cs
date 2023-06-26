@@ -6,7 +6,6 @@ using System.Net.Sockets;
 
 namespace GUI
 {
-    enum Statuses {AlreadyLoggedIn = 17,  Error = -1, FailedLogin = 21, UserAlreadyExists = 22, LoggedIn = 11, SignedUp = 12, NoSuchLoggedUser = 23, LoggedOut = 13 };
     public partial class LoginPage : ContentPage
     {
         public LoginPage()
@@ -31,18 +30,18 @@ namespace GUI
             Serielizer s = new Serielizer();
             s.sendMessage(ClientSocket.sock, (int)1, jsonString);
 
-            dynamic data = Deserielizer.getResponse(ClientSocket.sock);
+            var data = Deserielizer.getResponse(ClientSocket.sock);
             LoginResponse json = JsonSerializer.Deserialize<LoginResponse>(data.jsonData);
 
             // Now we check if the login was successful.
-            if (json.status == (int)Statuses.LoggedIn)
+            if (json.status == (int)LoginRequestStatus.LoggedIn)
             {
                 ClientSocket.username = username;
                 Navigation.PushAsync(new MainMenuPage());
             }
             else
             {
-                if(json.status == (int)Statuses.AlreadyLoggedIn)
+                if(json.status == (int)LoginRequestStatus.AlreadyLoggedIn)
                 {
                     //if account is already logged in
                     DisplayAlert("Login Failed", "The account you are attempting to log in as is already logged in.", "OK");
