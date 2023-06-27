@@ -1,4 +1,5 @@
 #include "Communicator.h"
+#include "RoomAdminRequestHandler.h"
 #define PORT 8080
 
 void Communicator::bindAndListen()
@@ -91,6 +92,7 @@ void Communicator::handleNewClient(SOCKET s)
                 m_clients[s].first = reqRes.username;
                 std::string msg(res.begin(), res.end());
                 std::cout << msg.substr(5) << std::endl; //printing the message without the bytes at the start
+                std::cout << m_clients[s].first << std::endl;
                 send(s, msg.c_str(), msg.size(), 0);
             }
         }
@@ -113,6 +115,17 @@ void Communicator::handleNewClient(SOCKET s)
                 ++it;
             }
         }
+
+
+        RequestInfo ri;
+        ri.messageCode = CloseRoom;
+        m_clients[s].second->handleRequest(ri);
+        ri.messageCode = LeaveRoom;
+        m_clients[s].second->handleRequest(ri);
+        ri.messageCode = LeaveRoom;
+        m_clients[s].second->handleRequest(ri);
+
+        m_clients.erase(s);
     }
 
     // Closes the client socket
