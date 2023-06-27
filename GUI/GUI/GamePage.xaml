@@ -10,10 +10,10 @@
 
 	<StackLayout Padding="20">
         <Label x:Name="QuestionLabel" Text="Question will appear here" TextColor="White" />
-        <Button x:Name="Option1Button" Text="Option 1" Clicked="OnOptionButtonClicked" TextColor="White"/>
-        <Button x:Name="Option2Button" Text="Option 2" Clicked="OnOptionButtonClicked" TextColor="White"/>
-        <Button x:Name="Option3Button" Text="Option 3" Clicked="OnOptionButtonClicked" TextColor="White"/>
-        <Button x:Name="Option4Button" Text="Option 4" Clicked="OnOptionButtonClicked" TextColor="White"/>
+        <Button x:Name="Option1Button" Text="Option 1" BackgroundColor="MediumBlue" Clicked="OnOptionButtonClicked" TextColor="White"/>
+        <Button x:Name="Option2Button" Text="Option 2" BackgroundColor="MediumBlue" Clicked="OnOptionButtonClicked" TextColor="White"/>
+        <Button x:Name="Option3Button" Text="Option 3" BackgroundColor="MediumBlue" Clicked="OnOptionButtonClicked" TextColor="White"/>
+        <Button x:Name="Option4Button" Text="Option 4" BackgroundColor="MediumBlue" Clicked="OnOptionButtonClicked" TextColor="White"/>
         <Label x:Name="RemainingQuestionsLabel" Text="Remaining questions: " TextColor="White"/>
         <Label x:Name="CorrectAnswersLabel" Text="Correct answers: " TextColor="White"/>
         <Label x:Name="RemainingTimeLabel" Text="Time left to answer: " TextColor="White"/>

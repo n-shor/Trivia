@@ -10,35 +10,35 @@
                TextColor="White"/>
 
         <Entry x:Name="OptionAEntry"
-               Placeholder="option a"
+               Placeholder="Option a"
                TextColor="White"/>
 
         <Entry x:Name="OptionBEntry"
-               Placeholder="option b"
+               Placeholder="Option b"
                TextColor="White"/>
 
         <Entry x:Name="OptionCEntry"
-               Placeholder="option c"
+               Placeholder="Option c"
                TextColor="White"/>
 
         <Entry x:Name="OptionDEntry"
-               Placeholder="option d"
+               Placeholder="Option d"
                TextColor="White"/>
 
         <Entry x:Name="AnswerEntry"
-               Placeholder="a b c or d?"
+               Placeholder="Correct Answer (the valid input is 'a', 'b', 'c' or 'd')"
                TextColor="White"/>
 
         <Button x:Name="AddQuestionButton"
-                Text="add question"
+                Text="Add Question"
                 Clicked="AddQuestionButtonClicked"
-                BackgroundColor="Orange"
+                BackgroundColor="MediumBlue"
                 TextColor="White" />
 
         <Button x:Name="BackButton"
                 Text="Back"
                 Clicked="OnBackButtonClicked"
-                BackgroundColor="Orange"
+                BackgroundColor="MediumBlue"
                 TextColor="White" />
     </VerticalStackLayout>
 </ContentPage>

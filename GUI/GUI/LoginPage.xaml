@@ -14,18 +14,19 @@
 
         <Entry x:Name="PasswordEntry"
                Placeholder="Password"
-               IsPassword="true" />
+               IsPassword="true"
+               TextColor="White"/>
 
         <Button x:Name="LoginButton"
                 Text="Login"
                 Clicked="OnLoginButtonClicked" 
-                BackgroundColor="Orange" 
+                BackgroundColor="MediumBlue" 
                 TextColor="White" />
 
         <Button x:Name="BackButton"
                 Text="Back"
                 Clicked="OnBackButtonClicked" 
-                BackgroundColor="Orange" 
+                BackgroundColor="MediumBlue" 
                 TextColor="White" />
     </StackLayout>
 </ContentPage>

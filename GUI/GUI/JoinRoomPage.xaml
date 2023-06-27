@@ -17,7 +17,7 @@
         <ScrollView>
             <StackLayout x:Name="RoomsStackLayout" />
         </ScrollView>
-        <Button x:Name="JoinButton" Text="Join" Clicked="OnJoinButtonClicked" IsEnabled="false" TextColor="White"/>
-        <Button Text="Back" Clicked="OnBackButtonClicked" TextColor="White"/>
+        <Button x:Name="JoinButton" Text="Join" Clicked="OnJoinButtonClicked" IsEnabled="false" BackgroundColor="MediumBlue" TextColor="White"/>
+        <Button Text="Back" Clicked="OnBackButtonClicked" BackgroundColor="MediumBlue" TextColor="White"/>
     </StackLayout>
 </ContentPage>

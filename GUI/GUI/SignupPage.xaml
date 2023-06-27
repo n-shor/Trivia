@@ -9,25 +9,28 @@
     <StackLayout Padding="20" VerticalOptions="CenterAndExpand">
 
         <Entry x:Name="UsernameEntry"
-               Placeholder="Username" />
+               Placeholder="Username"
+               TextColor="White"/>
 
         <Entry x:Name="PasswordEntry"
                Placeholder="Password"
-               IsPassword="true" />
+               IsPassword="true" 
+               TextColor="White"/>
 
         <Entry x:Name="EmailEntry"
-               Placeholder="Email" />
+               Placeholder="Email"
+               TextColor="White"/>
 
         <Button x:Name="RegisterButton"
                 Text="Register"
                 Clicked="OnRegisterButtonClicked"
-                BackgroundColor="Orange"
+                BackgroundColor="MediumBlue"
                 TextColor="White" />
 
         <Button x:Name="BackButton"
                 Text="Back"
                 Clicked="OnBackButtonClicked"
-                BackgroundColor="Orange"
+                BackgroundColor="MediumBlue"
                 TextColor="White" />
     </StackLayout>
 </ContentPage>

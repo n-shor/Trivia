@@ -9,8 +9,8 @@
     </Shell.BackButtonBehavior>
 
     <StackLayout Padding="20">
-		<Button Text="Personal Statistics" Clicked="OnPersonalStatisticsButtonClicked"/>
-		<Button Text="High Scores" Clicked="OnHighScoresButtonClicked"/>
-        <Button Text="Back" Clicked="OnBackButtonClicked" />
+        <Button Text="Personal Statistics" BackgroundColor="MediumBlue" TextColor="White" Clicked="OnPersonalStatisticsButtonClicked"/>
+        <Button Text="High Scores" BackgroundColor="MediumBlue" TextColor="White" Clicked="OnHighScoresButtonClicked"/>
+        <Button Text="Back" BackgroundColor="MediumBlue" TextColor="White" Clicked="OnBackButtonClicked" />
     </StackLayout>
 </ContentPage>

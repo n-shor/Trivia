@@ -7,8 +7,8 @@
         <BackButtonBehavior IsVisible="False" IsEnabled="False" />
     </Shell.BackButtonBehavior>
     <StackLayout Padding="20">
-        <Button Text="Login" Clicked="OnLoginButtonClicked"/>
-        <Button Text="Signup" Clicked="OnSignupButtonClicked"/>
-        <Button Text="Exit" Clicked="OnExitButtonClicked"/>
+        <Button Text="Login" BackgroundColor="MediumBlue" TextColor="White" Clicked="OnLoginButtonClicked"/>
+        <Button Text="Signup" BackgroundColor="MediumBlue" TextColor="White" Clicked="OnSignupButtonClicked"/>
+        <Button Text="Exit" BackgroundColor="MediumBlue" TextColor="White" Clicked="OnExitButtonClicked"/>
     </StackLayout>
 </ContentPage>

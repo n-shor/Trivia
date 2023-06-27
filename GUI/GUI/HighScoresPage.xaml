@@ -15,6 +15,6 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Button Text="Back" Clicked="OnBackButtonClicked" TextColor="White"/>
+        <Button Text="Back" BackgroundColor="MediumBlue" Clicked="OnBackButtonClicked" TextColor="White"/>
     </StackLayout>
 </ContentPage>

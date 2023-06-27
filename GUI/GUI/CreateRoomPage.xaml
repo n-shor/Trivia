@@ -12,8 +12,8 @@
         <Entry Placeholder="Time for Question" x:Name="TimeQuestionEntry" Keyboard="Numeric" TextColor="White"/>
         <Entry Placeholder="Number of Questions" x:Name="QuestionCountEntry" Keyboard="Numeric" TextColor="White"/>
         <Entry Placeholder="Number of Players" x:Name="PlayersNumberEntry" Keyboard="Numeric" TextColor="White"/>
-        <Button Text="Create" Clicked="OnCreateButtonClicked" TextColor="White"/>
-        <Button Text="Back" Clicked="OnBackButtonClicked" TextColor="White" />
+        <Button Text="Create" Clicked="OnCreateButtonClicked" BackgroundColor="MediumBlue" TextColor="White"/>
+        <Button Text="Back" Clicked="OnBackButtonClicked" BackgroundColor="MediumBlue" TextColor="White" />
         <Label x:Name="PlayersLabel" Text="" TextColor="White"/>
         <Label x:Name="AdminLabel" Text="" TextColor="White"/>
     </StackLayout>
