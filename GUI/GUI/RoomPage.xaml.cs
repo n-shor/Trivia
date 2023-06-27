@@ -114,57 +114,63 @@ namespace GUI
             Serielizer s = new Serielizer();
             s.sendMessage(ClientSocket.sock, (int)RoomMemberRequestTypes.GetRoomsState, jsonString);
 
-            var data = Deserielizer.getResponse(ClientSocket.sock);
+            (int type, string jsonData) data;
 
-            try
+
+            data = Deserielizer.getResponse(ClientSocket.sock);
+
+            if (data.jsonData != "{\"message\":\"irrelevant message\"}")
             {
-                ErrorResponse errorResponse = JsonSerializer.Deserialize<ErrorResponse>(data.jsonData);
+                try
+                {
+                    ErrorResponse errorResponse = JsonSerializer.Deserialize<ErrorResponse>(data.jsonData);
 
-                if (errorResponse.message == "room closed")
+                    if (errorResponse.message == "room closed")
+                    {
+                        await MainThread.InvokeOnMainThreadAsync(async () =>
+                        {
+                            await Navigation.PushAsync(new MainMenuPage());
+                            await DisplayAlert("Room Closed", "The room has been closed by the admin.", "OK");
+                        });
+                        return;
+                    }
+                }
+                catch (JsonException)
+                {
+                }
+
+                GetRoomStateResponse response = JsonSerializer.Deserialize<GetRoomStateResponse>(data.jsonData);
+
+                List<User> users = new List<User>();
+                foreach (var username in response.players)
+                {
+                    if (username != _currentRoom.adminName)
+                    {
+                        users.Add(new User
+                        {
+                            Username = username,
+                            TextColor = username == _currentUser ? Colors.Red : Colors.White
+                        });
+                    }
+                }
+
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    UsersListView.ItemsSource = users;
+                });
+
+                _hasGameBegun = response.hasGameBegun;
+                _questionCount = response.questionCount;
+                _answerTimeout = response.answerTimeout;
+
+                if (_hasGameBegun)
                 {
                     await MainThread.InvokeOnMainThreadAsync(async () =>
                     {
-                        await Navigation.PushAsync(new MainMenuPage());
-                        await DisplayAlert("Room Closed", "The room has been closed by the admin.", "OK");
+                        await DisplayAlert("Game Started", "The admin has started the game.", "OK");
                     });
-                    return;
+                    await Navigation.PushAsync(new GamePage(_currentRoom));
                 }
-            }
-            catch (JsonException)
-            {
-            }
-
-            GetRoomStateResponse response = JsonSerializer.Deserialize<GetRoomStateResponse>(data.jsonData);
-
-            List<User> users = new List<User>();
-            foreach (var username in response.players)
-            {
-                if (username != _currentRoom.adminName)
-                {
-                    users.Add(new User
-                    {
-                        Username = username,
-                        TextColor = username == _currentUser ? Colors.Red : Colors.White
-                    });
-                }
-            }
-
-            await MainThread.InvokeOnMainThreadAsync(() =>
-            {
-                UsersListView.ItemsSource = users;
-            });
-
-            _hasGameBegun = response.hasGameBegun;
-            _questionCount = response.questionCount;
-            _answerTimeout = response.answerTimeout;
-
-            if (_hasGameBegun)
-            {
-                await MainThread.InvokeOnMainThreadAsync(async () =>
-                {
-                    await DisplayAlert("Game Started", "The admin has started the game.", "OK");
-                });
-                await Navigation.PushAsync(new GamePage(_currentRoom));
             }
         }
 

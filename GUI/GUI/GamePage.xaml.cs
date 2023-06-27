@@ -39,15 +39,22 @@ namespace GUI
 
             var data = Deserielizer.getResponse(ClientSocket.sock);
 
-            GetQuestionResponse response = JsonSerializer.Deserialize<GetQuestionResponse>(data.jsonData);
+            if (data.jsonData != "{\"message\":\"irrelevant message\"}")
+            {
+                GetQuestionResponse response = JsonSerializer.Deserialize<GetQuestionResponse>(data.jsonData);
 
-            QuestionLabel.Text = response.question;
-            Option1Button.Text = response.answers[0];
-            Option2Button.Text = response.answers[1];
-            Option3Button.Text = response.answers[2];
-            Option4Button.Text = response.answers[3];
+                QuestionLabel.Text = response.question;
+                Option1Button.Text = response.answers[0];
+                Option2Button.Text = response.answers[1];
+                Option3Button.Text = response.answers[2];
+                Option4Button.Text = response.answers[3];
 
-            StartTimer();
+                StartTimer();
+            }
+            else
+            {
+                FetchQuestionData();
+            }
         }
 
         private async void StartTimer()

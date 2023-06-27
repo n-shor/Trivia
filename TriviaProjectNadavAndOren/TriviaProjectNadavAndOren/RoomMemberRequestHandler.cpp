@@ -8,7 +8,7 @@ bool RoomMemberRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
 
 RequestResult RoomMemberRequestHandler::leaveRoom(RequestInfo)
 {
-	RequestHandlerFactory::getInstance().getRoomManager().getRoom(m_room.getRoomData().id).removeUser(m_user.getUsername());
+	m_room.removeUser(m_user);
 
 	RequestResult r;
 	LeaveRoomResponse lrr;

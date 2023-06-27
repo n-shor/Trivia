@@ -72,11 +72,13 @@ namespace GUI
 
         private void LoadRooms()
         {
+            (int type, string jsonData) data;
             JoinButton.IsEnabled = false;
             Serielizer s = new Serielizer();
             s.sendMessage(ClientSocket.sock, (int)MenuRequestTypes.GetRooms, "");
-            var data = Deserielizer.getResponse(ClientSocket.sock);
 
+            data = Deserielizer.getResponse(ClientSocket.sock);
+            
             GetRoomsResponse json = JsonSerializer.Deserialize<GetRoomsResponse>(data.jsonData);
 
             // Clear the existing items

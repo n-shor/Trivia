@@ -103,7 +103,7 @@ void Communicator::handleNewClient(SOCKET s)
         for (auto it = RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.begin();
             it != RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.end();)
         {
-            std::cout << it->getUsername() << "\n";
+            std::cout << it->getUsername() << "\n"; //for testing purposes
             if (it->getUsername() == m_clients[s].first)
             {
                 it = RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.erase(it);

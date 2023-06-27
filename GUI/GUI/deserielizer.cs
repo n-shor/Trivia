@@ -89,7 +89,7 @@ public class JoinRoomResponse
 
 public class LeaveRoomResponse
 {
-    public int status;
+    public int status { get; set; }
 };
 
 public class CreateRoomResponse

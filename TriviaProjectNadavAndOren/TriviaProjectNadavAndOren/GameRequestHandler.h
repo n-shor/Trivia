@@ -11,7 +11,6 @@ enum GameRequeststatus { getQuestionSuccessful = 8, gameEnded, leaveGameResponse
 class GameRequestHandler : public IRequestHandler
 {
 private:
-	bool m_cheatDetection;
 	Game m_game;
 	LoggedUser m_user;
 	RequestResult getQuestion(RequestInfo);

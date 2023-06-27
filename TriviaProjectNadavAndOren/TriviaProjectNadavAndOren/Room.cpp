@@ -18,6 +18,7 @@ void Room::addUser(LoggedUser u)
 void Room::removeUser(LoggedUser u)
 {
     auto temp = m_users.begin();
+    this->m_metadata.currentPlayers--;
     for (auto it = m_users.begin(); it != m_users.end(); it++)
     {
         if (it->getUsername() == u.getUsername())
