@@ -122,8 +122,7 @@ void Communicator::handleNewClient(SOCKET s)
         m_clients[s].second->handleRequest(ri);
         ri.messageCode = LeaveRoom;
         m_clients[s].second->handleRequest(ri);
-        ri.messageCode = LeaveRoom;
-        m_clients[s].second->handleRequest(ri);
+
 
         m_clients.erase(s);
     }

@@ -306,7 +306,7 @@ public:
             return false;
         }
 
-        std::cout << "User created successfully in the database!" << std::endl;
+        std::cout << "Statistics updated successfully in the database!" << std::endl;
         return true;
     }
 };
