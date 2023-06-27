@@ -52,7 +52,14 @@ namespace GUI
 
             if (response.status != (int)MenuRequestStatus.CreateRoomSuccessful)
             {
-                await DisplayAlert("Error", "Room could not be created. Please try again.", "OK");
+                if (response.status == (int)RoomAdminRequeststatus.theServerDoesntHaveEnoughQuestions)
+                {
+                    await DisplayAlert("Room Creation Failed", "There are not enough questions in the database. Please try again with a smaller number of questions.", "OK");
+                }
+                else
+                {
+                    await DisplayAlert("Room Creation Failed", "The room could not be created. Please try again.", "OK");
+                }
                 return;
             }
 
@@ -61,7 +68,11 @@ namespace GUI
                 name = RoomNameEntry.Text,
                 currentPlayers = 1, // as the room got just created, only admin is there.
                 adminName = response.adminName,
-                id = response.roomId 
+                id = response.roomId,
+                maxPlayers = maxUsers,
+                numOfQuestionsInGame = questionCount,
+                timePerQuestion = answerTimeout,
+                isActive = 0,
             };
 
             await Navigation.PushAsync(new RoomPage(createdRoom, OriginPage.CreateRoomPage));

@@ -19,7 +19,7 @@ Game::Game(Room& r, IDatabase* db, unsigned int gameId)
 	{
 		throw(69);
 	}
-
+	
 	for (int i = 0; i < r.getRoomData().numOfQuestionsInGame; i++)
 	{
 		m_questions.push_back(db->getQuestion(i+1));

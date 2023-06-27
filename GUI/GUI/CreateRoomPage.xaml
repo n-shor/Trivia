@@ -9,7 +9,7 @@
     <StackLayout Padding="20">
         <Label Text="Create Room" TextColor="White"/>
         <Entry Placeholder="Room Name" x:Name="RoomNameEntry" TextColor="White"/>
-        <Entry Placeholder="Time for Question" x:Name="TimeQuestionEntry" Keyboard="Numeric" TextColor="White"/>
+        <Entry Placeholder="Time Limit Per Question" x:Name="TimeQuestionEntry" Keyboard="Numeric" TextColor="White"/>
         <Entry Placeholder="Number of Questions" x:Name="QuestionCountEntry" Keyboard="Numeric" TextColor="White"/>
         <Entry Placeholder="Number of Players" x:Name="PlayersNumberEntry" Keyboard="Numeric" TextColor="White"/>
         <Button Text="Create" Clicked="OnCreateButtonClicked" BackgroundColor="MediumBlue" TextColor="White"/>

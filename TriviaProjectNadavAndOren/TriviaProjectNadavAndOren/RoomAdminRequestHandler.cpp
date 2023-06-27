@@ -42,6 +42,7 @@ RequestResult RoomAdminRequestHandler::startGame(RequestInfo)
 		else {
 			sgr.status = startGameUnsuccessful;
 		}
+		m_room.deactivateRoom();
 		r.newHandler = RequestHandlerFactory::getInstance().createRoomAdminRequestHandler(m_user,
 			RequestHandlerFactory::getInstance().getRoomManager().getRoom(m_room.getRoomData().id));
 		r.response = JsonResponsePacketSerializer::serializeResponse(sgr);
@@ -66,7 +67,7 @@ RequestResult RoomAdminRequestHandler::getRoomsState(RequestInfo)
 	try {
 		if (!contains(m_room.getAllUsers(), m_room.getRoomData().adminName))
 		{
-			throw 68;
+			throw 69;
 		}
 		RequestResult r;
 		GetRoomStateResponse grsr;

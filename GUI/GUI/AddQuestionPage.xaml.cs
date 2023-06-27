@@ -36,22 +36,19 @@ public partial class AddQuestionPage : ContentPage
             var data = Deserielizer.getResponse(ClientSocket.sock);
             AddQuestionResponse json = JsonSerializer.Deserialize<AddQuestionResponse>(data.jsonData);
 
-            // Now we check if the registration was successful.
             if (json.status == (int)MenuRequestStatus.QuestionAdded)
             {
-                DisplayAlert("Added question", "Your question has been added", "OK");
+                DisplayAlert("Added question", "Your question has been added to the database!", "OK");
                 Navigation.PushAsync(new MainMenuPage());
             }
             else
             {
-                // If registration failed (user already exists), display an alert
-                DisplayAlert("Add Question Failed", "Your question was invalid", "OK");
+                DisplayAlert("Add Question Failed", "Your question was either invalid or already present in the database.", "OK");
             }
         }
         else
         {
-            // If email is invalid, display an alert
-            DisplayAlert("Add Question Failed", "Invalid answer", "OK");
+            DisplayAlert("Add Question Failed", "The 'Correct Answer' field contains an invalid value.", "OK");
         }
     }
     private async void OnBackButtonClicked(object sender, EventArgs e)

@@ -186,6 +186,10 @@ namespace GUI
             {
                 await Navigation.PushAsync(new GamePage(_currentRoom));
             }
+            else if (response.status == (int)RoomAdminRequeststatus.theServerDoesntHaveEnoughQuestions)
+            {
+                await DisplayAlert("Game Start Failed", "The database does not contain enough questions for the game. Please create a new room with fewer questions.", "OK");
+            }
             else
             {
                 await DisplayAlert("Game Start Failed", "Unable to start the game, please try again later.", "OK");

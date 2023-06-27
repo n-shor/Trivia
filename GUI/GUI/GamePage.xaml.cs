@@ -34,6 +34,9 @@ namespace GUI
 
         private void FetchQuestionData()
         {
+            // Cancel any existing timer
+            timerCts?.Cancel();
+
             Serielizer s = new Serielizer();
             s.sendMessage(ClientSocket.sock, (int)GameRequestTypes.getQuestionReq, "");
 
@@ -57,24 +60,31 @@ namespace GUI
             }
         }
 
+
         private async void StartTimer()
         {
             timerCts = new CancellationTokenSource();
             remainingTime = roomData.timePerQuestion;
 
-            while (remainingTime > 0 && !timerCts.Token.IsCancellationRequested)
+            try
             {
-                await Task.Delay(1000);
-                remainingTime--;
-                RemainingTimeLabel.Text = $"Time left to answer: {remainingTime}";
-            }
+                while (remainingTime > 0)
+                {
+                    await Task.Delay(1000, timerCts.Token);
+                    remainingTime--;
+                    RemainingTimeLabel.Text = $"Time left to answer: {remainingTime}";
+                }
 
-            if (!timerCts.Token.IsCancellationRequested)
-            {
-                // The time is up. Send an answer with id 5 which is 100% false
+                // The time is up. Send an answer with id 5 which is 100% wrong
                 SubmitAnswer(5);
             }
+            catch (OperationCanceledException)
+            {
+                // The timer was cancelled
+            }
         }
+
+
 
         private void OnOptionButtonClicked(object sender, EventArgs e)
         {

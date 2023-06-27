@@ -48,3 +48,8 @@ void Room::activateRoom()
 {
     m_metadata.isActive = 1;
 }
+
+void Room::deactivateRoom()
+{
+    m_metadata.isActive = 0;
+}

@@ -17,4 +17,5 @@ public:
     std::vector<std::string> getAllUsers();
     RoomData& getRoomData();
     void activateRoom();
+    void deactivateRoom();
 };

@@ -40,7 +40,7 @@ RequestResult RoomMemberRequestHandler::getRoomsState(RequestInfo)
 		RequestResult r;
 		GetRoomStateResponse grsr;
 		grsr.answerTimeout = m_room.getRoomData().timePerQuestion;
-		grsr.hasGameBegun = m_room.getRoomData().isActive == 1;
+		grsr.hasGameBegun = m_room.getRoomData().isActive != 0;
 		grsr.questionCount = m_room.getRoomData().numOfQuestionsInGame;
 		grsr.players = m_room.getAllUsers();
 		grsr.status = getRoomsStateRes;
@@ -48,14 +48,15 @@ RequestResult RoomMemberRequestHandler::getRoomsState(RequestInfo)
 		{
 			r.newHandler = RequestHandlerFactory::getInstance().createGameRequestHandler(m_user, RequestHandlerFactory::getInstance().getGameManager().findUserGame(m_user.getUsername()));
 		}
-		else {
+		else 
+		{
 			r.newHandler = RequestHandlerFactory::getInstance().createRoomMemberRequestHandler(m_user, m_room);
 		}
 		r.response = JsonResponsePacketSerializer::serializeResponse(grsr);
 		r.username = m_user.getUsername();
 		return r;
     }
-	catch (...)
+	catch (int sixtyNine)
 	{
 		RequestResult r;
 		ErrorResponse e;

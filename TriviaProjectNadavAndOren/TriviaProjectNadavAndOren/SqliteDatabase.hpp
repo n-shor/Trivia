@@ -10,7 +10,6 @@
 class SqliteDatabase : public IDatabase {
 private:
     sqlite3* db;
-    int questionCount;
 public:
     SqliteDatabase() : db(nullptr) {}
 
@@ -74,16 +73,15 @@ public:
         std::vector<std::string> questions = {
         "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (1, 'John has 8 apples, Susan is late to her train by 23.2 seconds and the air resistance equals 83 newtons. What is the mass of the sun?', '14.5 newtons', '5.972*10^24 kg', '1.989*10^30 kg', 'Louis XV', 2);",
         "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (2, 'Who let the dogs out?', 'who, who, who, who, who?', 'who, who, who, who, who', 'Joe Mama', 'The Baha men', 0);",
-        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (3, 'What’s the accurate color of the famous dress?', 'white and gold', 'black and blue', 'blue and gold', 'Israeli flag colors', 1);",
-        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (4, 'why did the chicken cross the road?', 'BOOM SCHNITZEL!', 'What is America swimsuit?', 'Chaim and Moshe live in a building with 100 floors…', 'to get to the other side', 3);",
-        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (5, 'If 23 people are in the same room, what’s the chance that 2 people have the same birthday?', '1.2% approximately', '50% approximately', '100% EXACTLY', '0.00534% approximately', 1);",
-        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (6, 'What is the most streamed song on spotify?', 'Shape of you by ed sheeran', 'Bohemian rhapsody by queen', 'Blinding lights by the weeknd', 'One dance by drake', 2);",
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (3, 'What is the accurate color of the famous dress?', 'white and gold', 'black and blue', 'blue and gold', 'Israeli flag colors', 1);",
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (4, 'Why did the chicken cross the road?', 'BOOM SCHNITZEL!', 'What is America swimsuit?', 'Chaim and Moshe live in a building with 100 floors...', 'To get to the other side', 3);",
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (5, 'If 23 people are in the same room, what is the chance that 2 people have the same birthday?', '1.2% approximately', '50% approximately', '100% EXACTLY', '0.00534% approximately', 1);",
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (6, 'What is the most streamed song on spotify?', 'Shape of You by Ed Sheeran', 'Bohemian Rhapsody by Queen', 'Blinding Lights by The Weeknd', 'One Dance by Drake', 2);",
         "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (7, 'How many US presidents were assassinated?', '4', '0', '2', '3', 0);",
         "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (8, 'What is the country with the highest Male to Female ratio?', 'UAE', 'Qatar', 'Bahrain', 'Kuwait', 1);",
         "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (9, 'The richest woman in the world is the _ richest person', '5th', '23rd', '104th', '11th', 3);",
-        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (10, 'Who is the chess player that was the world champion for the most years?', 'garry kasparov', 'magnus carlsen', 'emanuel lasker', 'Bobby fischer', 2);"
+        "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (10, 'Who is the chess player that was the world champion for the most years?', 'Garry Kasparov', 'Magnus Carlsen', 'Emanuel Lasker', 'Bobby Fischer', 2);"
         };
-        questionCount = 10;
 
         for (const std::string& question : questions) {
             if (sqlite3_exec(db, question.c_str(), nullptr, 0, nullptr) != SQLITE_OK) {
@@ -151,12 +149,12 @@ public:
 
     bool addQuestion(int id, std::string question, std::string optionA, std::string optionB,
         std::string optionC, std::string optionD, char correctAnswer) {
-        int correctAnswerInt = int(correctAnswer) - 97;
+        int correctAnswerInt = int(correctAnswer) - 'a';
         if (correctAnswerInt > 3 || correctAnswerInt < 0)
         {
             return false;
         }
-        std::string sql = "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (" + std::to_string(id) + ", '" + question + "', '" + optionA + "', '" + optionB + "', '" + optionC + "', '" + optionD + "', " + std::to_string(correctAnswerInt)[0] + ");";
+        std::string sql = "INSERT INTO TRIVIA_QUESTIONS VALUES (" + std::to_string(id) + ", '" + question + "', '" + optionA + "', '" + optionB + "', '" + optionC + "', '" + optionD + "', " + std::to_string(correctAnswerInt)[0] + ");";
 
         std::cout << sql << std::endl;
 
@@ -164,7 +162,6 @@ public:
             std::cout << "Error inserting question" << std::endl;
             return false;
         }
-        questionCount++;
         std::cout << "Question added successfully to the database!" << std::endl;
         return true;
     }

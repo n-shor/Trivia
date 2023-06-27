@@ -1,5 +1,6 @@
 #include "MenuRequestHandler.h"
 #include "RequestHandlerFactory.h"
+#include "RoomAdminRequestHandler.h"
 
 MenuRequestHandler::MenuRequestHandler(std::string username) : m_user(username)
 {
@@ -136,7 +137,25 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo ri)
 	RequestResult r;
 	r.username = m_user.getUsername();
 	CreateRoomResponse grr;
+	if (gpir.questionCount > RequestHandlerFactory::getInstance().getStatisticsManager().getDB()->getQuestionCount())
+	{
+		RoomData rd;
+		rd.isActive = 0;
+		rd.currentPlayers = 0; //we will add the creator later and then it'll be 1
+		rd.maxPlayers = 0;
+		rd.name = "";
+		rd.adminName = "";
+		rd.numOfQuestionsInGame = 0;
+		rd.timePerQuestion = 0;
+		rd.id = 0;
 
+		grr.status = theServerDoesntHaveEnoughQuestions;
+		grr.roomId = 0;
+		grr.adminName = "";
+		r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
+		r.response = JsonResponsePacketSerializer::serializeResponse(grr);
+		return r;
+	}
 	RoomData rd;
 	rd.isActive = isntActive;
 	rd.currentPlayers = 0; //we will add the creator later and then it'll be 1

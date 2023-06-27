@@ -74,6 +74,7 @@ namespace GUI
         {
             (int type, string jsonData) data;
             JoinButton.IsEnabled = false;
+            JoinButton.BackgroundColor = Colors.DarkBlue;
             Serielizer s = new Serielizer();
             s.sendMessage(ClientSocket.sock, (int)MenuRequestTypes.GetRooms, "");
 
@@ -91,7 +92,7 @@ namespace GUI
                 {
                     BorderColor = Colors.Black,
                     Content = new Label { Text = $"Room Name: {room.name}, Admin: {room.adminName}, Players: {room.currentPlayers}/{room.maxPlayers}" },
-                    BackgroundColor = room.isActive != 0 ? Colors.Red : Colors.Gray,
+                    BackgroundColor = room.isActive != 0 ? Colors.Red : Colors.LightGray,
                 };
 
                 var tapGesture = new TapGestureRecognizer();
@@ -113,14 +114,15 @@ namespace GUI
             // Reset color of previously selected frame
             if (_selectedFrame != null)
             {
-                _selectedFrame.BackgroundColor = (_selectedRoom.isActive != 0) ? Colors.Red : Colors.Gray;
+                _selectedFrame.BackgroundColor = (_selectedRoom.isActive != 0) ? Colors.Red : Colors.LightGray;
             }
 
             _selectedRoom = room;
             _selectedFrame = selectedFrame;
-            _selectedFrame.BackgroundColor = (_selectedRoom.isActive != 0) ? Colors.DarkRed : Colors.DarkGray;
+            _selectedFrame.BackgroundColor = (_selectedRoom.isActive != 0) ? Colors.DarkRed : Colors.Gray;
 
             JoinButton.IsEnabled = true;
+            JoinButton.BackgroundColor = Colors.MediumBlue;
         }
 
         private async void OnJoinButtonClicked(object sender, EventArgs e)
