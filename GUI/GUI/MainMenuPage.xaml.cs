@@ -44,7 +44,7 @@ namespace GUI
             // Now we check if the logout was successful.
             if (json.status == (int)MenuRequestStatus.signedOut)
             {
-                await Navigation.PushAsync(new LoginPage());
+                await Navigation.PushAsync(new StartPage());
             }
             else
             {

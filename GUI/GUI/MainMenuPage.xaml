@@ -31,14 +31,12 @@
                 Clicked="OnAddQuestionButtonClicked" 
                 BackgroundColor="MediumBlue"
                 TextColor="White"/>
-        
+
         <Button x:Name="LogOutButton"
                 Text="Log Out"
                 Clicked="OnLogoutButtonClicked" 
                 BackgroundColor="MediumBlue"
                 TextColor="White"/>
-        
-        
 
     </StackLayout>
 </ContentPage>

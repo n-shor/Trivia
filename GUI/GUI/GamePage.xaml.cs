@@ -117,7 +117,18 @@ namespace GUI
             {
                 gameEnded = true;
                 WaitingLabel.Text = "Game has ended. Waiting for all players to finish...";
+                WaitingLabel.IsVisible = true;
+
+                QuestionLabel.IsVisible = false;
+                Option1Button.IsVisible = false;
+                Option2Button.IsVisible = false;
+                Option3Button.IsVisible = false;
+                Option4Button.IsVisible = false;
+                RemainingQuestionsLabel.IsVisible = false;
+                CorrectAnswersLabel.IsVisible = false;
+                RemainingTimeLabel.IsVisible = false;
             }
+
         }
     }
 }
