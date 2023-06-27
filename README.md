@@ -2,11 +2,11 @@
 
 This project includes the following bonuses:
 
-- Bonus Feature 1: [Server singleton]
+- Bonus Feature 1: [Server singleton] (real magshimim bonus)
 
-- Bonus Feature 2: [Communicator singleton]
+- Bonus Feature 2: [Communicator singleton] (real magshimim bonus)
 
-- Bonus Feature 3: [RequestHandlerFactory singleton]
+- Bonus Feature 3: [RequestHandlerFactory singleton] (real magshimim bonus)
 
 (All 3 are singletons implemented in different ways!)
 
@@ -29,4 +29,6 @@ This project includes the following bonuses:
 ~~- Bonus Feature 12: [The client detects server crashes and instead of crashing itself, pops a fitting message box and closes the app automatically (which was super hard to do)]~~ Apparently, this is impossible to do, not just hard. ~~The code where I tried to do it is still included in the project if you'd like to look at it, since it doesn't change any functionality.~~ Nevermind, it makes everything not work. So this bonus doesn't exist essentially.
 
 - Bonus Feature 13: [Cheat detection in the GUI: the users can't fetch the questions or the answers earlier than they should]
+
+- Bonus Feature 14: [There is a page for adding questions into the database in the GUI] (real magshimim bonus)
 
