@@ -70,7 +70,8 @@ public:
             return false;
         }
 
-        std::vector<std::string> questions = {
+        std::vector<std::string> questions = 
+        {
         "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (1, 'John has 8 apples, Susan is late to her train by 23.2 seconds and the air resistance equals 83 newtons. What is the mass of the sun?', '14.5 newtons', '5.972*10^24 kg', '1.989*10^30 kg', 'Louis XV', 2);",
         "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (2, 'Who let the dogs out?', 'who, who, who, who, who?', 'who, who, who, who, who', 'Joe Mama', 'The Baha men', 0);",
         "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (3, 'What is the accurate color of the famous dress?', 'white and gold', 'black and blue', 'blue and gold', 'Israeli flag colors', 1);",
