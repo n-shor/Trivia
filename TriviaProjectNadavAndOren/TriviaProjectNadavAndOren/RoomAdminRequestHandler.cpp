@@ -16,6 +16,7 @@ RequestResult RoomAdminRequestHandler::closeRoom(RequestInfo)
 	crr.status = closeRoomSuccessful;
 	r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
 	r.response = JsonResponsePacketSerializer::serializeResponse(crr);
+	r.username = m_user.getUsername();
 	return r;
 }
 
@@ -44,6 +45,7 @@ RequestResult RoomAdminRequestHandler::startGame(RequestInfo)
 		r.newHandler = RequestHandlerFactory::getInstance().createRoomAdminRequestHandler(m_user,
 			RequestHandlerFactory::getInstance().getRoomManager().getRoom(m_room.getRoomData().id));
 		r.response = JsonResponsePacketSerializer::serializeResponse(sgr);
+		r.username = m_user.getUsername();
 		return r;
 	}
 }
@@ -76,7 +78,7 @@ RequestResult RoomAdminRequestHandler::getRoomsState(RequestInfo)
 		r.response = JsonResponsePacketSerializer::serializeResponse(grsr);
 		r.newHandler = RequestHandlerFactory::getInstance().createRoomAdminRequestHandler(m_user,
 			RequestHandlerFactory::getInstance().getRoomManager().getRoom(m_room.getRoomData().id));
-		
+		r.username = m_user.getUsername();
 		return r;
 	}
 	catch (int sixtyNine)
@@ -96,6 +98,7 @@ RequestResult RoomAdminRequestHandler::getRoomsState(RequestInfo)
 	e.message = "room closed";
 	r.response = JsonResponsePacketSerializer::serializeResponse(e);
 	r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
+	r.username = m_user.getUsername();
 	return r;
 }
 
@@ -122,6 +125,7 @@ RequestResult RoomAdminRequestHandler::handleRequest(const RequestInfo& requestI
 	e.message = "irrelevant message";
 	r.response = JsonResponsePacketSerializer::serializeResponse(e);
 	r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
+	r.username = m_user.getUsername();
 	return r;
 }
 

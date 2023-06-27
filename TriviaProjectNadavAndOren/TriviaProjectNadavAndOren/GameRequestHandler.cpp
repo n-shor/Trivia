@@ -4,6 +4,7 @@
 RequestResult GameRequestHandler::getQuestion(RequestInfo ri)
 {
 	RequestResult r;
+	r.username = m_user.getUsername();
 	GetQuestionResponse gqr;
 	gqr.status = getQuestionSuccessful;
 	gqr.question = m_game.getQuestionForUser(m_user.getUsername()).getQuestion();
@@ -21,6 +22,7 @@ RequestResult GameRequestHandler::submitAnswer(RequestInfo ri)
 {
 	SubmitAnswerRequest sart = JsonRequestPacketDeserializer::deserializeSubmitAnswerRequest(ri);
 	RequestResult r;
+	r.username = m_user.getUsername();
 	SubmitAnswerResponse sare;
 	sare.status = m_game.submitAnswer(m_user.getUsername(), sart.answerId);
 	sare.correctAnswerId = m_game.getCorrectAnswerId(m_user.getUsername());
@@ -32,6 +34,7 @@ RequestResult GameRequestHandler::submitAnswer(RequestInfo ri)
 RequestResult GameRequestHandler::getGameResults(RequestInfo ri)
 {
 	RequestResult r;
+	r.username = m_user.getUsername();
 	GetGameResultsResponse ggrr;
 	ggrr.status = gameEnded;
 	std::vector<PlayerResults> prs;
@@ -51,6 +54,7 @@ RequestResult GameRequestHandler::leaveGame(RequestInfo)
 	m_game.removePlayer(m_user.getUsername());
 
 	RequestResult r;
+	r.username = m_user.getUsername();
 	LeaveGameResponse lgr;
 	lgr.status = leaveGameResponse;
 	r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
@@ -89,6 +93,7 @@ RequestResult GameRequestHandler::handleRequest(const RequestInfo& requestInfo)
 		}
 	}
 	RequestResult r;
+	r.username = m_user.getUsername();
 	ErrorResponse e;
 	e.message = "irrelevant message";
 	r.response = JsonResponsePacketSerializer::serializeResponse(e);

@@ -15,6 +15,7 @@ RequestResult RoomMemberRequestHandler::leaveRoom(RequestInfo)
 	lrr.status = leaveRoomSuccessful;
 	r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
 	r.response = JsonResponsePacketSerializer::serializeResponse(lrr);
+	r.username = m_user.getUsername();
 	return r;
 }
 
@@ -50,7 +51,8 @@ RequestResult RoomMemberRequestHandler::getRoomsState(RequestInfo)
 		else {
 			r.newHandler = RequestHandlerFactory::getInstance().createRoomMemberRequestHandler(m_user, m_room);
 		}
-			r.response = JsonResponsePacketSerializer::serializeResponse(grsr);
+		r.response = JsonResponsePacketSerializer::serializeResponse(grsr);
+		r.username = m_user.getUsername();
 		return r;
     }
 	catch (...)
@@ -60,6 +62,7 @@ RequestResult RoomMemberRequestHandler::getRoomsState(RequestInfo)
 		e.message = "room closed";
 		r.response = JsonResponsePacketSerializer::serializeResponse(e);
 		r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
+		r.username = m_user.getUsername();
 		return r;
 	}
 }
@@ -85,5 +88,6 @@ RequestResult RoomMemberRequestHandler::handleRequest(const RequestInfo& request
 	e.message = "irrelevant message";
 	r.response = JsonResponsePacketSerializer::serializeResponse(e);
 	r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
+	r.username = m_user.getUsername();
 	return r;
 }

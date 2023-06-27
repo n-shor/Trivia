@@ -27,6 +27,7 @@ RequestResult MenuRequestHandler::handleRequest(const RequestInfo& requestInfo)
 	}
 
 	RequestResult r;
+	r.username = m_user.getUsername();
 	ErrorResponse e;
 	e.message = "irrelevant message";
 	r.response = JsonResponsePacketSerializer::serializeResponse(e);
@@ -43,6 +44,7 @@ bool MenuRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
 RequestResult MenuRequestHandler::signout(RequestInfo)
 {
 	RequestResult r;
+	r.username = m_user.getUsername();
 	LogoutResponse lr;
 	lr.status = signedOut;
 	r.newHandler = RequestHandlerFactory::getInstance().createLoginRequestHandler();
@@ -53,6 +55,7 @@ RequestResult MenuRequestHandler::signout(RequestInfo)
 RequestResult MenuRequestHandler::getRooms(RequestInfo)
 {
 	RequestResult r;
+	r.username = m_user.getUsername();
 	GetRoomsResponse grr;
 	grr.rooms = RequestHandlerFactory::getInstance().getRoomManager().getRooms();
 	grr.status = GetRoomsSuccessful;
@@ -65,6 +68,7 @@ RequestResult MenuRequestHandler::getPlayersInRoom(RequestInfo ri)
 {
 	GetPlayersInRoomRequest gpir = JsonRequestPacketDeserializer::deserializeGetPlayersRequest(ri);
 	RequestResult r;
+	r.username = m_user.getUsername();
 	GetPlayesInRoomResponse grr;
 	grr.players = RequestHandlerFactory::getInstance().getRoomManager().getRoom(gpir.roomId).getAllUsers();
 	r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
@@ -75,6 +79,7 @@ RequestResult MenuRequestHandler::getPlayersInRoom(RequestInfo ri)
 RequestResult MenuRequestHandler::getPersonalStats(RequestInfo)
 {
 	RequestResult r;
+	r.username = m_user.getUsername();
 	getPersonalStatsResponse grr;
 	grr.statistics = RequestHandlerFactory::getInstance().getStatisticsManager().getUserStatistics(m_user.getUsername());
 	grr.status = GetPersonalStatsSuccessful;
@@ -86,6 +91,7 @@ RequestResult MenuRequestHandler::getPersonalStats(RequestInfo)
 RequestResult MenuRequestHandler::getHighScore(RequestInfo)
 {
 	RequestResult r;
+	r.username = m_user.getUsername();
 	getHighScoreResponse grr;
 	grr.statistics = RequestHandlerFactory::getInstance().getStatisticsManager().getHighScore();
 	grr.status = GetHighScoreSuccessful;
@@ -98,6 +104,7 @@ RequestResult MenuRequestHandler::joinRoom(RequestInfo ri)
 {
 	JoinRoomRequest gpir = JsonRequestPacketDeserializer::deserializeJoinRoomRequest(ri);
 	RequestResult r;
+	r.username = m_user.getUsername();
 	JoinRoomResponse grr;
 	if (RequestHandlerFactory::getInstance().getRoomManager().getRoomState(gpir.roomId) == isActive ||
 		RequestHandlerFactory::getInstance().getRoomManager().getRoom(gpir.roomId).getRoomData().currentPlayers == 
@@ -125,6 +132,7 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo ri)
 {
 	CreateRoomRequest gpir = JsonRequestPacketDeserializer::deserializeCreateRoomRequest(ri);
 	RequestResult r;
+	r.username = m_user.getUsername();
 	CreateRoomResponse grr;
 
 	RoomData rd;
