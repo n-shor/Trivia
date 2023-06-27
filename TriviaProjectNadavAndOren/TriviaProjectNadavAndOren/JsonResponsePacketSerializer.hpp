@@ -154,6 +154,12 @@ public:
         return createBuffer(1, j.dump());
     }
 
+    static std::vector<unsigned char> serializeResponse(const AddQuestionResponse& response)
+    {
+        json j = { {"status", response.status} };
+        return createBuffer(1, j.dump());
+    }
+
 private:
     static std::vector<unsigned char> createBuffer(uint8_t code, const std::string& jsonString)
     {

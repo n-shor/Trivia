@@ -16,7 +16,21 @@ public:
 
     int getQuestionCount() 
     {
-        return questionCount;
+        std::string sql = "SELECT COUNT(*) FROM TRIVIA_QUESTIONS;";
+        sqlite3_stmt* stmt;
+
+        if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+            throw std::runtime_error("Error preparing SQL statement");
+        }
+
+        int totalAnswers = 0;
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            totalAnswers = sqlite3_column_int(stmt, 0);
+        }
+
+        sqlite3_finalize(stmt);
+        std::cout << "question count: " << totalAnswers << std::endl;
+        return totalAnswers;
     }
 
     bool open() override {
@@ -137,8 +151,14 @@ public:
 
     bool addQuestion(int id, std::string question, std::string optionA, std::string optionB,
         std::string optionC, std::string optionD, char correctAnswer) {
-        std::string sql = "INSERT INTO TRIVIA_QUESTIONS (ID, Question, OptionA, OptionB, OptionC, OptionD, CorrectAnswer) "
-            "VALUES (" + std::to_string(id) + ", '" + question + "', '" + optionA + "', '" + optionB + "', '" + optionC + "', '" + optionD + "', '" + correctAnswer + "');";
+        int correctAnswerInt = int(correctAnswer) - 97;
+        if (correctAnswerInt > 3 || correctAnswerInt < 0)
+        {
+            return false;
+        }
+        std::string sql = "INSERT OR IGNORE INTO TRIVIA_QUESTIONS VALUES (" + std::to_string(id) + ", '" + question + "', '" + optionA + "', '" + optionB + "', '" + optionC + "', '" + optionD + "', " + std::to_string(correctAnswerInt)[0] + ");";
+
+        std::cout << sql << std::endl;
 
         if (sqlite3_exec(db, sql.c_str(), nullptr, 0, nullptr) != SQLITE_OK) {
             std::cout << "Error inserting question" << std::endl;
@@ -167,7 +187,8 @@ public:
             ans.push_back(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4)));
             ans.push_back(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 5)));
             question = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-            correctAnswerId = std::stoi(std::to_string(*reinterpret_cast<const char*>(sqlite3_column_text(stmt, 6))));
+            correctAnswerId = std::stoi(std::to_string(*reinterpret_cast<const char*>(sqlite3_column_text(stmt, 6)))) - 48;
+            std::cout << "answer id: " << correctAnswerId << std::endl;
         }
 
         sqlite3_finalize(stmt);

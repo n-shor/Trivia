@@ -13,11 +13,11 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <StackLayout Padding="20">
-        <Label Text="Join Room" />
+        <Label Text="Join Room" TextColor="White"/>
         <ScrollView>
             <StackLayout x:Name="RoomsStackLayout" />
         </ScrollView>
-        <Button x:Name="JoinButton" Text="Join" Clicked="OnJoinButtonClicked" IsEnabled="false"/>
-        <Button Text="Back" Clicked="OnBackButtonClicked"/>
+        <Button x:Name="JoinButton" Text="Join" Clicked="OnJoinButtonClicked" IsEnabled="false" TextColor="White"/>
+        <Button Text="Back" Clicked="OnBackButtonClicked" TextColor="White"/>
     </StackLayout>
 </ContentPage>

@@ -9,8 +9,8 @@ enum LoginRequestStatus { AlreadyLoggedIn = 36, Error = -1, FailedLogin = 37, Us
 enum SubmitAnswerStatus { incorrectAnswer = 11, correctAnswer };
 enum GameRequestTypes { getQuestionReq = 4, submitAnswerReq, getGameResultsReq, leaveGameReq };
 enum GameRequeststatus { getQuestionSuccessful = 8, gameEnded, leaveGameResponse };
-enum MenuRequestTypes { CreateRoom = 21, GetRooms, GetPlayersInRoom, JoinRoom, GetStatistics, Logout, GetHighScore };
-enum MenuRequestStatus { signedOut = 28, GetRoomsSuccessful, GetPlayersInRoomSuccessful, GetPersonalStatsSuccessful, GetHighScoreSuccessful, joinRoomSuccessful, joinRoomUnSuccessful, CreateRoomSuccessful };
+enum MenuRequestTypes { CreateRoom = 21, GetRooms, GetPlayersInRoom, JoinRoom, GetStatistics, Logout, GetHighScore, AddQuestion = 110 };
+enum MenuRequestStatus { signedOut = 28, GetRoomsSuccessful, GetPlayersInRoomSuccessful, GetPersonalStatsSuccessful, GetHighScoreSuccessful, joinRoomSuccessful, joinRoomUnSuccessful, CreateRoomSuccessful , InvalidQuestion = 170, QuestionAdded };
 enum RoomAdminRequestTypes { CloseRoom = 43, StartGame = 2 };
 enum RoomAdminRequeststatus { closeRoomSuccessful = 13, startGameSuccessful, startGameUnsuccessful, theServerDoesntHaveEnoughQuestions };
 enum RoomMemberRequestTypes { LeaveRoom = 17, GetRoomsState };

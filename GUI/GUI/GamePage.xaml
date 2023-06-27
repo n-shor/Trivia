@@ -9,15 +9,15 @@
 	</Shell.BackButtonBehavior>
 
 	<StackLayout Padding="20">
-		<Label x:Name="QuestionLabel" Text="Question will appear here" />
-		<Button x:Name="Option1Button" Text="Option 1" Clicked="OnOptionButtonClicked"/>
-		<Button x:Name="Option2Button" Text="Option 2" Clicked="OnOptionButtonClicked"/>
-		<Button x:Name="Option3Button" Text="Option 3" Clicked="OnOptionButtonClicked"/>
-		<Button x:Name="Option4Button" Text="Option 4" Clicked="OnOptionButtonClicked"/>
-		<Label x:Name="RemainingQuestionsLabel" Text="Remaining questions: " />
-		<Label x:Name="CorrectAnswersLabel" Text="Correct answers: " />
-		<Label x:Name="RemainingTimeLabel" Text="Time left to answer: " />
-		<Label x:Name="WaitingLabel" Text="" />
+        <Label x:Name="QuestionLabel" Text="Question will appear here" TextColor="White" />
+        <Button x:Name="Option1Button" Text="Option 1" Clicked="OnOptionButtonClicked" TextColor="White"/>
+        <Button x:Name="Option2Button" Text="Option 2" Clicked="OnOptionButtonClicked" TextColor="White"/>
+        <Button x:Name="Option3Button" Text="Option 3" Clicked="OnOptionButtonClicked" TextColor="White"/>
+        <Button x:Name="Option4Button" Text="Option 4" Clicked="OnOptionButtonClicked" TextColor="White"/>
+        <Label x:Name="RemainingQuestionsLabel" Text="Remaining questions: " TextColor="White"/>
+        <Label x:Name="CorrectAnswersLabel" Text="Correct answers: " TextColor="White"/>
+        <Label x:Name="RemainingTimeLabel" Text="Time left to answer: " TextColor="White"/>
+        <Label x:Name="WaitingLabel" Text="" TextColor="White"/>
 	</StackLayout>
 
 </ContentPage>

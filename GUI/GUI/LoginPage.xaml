@@ -9,7 +9,8 @@
     <StackLayout Padding="20" VerticalOptions="CenterAndExpand">
 
         <Entry x:Name="UsernameEntry"
-               Placeholder="Username" />
+               Placeholder="Username" 
+               TextColor="White"/>
 
         <Entry x:Name="PasswordEntry"
                Placeholder="Password"

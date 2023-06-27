@@ -7,14 +7,14 @@
         <BackButtonBehavior IsVisible="False" IsEnabled="False" />
     </Shell.BackButtonBehavior>
     <StackLayout Padding="20">
-        <Label Text="Create Room" />
-        <Entry Placeholder="Room Name" x:Name="RoomNameEntry"/>
-        <Entry Placeholder="Time for Question" x:Name="TimeQuestionEntry" Keyboard="Numeric"/>
-        <Entry Placeholder="Number of Questions" x:Name="QuestionCountEntry" Keyboard="Numeric"/>
-        <Entry Placeholder="Number of Players" x:Name="PlayersNumberEntry" Keyboard="Numeric"/>
-        <Button Text="Create" Clicked="OnCreateButtonClicked"/>
-        <Button Text="Back" Clicked="OnBackButtonClicked" />
-        <Label x:Name="PlayersLabel" Text=""/>
-        <Label x:Name="AdminLabel" Text=""/>
+        <Label Text="Create Room" TextColor="White"/>
+        <Entry Placeholder="Room Name" x:Name="RoomNameEntry" TextColor="White"/>
+        <Entry Placeholder="Time for Question" x:Name="TimeQuestionEntry" Keyboard="Numeric" TextColor="White"/>
+        <Entry Placeholder="Number of Questions" x:Name="QuestionCountEntry" Keyboard="Numeric" TextColor="White"/>
+        <Entry Placeholder="Number of Players" x:Name="PlayersNumberEntry" Keyboard="Numeric" TextColor="White"/>
+        <Button Text="Create" Clicked="OnCreateButtonClicked" TextColor="White"/>
+        <Button Text="Back" Clicked="OnBackButtonClicked" TextColor="White" />
+        <Label x:Name="PlayersLabel" Text="" TextColor="White"/>
+        <Label x:Name="AdminLabel" Text="" TextColor="White"/>
     </StackLayout>
 </ContentPage>

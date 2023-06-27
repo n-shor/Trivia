@@ -5,7 +5,20 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
+public class AddQuestionRequest
+{
+    public string question { get; set; }
+    public string optionA { get; set; }
+    public string optionB { get; set; }
+    public string optionC { get; set; }
+    public string optionD { get; set; }
+    public char correctAnswer { get; set; }
+};
 
+public class AddQuestionResponse
+{
+    public int status { get; set; }
+};
 public class LoginRequest
 {
     public string username { get; set; }

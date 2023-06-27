@@ -26,6 +26,11 @@ namespace GUI
             Navigation.PushAsync(new StatisticsPage());
         }
 
+        private void OnAddQuestionButtonClicked(object sender, EventArgs e)
+        {
+            Navigation.PushAsync(new AddQuestionPage());
+        }
+
         private async void OnLogoutButtonClicked(object sender, EventArgs e)
         {
             Serielizer s = new Serielizer();

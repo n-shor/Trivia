@@ -7,14 +7,14 @@
         <BackButtonBehavior IsVisible="False" IsEnabled="False" />
     </Shell.BackButtonBehavior>
     <StackLayout Padding="20">
-        <Label Text="Personal Statistics" />
+        <Label Text="Personal Statistics" TextColor="White"/>
         <ListView x:Name="PersonalStatsList">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell Text="{Binding .}" />
+                    <TextCell Text="{Binding .}" TextColor="White"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Button Text="Back" Clicked="OnBackButtonClicked" />
+        <Button Text="Back" Clicked="OnBackButtonClicked" TextColor="White"/>
     </StackLayout>
 </ContentPage>

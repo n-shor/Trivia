@@ -24,6 +24,8 @@ RequestResult MenuRequestHandler::handleRequest(const RequestInfo& requestInfo)
 		return signout(requestInfo);
 	case GetHighScore:
 		return getHighScore(requestInfo);
+	case AddQuestion:
+		return addQuestion(requestInfo);
 	}
 
 	RequestResult r;
@@ -38,7 +40,7 @@ RequestResult MenuRequestHandler::handleRequest(const RequestInfo& requestInfo)
 bool MenuRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
 {
 	return requestInfo.messageCode == CreateRoom || requestInfo.messageCode == GetRooms || requestInfo.messageCode == GetPlayersInRoom ||
-		requestInfo.messageCode == JoinRoom || requestInfo.messageCode == GetStatistics || requestInfo.messageCode == Logout || requestInfo.messageCode == GetHighScore;
+		requestInfo.messageCode == JoinRoom || requestInfo.messageCode == GetStatistics || requestInfo.messageCode == Logout || requestInfo.messageCode == GetHighScore || requestInfo.messageCode == AddQuestion;
 }
 
 RequestResult MenuRequestHandler::signout(RequestInfo)
@@ -152,5 +154,26 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo ri)
 	grr.adminName = m_user.getUsername();
 	r.newHandler = RequestHandlerFactory::getInstance().createRoomAdminRequestHandler(m_user, RequestHandlerFactory::getInstance().getRoomManager().getRoom(rd.id));
 	r.response = JsonResponsePacketSerializer::serializeResponse(grr);
+	return r;
+}
+
+RequestResult MenuRequestHandler::addQuestion(RequestInfo ri)
+{
+	AddQuestionRequest adr = JsonRequestPacketDeserializer::deserializeAddQuestionRequest(ri);
+	RequestResult r;
+	r.username = m_user.getUsername();
+	r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
+
+	bool retStat = RequestHandlerFactory::getInstance().getStatisticsManager().getDB()->addQuestion(RequestHandlerFactory::getInstance().getStatisticsManager().getDB()->getQuestionCount()+1, adr.question, adr.optionA, adr.optionB, adr.optionC, adr.optionD, adr.correctAnswer);
+	AddQuestionResponse aqr;
+	if (retStat)
+	{
+		aqr.status = QuestionAdded;
+	}
+	else {
+		aqr.status = InvalidQuestion;
+	}
+
+	r.response = JsonResponsePacketSerializer::serializeResponse(aqr);
 	return r;
 }

@@ -8,6 +8,19 @@
 
 class IRequestHandler;
 
+struct AddQuestionRequest {
+    std::string question;
+    std::string optionA;
+    std::string optionB;
+    std::string optionC;
+    std::string optionD;
+    char correctAnswer;
+};
+
+struct AddQuestionResponse {
+    unsigned int status;
+};
+
 struct SubmitAnswerRequest
 {
     unsigned int answerId;
