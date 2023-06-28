@@ -33,3 +33,5 @@ This project includes the following bonuses:
 - Bonus Feature 14: [There is a page for adding questions into the database in the GUI] (real magshimim bonus)
 
 - Bonus Feature 15: [You can't even CREATE a room that has more questions than what the server's database holds]
+
+- Bonus Feature 16: [The player's name is red in the results screen]
