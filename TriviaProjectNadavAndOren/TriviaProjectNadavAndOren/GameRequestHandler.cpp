@@ -130,7 +130,8 @@ RequestResult GameRequestHandler::handleRequest(const RequestInfo& requestInfo)
 bool GameRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
 {
 	return requestInfo.messageCode == getQuestionReq || requestInfo.messageCode == submitAnswerReq ||
-		requestInfo.messageCode == getGameResultsReq || requestInfo.messageCode == leaveGameReq || requestInfo.messageCode == LeaderBoard;
+		requestInfo.messageCode == getGameResultsReq || requestInfo.messageCode == leaveGameReq || 
+		requestInfo.messageCode == LeaderBoard || requestInfo.messageCode == checkForEnd;
 }
 
 GameRequestHandler::GameRequestHandler(std::string lu, Game& g) : m_game(g), m_user(lu)

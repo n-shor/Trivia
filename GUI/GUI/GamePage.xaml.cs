@@ -64,6 +64,7 @@ namespace GUI
         {
             timerCts = new CancellationTokenSource();
             remainingTime = roomData.timePerQuestion;
+            RemainingTimeLabel.Text = $"Time left to answer: {remainingTime}";
 
             try
             {
@@ -124,6 +125,18 @@ namespace GUI
             }
             else
             {
+                WaitingLabel.Text = "Game has ended. Waiting for all players to finish...";
+                WaitingLabel.IsVisible = true;
+
+                QuestionLabel.IsVisible = false;
+                Option1Button.IsVisible = false;
+                Option2Button.IsVisible = false;
+                Option3Button.IsVisible = false;
+                Option4Button.IsVisible = false;
+                RemainingQuestionsLabel.IsVisible = false;
+                CorrectAnswersLabel.IsVisible = false;
+                RemainingTimeLabel.IsVisible = false;
+
                 // Start the game end check thread
                 CheckIfGameHasEnded();
             }

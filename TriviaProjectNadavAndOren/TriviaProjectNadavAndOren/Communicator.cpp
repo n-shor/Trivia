@@ -28,16 +28,16 @@ void Communicator::bindAndListen()
 //helper function in order to parse the message properly
 std::pair<int, std::string> recvMessage(int clientSocket) {
     char headerData[5] = { 0 };
-
+    unsigned char* headerDataUnsigned = { 0 };
     if (recv(clientSocket, headerData, 5, 0) <= 0)
     {
         throw std::runtime_error("Failed to receive message from client");
     }
-
-    int messageType = headerData[0]; // Interpret the first byte as the status
+    headerDataUnsigned = (unsigned char*)headerData;
+    int messageType = headerDataUnsigned[0]; // Interpret the first byte as the status
 
     // Interpret the next 4 bytes as an integer for the length
-    int messageSize = *reinterpret_cast<int*>(headerData + 1);
+    int messageSize = *reinterpret_cast<int*>(headerDataUnsigned + 1);
 
     std::vector<char> messageJson(messageSize);
     int bytesToReceive = messageSize;
