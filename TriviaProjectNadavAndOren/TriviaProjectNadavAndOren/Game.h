@@ -5,12 +5,16 @@
 #include "LoggedUser.h"
 #include "IDatabase.h"
 #include <mutex>
+#include <ctime>
+
+const std::string notEnoughQuestionsMessage = "the server doesnt have enough questions for the requested game";
 
 enum submitAnswerStatus { incorrectAnswer = 11, correctAnswer};
 
 class Game
 {
 private:
+	Room m_room;
 	std::vector<Question> m_questions;
 	std::map<std::string, GameData> m_players;
 	static std::mutex m_playersMutex;
@@ -24,8 +28,8 @@ public:
 	void removePlayer(const std::string);
 	int getGameId() const;
 	bool operator==(const Game& other) const;
-	int getCorrectAnswerId(const std::string);
-	std::map<std::string, GameData>& getPlayers();
+	const int getCorrectAnswerId(const std::string);
+	const std::map<std::string, GameData>& getPlayers() const;
 	bool hasGameEnded() const;
 	static int constexpr playerFinished = 250;
 };

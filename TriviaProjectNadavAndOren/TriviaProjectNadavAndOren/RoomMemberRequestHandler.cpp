@@ -56,7 +56,7 @@ RequestResult RoomMemberRequestHandler::getRoomsState(RequestInfo)
 		r.username = m_user.getUsername();
 		return r;
     }
-	catch (int sixtyNine)
+	catch (...)
 	{
 		RequestResult r;
 		ErrorResponse e;

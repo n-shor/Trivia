@@ -1,5 +1,6 @@
 #include "Communicator.h"
 #include "RoomAdminRequestHandler.h"
+#include "GameRequestHandler.h"
 #define PORT 8080
 
 void Communicator::bindAndListen()
@@ -59,7 +60,7 @@ std::pair<int, std::string> recvMessage(int clientSocket) {
 }
 
 
-void Communicator::handleNewClient(SOCKET s)
+void Communicator::handleNewClient(const SOCKET s)
 {
     std::cout << "Client connected." << std::endl;
 
@@ -121,6 +122,8 @@ void Communicator::handleNewClient(SOCKET s)
         ri.messageCode = CloseRoom;
         m_clients[s].second->handleRequest(ri);
         ri.messageCode = LeaveRoom;
+        m_clients[s].second->handleRequest(ri);
+        ri.messageCode = leaveGameReq;
         m_clients[s].second->handleRequest(ri);
 
 

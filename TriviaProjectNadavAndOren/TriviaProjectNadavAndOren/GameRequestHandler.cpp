@@ -4,7 +4,7 @@
 
 bool GameRequestHandler::m_gameEnded = false;
 
-RequestResult GameRequestHandler::getQuestion(RequestInfo ri)
+RequestResult GameRequestHandler::getQuestion(const RequestInfo ri)
 {
 	RequestResult r;
 	r.username = m_user.getUsername();
@@ -21,7 +21,7 @@ RequestResult GameRequestHandler::getQuestion(RequestInfo ri)
 	return r;
 }
 
-RequestResult GameRequestHandler::submitAnswer(RequestInfo ri)
+RequestResult GameRequestHandler::submitAnswer(const RequestInfo ri)
 {
 	SubmitAnswerRequest sart = JsonRequestPacketDeserializer::deserializeSubmitAnswerRequest(ri);
 	RequestResult r;
@@ -38,7 +38,7 @@ RequestResult GameRequestHandler::submitAnswer(RequestInfo ri)
 	return r;
 }
 
-RequestResult GameRequestHandler::getGameResults(RequestInfo ri)
+RequestResult GameRequestHandler::getGameResults(const RequestInfo ri)
 {
 	RequestResult r;
 	r.username = m_user.getUsername();
@@ -56,7 +56,7 @@ RequestResult GameRequestHandler::getGameResults(RequestInfo ri)
 	return r;
 }
 
-RequestResult GameRequestHandler::leaveGame(RequestInfo)
+RequestResult GameRequestHandler::leaveGame(const RequestInfo)
 {
 	m_game.removePlayer(m_user.getUsername());
 
@@ -69,7 +69,7 @@ RequestResult GameRequestHandler::leaveGame(RequestInfo)
 	return r;
 }
 
-RequestResult GameRequestHandler::leaderboard(RequestInfo)
+RequestResult GameRequestHandler::leaderboard(const RequestInfo)
 {
 	RequestResult r;
 	r.username = m_user.getUsername();
@@ -83,7 +83,7 @@ RequestResult GameRequestHandler::leaderboard(RequestInfo)
 	return r;
 }
 
-RequestResult GameRequestHandler::checkGameEnd(RequestInfo)
+RequestResult GameRequestHandler::checkGameEnd(const RequestInfo)
 {
 	RequestResult r;
 	CheckForEndReponse cfer;

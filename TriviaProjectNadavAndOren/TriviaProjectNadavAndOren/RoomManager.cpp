@@ -30,12 +30,12 @@ void RoomManager::deleteRoom(int ID)
     }
 }
 
-unsigned int RoomManager::getRoomState(int ID)
+const unsigned int RoomManager::getRoomState(int ID) const
 {
     return m_rooms[ID].getRoomData().isActive;
 }
 
-std::vector<RoomData> RoomManager::getRooms()
+const std::vector<RoomData> RoomManager::getRooms() const
 {
     std::lock_guard<std::mutex> lock(m_roomsMutex);
 
@@ -47,7 +47,7 @@ std::vector<RoomData> RoomManager::getRooms()
 }
 
 
-Room& RoomManager::getRoom(int ID)
+Room& RoomManager::getRoom(int ID) const
 {
     return m_rooms[ID];
 }

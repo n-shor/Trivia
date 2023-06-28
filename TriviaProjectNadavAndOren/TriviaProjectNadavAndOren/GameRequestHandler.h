@@ -13,12 +13,12 @@ class GameRequestHandler : public IRequestHandler
 private:
 	Game& m_game;
 	LoggedUser m_user;
-	RequestResult getQuestion(RequestInfo);
-	RequestResult submitAnswer(RequestInfo);
-	RequestResult getGameResults(RequestInfo);
-	RequestResult leaveGame(RequestInfo);
-	RequestResult leaderboard(RequestInfo);
-	RequestResult checkGameEnd(RequestInfo);
+	RequestResult getQuestion(const RequestInfo);
+	RequestResult submitAnswer(const RequestInfo);
+	RequestResult getGameResults(const RequestInfo);
+	RequestResult leaveGame(const RequestInfo);
+	RequestResult leaderboard(const RequestInfo);
+	RequestResult checkGameEnd(const RequestInfo);
 	bool isRequestRelevant(const RequestInfo& requestInfo) override;
 	static bool m_gameEnded;
 

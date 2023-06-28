@@ -8,17 +8,17 @@ Question::Question()
 {
 }
 
-std::string Question::getQuestion()
+const std::string Question::getQuestion() const
 {
 	return m_question;
 }
 
-std::vector<std::string> Question::getPossibleAnswers()
+const std::vector<std::string> Question::getPossibleAnswers() const
 {
 	return m_possibleAnswers;
 }
 
-int Question::getCorrectAnswerId()
+const int Question::getCorrectAnswerId() const
 {
 	return correctAnswerId;
 }

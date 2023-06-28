@@ -1,7 +1,7 @@
 #include "Game.h"
 #include "RequestHandlerFactory.h"
 
-std::map<std::string, clock_t> m_timeTracker;
+std::map<std::string, time_t> m_timeTracker;
 std::mutex m_timeTrackerMutex;
 std::mutex Game::m_playersMutex;
 Question end = Question();
@@ -14,12 +14,12 @@ void Game::submitGameStatsToDB(GameData& gd, IDatabase* db)
 	}
 }
 
-Game::Game(Room& r, IDatabase* db, const unsigned int gameId)
+Game::Game(Room& r, IDatabase* db, const unsigned int gameId) : m_room(r)
 {
 	std::lock_guard<std::mutex> lock(m_playersMutex);
 	if (r.getRoomData().numOfQuestionsInGame > db->getQuestionCount())
 	{
-		throw(69);
+		throw(std::logic_error(notEnoughQuestionsMessage));
 	}
 	
 	for (int i = 0; i < r.getRoomData().numOfQuestionsInGame; i++)
@@ -40,7 +40,9 @@ Question Game::getQuestionForUser(std::string lu)
 {
 	std::lock_guard<std::mutex> lock(m_playersMutex);
 	std::lock_guard<std::mutex> lock2(m_timeTrackerMutex);
-	m_timeTracker[lu] = clock();
+	time_t startTime;
+	time(&startTime);
+	m_timeTracker[lu] = startTime;
 	auto& game = m_players[lu];
 	return game.currentQuestion;
 }
@@ -76,7 +78,9 @@ int Game::submitAnswer(std::string lu, unsigned int id)
 			m_players[lu].currentQuestion = end;
 			ret = playerFinished;
 		}
-		m_players[lu].AverageAnswerTime = (m_players[lu].AverageAnswerTime * m_players[lu].correctAnswerCount + double(clock() - m_timeTracker[lu])) / (m_players[lu].correctAnswerCount + 1);
+		time_t finishTime;
+		time(&finishTime);
+		m_players[lu].AverageAnswerTime = (m_players[lu].AverageAnswerTime * m_players[lu].correctAnswerCount + double(difftime(finishTime, m_timeTracker[lu]))) / (m_players[lu].correctAnswerCount + 1);
 		submitGameStatsToDB(m_players[lu], RequestHandlerFactory::getInstance().getStatisticsManager().getDB());
 		return ret;
 	}
@@ -109,6 +113,14 @@ void Game::removePlayer(std::string lu)
 	if (ita != m_timeTracker.end()) {
 		m_timeTracker.erase(ita);
 	}
+
+	RequestHandlerFactory::getInstance().getRoomManager().getRoom(m_room.getRoomData().id).removeUser(lu);
+
+	if (m_players.empty())
+	{
+		RequestHandlerFactory::getInstance().getRoomManager().deleteRoom(m_room.getRoomData().id);
+		RequestHandlerFactory::getInstance().getGameManager().deleteGame(m_gameId);
+	}
 }
 
 int Game::getGameId() const
@@ -121,12 +133,12 @@ bool Game::operator==(const Game& other) const
 	return m_gameId == other.m_gameId;
 }
 
-int Game::getCorrectAnswerId(std::string lu)
+const int Game::getCorrectAnswerId(std::string lu)
 {
 	return m_players[lu].currentQuestion.getCorrectAnswerId();
 }
 
-std::map<std::string, GameData>& Game::getPlayers()
+const std::map<std::string, GameData>& Game::getPlayers() const
 {
 	return m_players;
 }
@@ -140,5 +152,6 @@ bool Game::hasGameEnded() const
 			return false;
 		}
 	}
+	RequestHandlerFactory::getInstance().getRoomManager().deleteRoom(m_room.getRoomData().id);
 	return true;
 }

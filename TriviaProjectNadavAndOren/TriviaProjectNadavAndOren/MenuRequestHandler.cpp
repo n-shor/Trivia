@@ -44,7 +44,7 @@ bool MenuRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
 		requestInfo.messageCode == JoinRoom || requestInfo.messageCode == GetStatistics || requestInfo.messageCode == Logout || requestInfo.messageCode == GetHighScore || requestInfo.messageCode == AddQuestion;
 }
 
-RequestResult MenuRequestHandler::signout(RequestInfo)
+RequestResult MenuRequestHandler::signout(const RequestInfo)
 {
 	RequestResult r;
 	r.username = m_user.getUsername();
@@ -55,7 +55,7 @@ RequestResult MenuRequestHandler::signout(RequestInfo)
 	return r;
 }
 
-RequestResult MenuRequestHandler::getRooms(RequestInfo)
+RequestResult MenuRequestHandler::getRooms(const RequestInfo)
 {
 	RequestResult r;
 	r.username = m_user.getUsername();
@@ -67,7 +67,7 @@ RequestResult MenuRequestHandler::getRooms(RequestInfo)
 	return r;
 }
 
-RequestResult MenuRequestHandler::getPlayersInRoom(RequestInfo ri)
+RequestResult MenuRequestHandler::getPlayersInRoom(const RequestInfo ri)
 {
 	GetPlayersInRoomRequest gpir = JsonRequestPacketDeserializer::deserializeGetPlayersRequest(ri);
 	RequestResult r;
@@ -79,7 +79,7 @@ RequestResult MenuRequestHandler::getPlayersInRoom(RequestInfo ri)
 	return r;
 }
 
-RequestResult MenuRequestHandler::getPersonalStats(RequestInfo)
+RequestResult MenuRequestHandler::getPersonalStats(const RequestInfo)
 {
 	RequestResult r;
 	r.username = m_user.getUsername();
@@ -91,7 +91,7 @@ RequestResult MenuRequestHandler::getPersonalStats(RequestInfo)
 	return r;
 }
 
-RequestResult MenuRequestHandler::getHighScore(RequestInfo)
+RequestResult MenuRequestHandler::getHighScore(const RequestInfo)
 {
 	RequestResult r;
 	r.username = m_user.getUsername();
@@ -103,7 +103,7 @@ RequestResult MenuRequestHandler::getHighScore(RequestInfo)
 	return r;
 }
 
-RequestResult MenuRequestHandler::joinRoom(RequestInfo ri)
+RequestResult MenuRequestHandler::joinRoom(const RequestInfo ri)
 {
 	JoinRoomRequest gpir = JsonRequestPacketDeserializer::deserializeJoinRoomRequest(ri);
 	RequestResult r;
@@ -131,7 +131,7 @@ RequestResult MenuRequestHandler::joinRoom(RequestInfo ri)
 	return r;
 }
 
-RequestResult MenuRequestHandler::createRoom(RequestInfo ri)
+RequestResult MenuRequestHandler::createRoom(const RequestInfo ri)
 {
 	CreateRoomRequest gpir = JsonRequestPacketDeserializer::deserializeCreateRoomRequest(ri);
 	RequestResult r;
@@ -176,7 +176,7 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo ri)
 	return r;
 }
 
-RequestResult MenuRequestHandler::addQuestion(RequestInfo ri)
+RequestResult MenuRequestHandler::addQuestion(const RequestInfo ri)
 {
 	AddQuestionRequest adr = JsonRequestPacketDeserializer::deserializeAddQuestionRequest(ri);
 	RequestResult r;

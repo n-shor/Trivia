@@ -13,8 +13,8 @@ private:
 public:
     Question(std::string m_question, std::vector<std::string> m_possibleAnswers, int correctAnswerId);
     Question();
-    std::string getQuestion();
-    std::vector<std::string> getPossibleAnswers();
-    int getCorrectAnswerId();
+    const std::string getQuestion() const;
+    const std::vector<std::string> getPossibleAnswers() const;
+    const int getCorrectAnswerId() const;
     bool operator==(const Question& c); 
 };

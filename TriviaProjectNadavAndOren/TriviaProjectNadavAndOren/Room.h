@@ -12,10 +12,10 @@ private:
 public:
     Room();
     Room(RoomData&);
-    void addUser(LoggedUser);
-    void removeUser(LoggedUser);
-    std::vector<std::string> getAllUsers();
-    RoomData& getRoomData();
+    void addUser(const LoggedUser);
+    void removeUser(const LoggedUser);
+    const std::vector<std::string> getAllUsers();
+    const RoomData& getRoomData() const;
     void activateRoom();
     void deactivateRoom();
 };

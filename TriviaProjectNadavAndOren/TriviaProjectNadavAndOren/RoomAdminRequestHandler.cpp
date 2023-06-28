@@ -34,9 +34,9 @@ RequestResult RoomAdminRequestHandler::startGame(RequestInfo)
 		r.response = JsonResponsePacketSerializer::serializeResponse(sgr);
 		return r;
 	}
-	catch (int sixtyNine)
+	catch (std::logic_error e)
 	{
-		if (sixtyNine == 69)
+		if (e.what() == notEnoughQuestionsMessage)
 		{
 			sgr.status = theServerDoesntHaveEnoughQuestions;
 		}
@@ -67,7 +67,7 @@ RequestResult RoomAdminRequestHandler::getRoomsState(RequestInfo)
 	try {
 		if (!contains(m_room.getAllUsers(), m_room.getRoomData().adminName))
 		{
-			throw 69;
+			throw std::logic_error("the user is not in the room");
 		}
 		RequestResult r;
 		GetRoomStateResponse grsr;
@@ -81,9 +81,9 @@ RequestResult RoomAdminRequestHandler::getRoomsState(RequestInfo)
 		r.username = m_user.getUsername();
 		return r;
 	}
-	catch (int sixtyNine)
+	catch (std::logic_error le)
 	{
-		std::cout << sixtyNine << "\n";
+		std::cout << le.what() << "\n";
 	}
 	catch (const std::exception& e)
 	{

@@ -17,9 +17,9 @@ private:
 
     bool isRequestRelevant(const RequestInfo& requestInfo) override;
 
-    RequestResult closeRoom(RequestInfo);
-    RequestResult startGame(RequestInfo);
-    RequestResult getRoomsState(RequestInfo);
+    RequestResult closeRoom(const RequestInfo);
+    RequestResult startGame(const RequestInfo);
+    RequestResult getRoomsState(const RequestInfo);
 
 public:
     RoomAdminRequestHandler(std::string username, Room& room);

@@ -14,14 +14,14 @@ private:
 
     bool isRequestRelevant(const RequestInfo& requestInfo) override;
 
-    RequestResult signout(RequestInfo);
-    RequestResult getRooms(RequestInfo);
-    RequestResult getPlayersInRoom(RequestInfo);
-    RequestResult getPersonalStats(RequestInfo);
-    RequestResult getHighScore(RequestInfo);
-    RequestResult joinRoom(RequestInfo);
-    RequestResult createRoom(RequestInfo);
-    RequestResult addQuestion(RequestInfo);
+    RequestResult signout(const RequestInfo);
+    RequestResult getRooms(const RequestInfo);
+    RequestResult getPlayersInRoom(const RequestInfo);
+    RequestResult getPersonalStats(const RequestInfo);
+    RequestResult getHighScore(const RequestInfo);
+    RequestResult joinRoom(const RequestInfo);
+    RequestResult createRoom(const RequestInfo);
+    RequestResult addQuestion(const RequestInfo);
 
 public:
     MenuRequestHandler(std::string username);

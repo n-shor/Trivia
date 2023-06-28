@@ -10,6 +10,14 @@ class RoomAdminRequestHandler;
 class RoomMemberRequestHandler;
 class GameRequestHandler;
 
+class NotEnoughQuestions : public std::exception {
+public:
+    const char* what() {
+        std::string s = "the server does not have enough questions for the requested game";
+        return s.c_str();
+    }
+};
+
 class RequestHandlerFactory
 {
     static std::unique_ptr<RequestHandlerFactory> instance;
