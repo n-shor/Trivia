@@ -35,10 +35,10 @@ namespace GUI
 
         private void FetchQuestionData()
         {
-            Serielizer s = new Serielizer();
+            Serializer s = new Serializer();
             s.sendMessage(ClientSocket.sock, (int)GameRequestTypes.getQuestionReq, "");
 
-            var data = Deserielizer.getResponse(ClientSocket.sock);
+            var data = Deserializer.getResponse(ClientSocket.sock);
 
             if (data.jsonData != "{\"message\":\"irrelevant message\"}")
             {
@@ -104,10 +104,10 @@ namespace GUI
             var request = new SubmitAnswerRequest { answerId = selectedOption };
             var jsonString = JsonSerializer.Serialize(request);
 
-            Serielizer s = new Serielizer();
+            Serializer s = new Serializer();
             s.sendMessage(ClientSocket.sock, (int)GameRequestTypes.submitAnswerReq, jsonString);
 
-            var data = Deserielizer.getResponse(ClientSocket.sock);
+            var data = Deserializer.getResponse(ClientSocket.sock);
 
             SubmitAnswerResponse response = JsonSerializer.Deserialize<SubmitAnswerResponse>(data.jsonData);
 
@@ -150,17 +150,19 @@ namespace GUI
             {
                 while (!gameEndCheckCts.IsCancellationRequested)
                 {
-                    Serielizer s = new Serielizer();
+                    Serializer s = new Serializer();
                     s.sendMessage(ClientSocket.sock, (int)GameRequestTypes.checkForEnd, "");
 
-                    var data = Deserielizer.getResponse(ClientSocket.sock);
+                    var data = Deserializer.getResponse(ClientSocket.sock);
 
                     CheckForEndReponse response = JsonSerializer.Deserialize<CheckForEndReponse>(data.jsonData);
 
                     if (response.gameEnded == 1)
                     {
                         gameEndCheckCts.Cancel();
-                        await Navigation.PushAsync(new GameResultsPage(playerName));
+
+                        // perform navigation on the main thread
+                        await MainThread.InvokeOnMainThreadAsync(async () => await Navigation.PushAsync(new GameResultsPage(playerName)));
                     }
 
                     // Wait for 3 seconds before the next check
@@ -168,5 +170,6 @@ namespace GUI
                 }
             }, gameEndCheckCts.Token);
         }
+
     }
 }

@@ -27,10 +27,10 @@ namespace GUI
             var l = new LoginRequest { username = username, password = password };
             string jsonString = JsonSerializer.Serialize(l);
 
-            Serielizer s = new Serielizer();
+            Serializer s = new Serializer();
             s.sendMessage(ClientSocket.sock, (int)1, jsonString);
 
-            var data = Deserielizer.getResponse(ClientSocket.sock);
+            var data = Deserializer.getResponse(ClientSocket.sock);
             LoginResponse json = JsonSerializer.Deserialize<LoginResponse>(data.jsonData);
 
             // Now we check if the login was successful.

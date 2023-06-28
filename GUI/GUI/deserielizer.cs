@@ -195,7 +195,7 @@ public class GameData
 
 namespace GUI
 {
-    internal class Deserielizer
+    internal class Deserializer
     {
         public static ( int type, string jsonData ) getResponse(Socket sock)
         {

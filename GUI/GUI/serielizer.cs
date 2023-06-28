@@ -19,7 +19,7 @@ enum RoomMemberRequeststatus { leaveRoomSuccessful = 19, getRoomsStateRes };
 
 namespace GUI
 {
-    public class Serielizer
+    public class Serializer
     {
         public void sendMessage(Socket clientSocket, int type, string buffer)
         {

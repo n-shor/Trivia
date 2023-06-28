@@ -43,10 +43,10 @@ namespace GUI
 
             string jsonString = JsonSerializer.Serialize(request);
 
-            Serielizer s = new Serielizer();
+            Serializer s = new Serializer();
             s.sendMessage(ClientSocket.sock, (int)MenuRequestTypes.CreateRoom, jsonString);
 
-            var data = Deserielizer.getResponse(ClientSocket.sock);
+            var data = Deserializer.getResponse(ClientSocket.sock);
 
             CreateRoomResponse response = JsonSerializer.Deserialize<CreateRoomResponse>(data.jsonData);
 

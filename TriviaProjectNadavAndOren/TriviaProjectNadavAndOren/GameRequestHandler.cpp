@@ -2,6 +2,8 @@
 #include "RequestHandlerFactory.h"
 #include "Game.h"
 
+bool GameRequestHandler::m_gameEnded = false;
+
 RequestResult GameRequestHandler::getQuestion(RequestInfo ri)
 {
 	RequestResult r;

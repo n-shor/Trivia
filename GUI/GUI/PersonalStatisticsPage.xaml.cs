@@ -15,10 +15,10 @@ namespace GUI
         public PersonalStatisticsPage()
         {
             InitializeComponent();
-            Serielizer s = new Serielizer();
+            Serializer s = new Serializer();
             s.sendMessage(ClientSocket.sock, (int)MenuRequestTypes.GetStatistics, "");
 
-            var data = Deserielizer.getResponse(ClientSocket.sock);
+            var data = Deserializer.getResponse(ClientSocket.sock);
             GetPersonalStatsResponse json = JsonSerializer.Deserialize<GetPersonalStatsResponse>(data.jsonData);
 
             // Use the deserialized personal statistics list to populate the ListView

@@ -4,6 +4,7 @@
 #include <map>
 #include "LoggedUser.h"
 #include "IDatabase.h"
+#include <mutex>
 
 enum submitAnswerStatus { incorrectAnswer = 11, correctAnswer};
 
@@ -12,8 +13,9 @@ class Game
 private:
 	std::vector<Question> m_questions;
 	std::map<std::string, GameData> m_players;
+	static std::mutex m_playersMutex;
 	unsigned int m_gameId;
-	void submitGameStatsToDB(GameData, IDatabase*);
+	void submitGameStatsToDB(GameData&, IDatabase*);
 
 public:
 	Game(Room&, IDatabase*, const unsigned int);

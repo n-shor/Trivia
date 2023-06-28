@@ -30,10 +30,10 @@ public partial class AddQuestionPage : ContentPage
             var l = new AddQuestionRequest { correctAnswer = correctAnswer[0], optionA = opA, optionB = opB, optionC = opC, optionD = opD, question = question };
             string jsonString = JsonSerializer.Serialize(l);
 
-            Serielizer s = new Serielizer();
+            Serializer s = new Serializer();
             s.sendMessage(ClientSocket.sock, (int)MenuRequestTypes.AddQuestion, jsonString);
 
-            var data = Deserielizer.getResponse(ClientSocket.sock);
+            var data = Deserializer.getResponse(ClientSocket.sock);
             AddQuestionResponse json = JsonSerializer.Deserialize<AddQuestionResponse>(data.jsonData);
 
             if (json.status == (int)MenuRequestStatus.QuestionAdded)

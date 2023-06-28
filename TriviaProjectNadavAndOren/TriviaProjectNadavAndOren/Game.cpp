@@ -2,9 +2,11 @@
 #include "RequestHandlerFactory.h"
 
 std::map<std::string, clock_t> m_timeTracker;
+std::mutex m_timeTrackerMutex;
+std::mutex Game::m_playersMutex;
 Question end = Question();
 
-void Game::submitGameStatsToDB(GameData gd, IDatabase* db)
+void Game::submitGameStatsToDB(GameData& gd, IDatabase* db)
 {
 	for (auto it = m_players.begin(); it != m_players.end(); ++it)
 	{
@@ -14,7 +16,7 @@ void Game::submitGameStatsToDB(GameData gd, IDatabase* db)
 
 Game::Game(Room& r, IDatabase* db, const unsigned int gameId)
 {
-
+	std::lock_guard<std::mutex> lock(m_playersMutex);
 	if (r.getRoomData().numOfQuestionsInGame > db->getQuestionCount())
 	{
 		throw(69);
@@ -36,6 +38,8 @@ Game::Game(Room& r, IDatabase* db, const unsigned int gameId)
 
 Question Game::getQuestionForUser(std::string lu)
 {
+	std::lock_guard<std::mutex> lock(m_playersMutex);
+	std::lock_guard<std::mutex> lock2(m_timeTrackerMutex);
 	m_timeTracker[lu] = clock();
 	auto& game = m_players[lu];
 	return game.currentQuestion;
@@ -56,7 +60,9 @@ int getIndex(std::vector<Question> v, Question K)
 
 int Game::submitAnswer(std::string lu, unsigned int id)
 {
+	std::lock_guard<std::mutex> lock(m_playersMutex);
 	int ret = 0;
+	std::cout << "submit answer" << lu << std::endl;
 	if (m_players[lu].currentQuestion.getCorrectAnswerId() == id)
 	{
 		m_players[lu].correctAnswerCount++;
@@ -93,6 +99,7 @@ int Game::submitAnswer(std::string lu, unsigned int id)
 
 void Game::removePlayer(std::string lu)
 {
+	std::lock_guard<std::mutex> lock(m_playersMutex);
 	auto ite = m_players.find(lu);
 	if (ite != m_players.end()) {
 		m_players.erase(ite);

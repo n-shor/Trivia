@@ -18,47 +18,50 @@ namespace GUI
 
         private void FetchAndDisplayLeaderboardData()
         {
-            // Send request for leaderboard data
-            Serielizer s = new Serielizer();
+            Serializer s = new Serializer();
             s.sendMessage(ClientSocket.sock, (int)GameRequestTypes.LeaderBoard, "");
 
-            // Get response
-            var data = Deserielizer.getResponse(ClientSocket.sock);
+            var data = Deserializer.getResponse(ClientSocket.sock);
 
-            // Deserialize response into a leaderboard response object
             leaderBoardResponse response = JsonSerializer.Deserialize<leaderBoardResponse>(data.jsonData);
 
-            // Sort the players by their scores in descending order
-            var sortedPlayers = response.players.OrderByDescending(player => player.Value).ToDictionary(player => player.Key, player => player.Value);
+            var sortedPlayers = response.players.OrderByDescending(player => player.Value).ToList();
 
-            // Display the leaderboard
-            foreach (var player in sortedPlayers)
+            WinnerLabel.Text += sortedPlayers[0].Key;
+            if (sortedPlayers[0].Key == currentPlayerName)
             {
-                var playerName = new Label
-                {
-                    Text = player.Key,
-                    FontSize = 30,
-                    TextColor = player.Key == currentPlayerName ? Colors.Red : Colors.White
-                };
-
-                var playerScore = new Label
-                {
-                    Text = player.Value.ToString(),
-                    FontSize = 30,
-                    TextColor = Colors.White
-                };
-
-                LeaderBoardStackLayout.Children.Add(new StackLayout
-                {
-                    Orientation = StackOrientation.Horizontal,
-                    Children = { playerName, playerScore }
-                });
+                WinnerLabel.TextColor = Colors.Red;
             }
+
+            // Create a list of leaderboard entries
+            var leaderboardEntries = new List<LeaderboardEntry>();
+            for (int i = 0; i < sortedPlayers.Count; i++)
+            {
+                var entry = new LeaderboardEntry
+                {
+                    RankPlayer = $"{i + 1}.",
+                    PlayerName = sortedPlayers[i].Key,
+                    Score = $"Score: {sortedPlayers[i].Value}",
+                    Color = sortedPlayers[i].Key == currentPlayerName ? Colors.Red : Colors.White
+                };
+                leaderboardEntries.Add(entry);
+            }
+
+            // Bind the ListView to the list of leaderboard entries
+            LeaderboardListView.ItemsSource = leaderboardEntries;
         }
 
         void OnMainMenuButtonClicked(object sender, System.EventArgs e)
         {
             Navigation.PushAsync(new MainMenuPage());
         }
+    }
+
+    public class LeaderboardEntry
+    {
+        public string RankPlayer { get; set; }
+        public string PlayerName { get; set; }
+        public string Score { get; set; }
+        public Color Color { get; set; }
     }
 }

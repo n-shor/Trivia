@@ -11,7 +11,7 @@
 	<AbsoluteLayout>
 
 		<StackLayout AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All" Padding="20">
-			<Label x:Name="QuestionLabel" Text="Question will appear here" TextColor="White" />
+			<Label x:Name="QuestionLabel" Text="Question will appear here" TextColor="White" FontSize="40"/>
 			<Button x:Name="Option1Button" Text="Option 1" BackgroundColor="MediumBlue" Clicked="OnOptionButtonClicked" TextColor="White"/>
 			<Button x:Name="Option2Button" Text="Option 2" BackgroundColor="MediumBlue" Clicked="OnOptionButtonClicked" TextColor="White"/>
 			<Button x:Name="Option3Button" Text="Option 3" BackgroundColor="MediumBlue" Clicked="OnOptionButtonClicked" TextColor="White"/>

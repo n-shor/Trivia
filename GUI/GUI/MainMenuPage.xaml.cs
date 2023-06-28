@@ -33,12 +33,12 @@ namespace GUI
 
         private async void OnLogoutButtonClicked(object sender, EventArgs e)
         {
-            Serielizer s = new Serielizer();
+            Serializer s = new Serializer();
             s.sendMessage(ClientSocket.sock,
                                    (int)MenuRequestTypes.Logout,
                                    "");
             
-            var data = Deserielizer.getResponse(ClientSocket.sock);
+            var data = Deserializer.getResponse(ClientSocket.sock);
             LoginResponse json = JsonSerializer.Deserialize<LoginResponse>(data.jsonData);
 
             // Now we check if the logout was successful.

@@ -10,10 +10,10 @@ namespace GUI
         public HighScoresPage()
         {
             InitializeComponent();
-            Serielizer s = new Serielizer();
+            Serializer s = new Serializer();
             s.sendMessage(ClientSocket.sock, (int)MenuRequestTypes.GetHighScore, "");
 
-            var data = Deserielizer.getResponse(ClientSocket.sock);
+            var data = Deserializer.getResponse(ClientSocket.sock);
             GetHighScoreResponse json = JsonSerializer.Deserialize<GetHighScoreResponse>(data.jsonData);
 
             // Use the deserialized high scores list to populate the ListView

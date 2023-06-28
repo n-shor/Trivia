@@ -75,10 +75,10 @@ namespace GUI
             (int type, string jsonData) data;
             JoinButton.IsEnabled = false;
             JoinButton.BackgroundColor = Colors.DarkBlue;
-            Serielizer s = new Serielizer();
+            Serializer s = new Serializer();
             s.sendMessage(ClientSocket.sock, (int)MenuRequestTypes.GetRooms, "");
 
-            data = Deserielizer.getResponse(ClientSocket.sock);
+            data = Deserializer.getResponse(ClientSocket.sock);
             
             GetRoomsResponse json = JsonSerializer.Deserialize<GetRoomsResponse>(data.jsonData);
 
@@ -138,13 +138,13 @@ namespace GUI
             }
             else
             {
-                Serielizer s = new Serielizer();
+                Serializer s = new Serializer();
 
                 string jsonString = JsonSerializer.Serialize(new { roomId = _selectedRoom.id });
                 s.sendMessage(ClientSocket.sock, (int)MenuRequestTypes.JoinRoom, jsonString);
 
                 // Receive and handle the response from the server
-                var data = Deserielizer.getResponse(ClientSocket.sock);
+                var data = Deserializer.getResponse(ClientSocket.sock);
                 JoinRoomResponse response = JsonSerializer.Deserialize<JoinRoomResponse>(data.jsonData);
 
                 if (response.status == (int)MenuRequestStatus.joinRoomSuccessful)

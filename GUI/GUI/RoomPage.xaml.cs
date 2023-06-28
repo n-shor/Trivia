@@ -111,13 +111,13 @@ namespace GUI
             var request = new GetPlayersInRoomRequest { roomId = _currentRoom.id };
             var jsonString = JsonSerializer.Serialize(request);
 
-            Serielizer s = new Serielizer();
+            Serializer s = new Serializer();
             s.sendMessage(ClientSocket.sock, (int)RoomMemberRequestTypes.GetRoomsState, jsonString);
 
             (int type, string jsonData) data;
 
 
-            data = Deserielizer.getResponse(ClientSocket.sock);
+            data = Deserializer.getResponse(ClientSocket.sock);
 
             if (data.jsonData != "{\"message\":\"irrelevant message\"}")
             {
@@ -178,10 +178,10 @@ namespace GUI
 
         private async void OnStartGameButtonClicked(object sender, EventArgs e)
         {
-            Serielizer s = new Serielizer();
+            Serializer s = new Serializer();
             s.sendMessage(ClientSocket.sock, (int)RoomAdminRequestTypes.StartGame, "");
 
-            var data = Deserielizer.getResponse(ClientSocket.sock);
+            var data = Deserializer.getResponse(ClientSocket.sock);
             StartGameResponse response = JsonSerializer.Deserialize<StartGameResponse>(data.jsonData);
 
             if (response.status == (int)RoomAdminRequeststatus.startGameSuccessful)
@@ -200,10 +200,10 @@ namespace GUI
 
         private async void OnCloseRoomButtonClicked(object sender, EventArgs e)
         {
-            Serielizer s = new Serielizer();
+            Serializer s = new Serializer();
             s.sendMessage(ClientSocket.sock, (int)RoomAdminRequestTypes.CloseRoom, "");
 
-            var data = Deserielizer.getResponse(ClientSocket.sock);
+            var data = Deserializer.getResponse(ClientSocket.sock);
             CloseRoomResponse response = JsonSerializer.Deserialize<CloseRoomResponse>(data.jsonData);
 
             if (response.status == (int)RoomAdminRequeststatus.closeRoomSuccessful)
@@ -218,10 +218,10 @@ namespace GUI
 
         private async void OnLeaveRoomButtonClicked(object sender, EventArgs e)
         {
-            Serielizer s = new Serielizer();
+            Serializer s = new Serializer();
             s.sendMessage(ClientSocket.sock, (int)RoomMemberRequestTypes.LeaveRoom, "");
 
-            var data = Deserielizer.getResponse(ClientSocket.sock);
+            var data = Deserializer.getResponse(ClientSocket.sock);
             LeaveRoomResponse response = JsonSerializer.Deserialize<LeaveRoomResponse>(data.jsonData);
 
             if (response.status == (int)RoomMemberRequeststatus.leaveRoomSuccessful)
