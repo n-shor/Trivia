@@ -14,6 +14,7 @@ private:
 	std::map<std::string, GameData> m_players;
 	unsigned int m_gameId;
 	void submitGameStatsToDB(GameData, IDatabase*);
+
 public:
 	Game(Room&, IDatabase*, const unsigned int);
 	Question getQuestionForUser(const std::string);
@@ -24,4 +25,5 @@ public:
 	int getCorrectAnswerId(const std::string);
 	std::map<std::string, GameData>& getPlayers();
 	bool hasGameEnded() const;
+	static int constexpr playerFinished = 250;
 };

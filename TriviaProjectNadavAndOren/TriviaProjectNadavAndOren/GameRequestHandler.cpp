@@ -1,6 +1,6 @@
 #include "GameRequestHandler.h"
 #include "RequestHandlerFactory.h"
-#include "Game.cpp"
+#include "Game.h"
 
 RequestResult GameRequestHandler::getQuestion(RequestInfo ri)
 {
@@ -26,7 +26,7 @@ RequestResult GameRequestHandler::submitAnswer(RequestInfo ri)
 	r.username = m_user.getUsername();
 	SubmitAnswerResponse sare;
 	sare.status = m_game.submitAnswer(m_user.getUsername(), sart.answerId);
-	if (sare.status == playerFinished && m_game.hasGameEnded())
+	if (sare.status == Game::playerFinished && m_game.hasGameEnded())
 	{
 		m_gameEnded = true;
 	}

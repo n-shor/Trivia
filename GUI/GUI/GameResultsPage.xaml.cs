@@ -37,12 +37,15 @@ namespace GUI
                 var playerName = new Label
                 {
                     Text = player.Key,
+                    FontSize = 30,
                     TextColor = player.Key == currentPlayerName ? Colors.Red : Colors.White
                 };
 
                 var playerScore = new Label
                 {
                     Text = player.Value.ToString(),
+                    FontSize = 30,
+                    TextColor = Colors.White
                 };
 
                 LeaderBoardStackLayout.Children.Add(new StackLayout
@@ -55,7 +58,7 @@ namespace GUI
 
         void OnMainMenuButtonClicked(object sender, System.EventArgs e)
         {
-            Application.Current.MainPage = new MainMenuPage();
+            Navigation.PushAsync(new MainMenuPage());
         }
     }
 }

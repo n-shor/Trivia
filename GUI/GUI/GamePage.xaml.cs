@@ -14,11 +14,12 @@ namespace GUI
         private int remainingTime;
         private int correctAnswerCount = 0;
         private int answeredQuestionCount = 0;
-
+        private String playerName;
         public GamePage(RoomData roomData, String playerName)
         {
             InitializeComponent();
             this.roomData = roomData;
+            this.playerName = playerName;
             StartGame();
         }
 
@@ -146,7 +147,7 @@ namespace GUI
                     if (response.gameEnded == 1)
                     {
                         gameEndCheckCts.Cancel();
-                        //navigate to results page
+                        await Navigation.PushAsync(new GameResultsPage(playerName));
                     }
 
                     // Wait for 3 seconds before the next check

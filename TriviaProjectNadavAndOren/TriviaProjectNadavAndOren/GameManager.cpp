@@ -49,4 +49,5 @@ Game& GameManager::findUserGame(std::string lu)
             return m_games[a];
         }
     }
+    throw std::logic_error("findUserGame() has reached its end without returning anything");
 }

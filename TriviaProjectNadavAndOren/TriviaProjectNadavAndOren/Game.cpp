@@ -1,8 +1,6 @@
 #include "Game.h"
 #include "RequestHandlerFactory.h"
 
-int constexpr playerFinished = 250;
-
 std::map<std::string, clock_t> m_timeTracker;
 Question end = Question();
 
