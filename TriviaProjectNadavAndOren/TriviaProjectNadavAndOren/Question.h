@@ -16,5 +16,5 @@ public:
     std::string getQuestion();
     std::vector<std::string> getPossibleAnswers();
     int getCorrectAnswerId();
-    bool operator ==(const Question& c); 
+    bool operator==(const Question& c); 
 };

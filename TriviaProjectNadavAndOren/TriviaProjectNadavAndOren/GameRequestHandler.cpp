@@ -1,5 +1,6 @@
 #include "GameRequestHandler.h"
 #include "RequestHandlerFactory.h"
+#include "Game.cpp"
 
 RequestResult GameRequestHandler::getQuestion(RequestInfo ri)
 {
@@ -25,6 +26,10 @@ RequestResult GameRequestHandler::submitAnswer(RequestInfo ri)
 	r.username = m_user.getUsername();
 	SubmitAnswerResponse sare;
 	sare.status = m_game.submitAnswer(m_user.getUsername(), sart.answerId);
+	if (sare.status == playerFinished && m_game.hasGameEnded())
+	{
+		m_gameEnded = true;
+	}
 	sare.correctAnswerId = m_game.getCorrectAnswerId(m_user.getUsername());
 	r.newHandler = RequestHandlerFactory::getInstance().createGameRequestHandler(m_user, m_game);
 	r.response = JsonResponsePacketSerializer::serializeResponse(sare);
@@ -76,6 +81,22 @@ RequestResult GameRequestHandler::leaderboard(RequestInfo)
 	return r;
 }
 
+RequestResult GameRequestHandler::checkGameEnd(RequestInfo)
+{
+	RequestResult r;
+	CheckForEndReponse cfer;
+	if (m_gameEnded)
+	{
+		cfer.gameEnded = 1;
+	}
+	else
+	{
+		cfer.gameEnded = 0;
+	}
+	r.newHandler = RequestHandlerFactory::getInstance().createGameRequestHandler(m_user, m_game);
+	r.response = JsonResponsePacketSerializer::serializeResponse(cfer);
+	return r;
+}
 
 RequestResult GameRequestHandler::handleRequest(const RequestInfo& requestInfo)
 {
@@ -93,6 +114,8 @@ RequestResult GameRequestHandler::handleRequest(const RequestInfo& requestInfo)
 			return this->leaveGame(requestInfo);
 		case LeaderBoard:
 			return this->leaderboard(requestInfo);
+		case checkForEnd:
+			return this->checkGameEnd(requestInfo);
 		}
 	}
 	RequestResult r;

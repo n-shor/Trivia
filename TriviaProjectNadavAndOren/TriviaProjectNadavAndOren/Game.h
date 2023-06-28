@@ -15,12 +15,13 @@ private:
 	unsigned int m_gameId;
 	void submitGameStatsToDB(GameData, IDatabase*);
 public:
-	Game(Room&, IDatabase*, unsigned int);
-	Question getQuestionForUser(std::string);
-	int submitAnswer(std::string, unsigned int id);
-	void removePlayer(std::string);
-	int getGameId();
+	Game(Room&, IDatabase*, const unsigned int);
+	Question getQuestionForUser(const std::string);
+	int submitAnswer(const std::string, const unsigned int id);
+	void removePlayer(const std::string);
+	int getGameId() const;
 	bool operator==(const Game& other) const;
-	int getCorrectAnswerId(std::string);
+	int getCorrectAnswerId(const std::string);
 	std::map<std::string, GameData>& getPlayers();
+	bool hasGameEnded() const;
 };

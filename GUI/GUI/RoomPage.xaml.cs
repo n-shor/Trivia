@@ -170,7 +170,7 @@ namespace GUI
                     {
                         await DisplayAlert("Game Started", "The admin has started the game.", "OK");
                     });
-                    await Navigation.PushAsync(new GamePage(_currentRoom));
+                    await Navigation.PushAsync(new GamePage(_currentRoom, _currentUser));
                 }
 
             }
@@ -186,7 +186,7 @@ namespace GUI
 
             if (response.status == (int)RoomAdminRequeststatus.startGameSuccessful)
             {
-                await Navigation.PushAsync(new GamePage(_currentRoom));
+                await Navigation.PushAsync(new GamePage(_currentRoom, _currentUser));
             }
             else if (response.status == (int)RoomAdminRequeststatus.theServerDoesntHaveEnoughQuestions)
             {

@@ -42,6 +42,11 @@ public class SignupResponse
     public int status { get; set; }
 };
 
+public class CheckForEndReponse
+{
+    public int gameEnded { get; set; }
+};
+
 public class RoomData
 {
     public int id { get; set; }

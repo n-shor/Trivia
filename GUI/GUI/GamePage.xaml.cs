@@ -10,12 +10,12 @@ namespace GUI
     {
         private RoomData roomData;
         private CancellationTokenSource timerCts;
+        private CancellationTokenSource gameEndCheckCts;
         private int remainingTime;
-        private bool gameEnded = false;
         private int correctAnswerCount = 0;
         private int answeredQuestionCount = 0;
 
-        public GamePage(RoomData roomData)
+        public GamePage(RoomData roomData, String playerName)
         {
             InitializeComponent();
             this.roomData = roomData;
@@ -110,7 +110,7 @@ namespace GUI
             SubmitAnswerResponse response = JsonSerializer.Deserialize<SubmitAnswerResponse>(data.jsonData);
 
             if (response.status == (int)SubmitAnswerStatus.correctAnswer)
-            { 
+            {
                 correctAnswerCount++;
                 CorrectAnswersLabel.Text = $"Correct answers: {correctAnswerCount}";
             }
@@ -123,29 +123,36 @@ namespace GUI
             }
             else
             {
-                gameEnded = true;
-                WaitingLabel.Text = "Game has ended. Waiting for all players to finish...";
-                WaitingLabel.IsVisible = true;
-
-                QuestionLabel.IsVisible = false;
-                Option1Button.IsVisible = false;
-                Option2Button.IsVisible = false;
-                Option3Button.IsVisible = false;
-                Option4Button.IsVisible = false;
-                RemainingQuestionsLabel.IsVisible = false;
-                CorrectAnswersLabel.IsVisible = false;
-                RemainingTimeLabel.IsVisible = false;
-
-                //get unsorted leaderboard with names and scores
-
-                //needs to be displayd somehow
-                /*s.sendMessage(ClientSocket.sock, (int)GameRequestTypes.LeaderBoard, "");
-
-                var dota = Deserielizer.getResponse(ClientSocket.sock);
-
-                leaderBoardResponse dota2 = JsonSerializer.Deserialize<leaderBoardResponse>(data.jsonData);*/
+                // Start the game end check thread
+                CheckIfGameHasEnded();
             }
 
+        }
+
+        private void CheckIfGameHasEnded()
+        {
+            gameEndCheckCts = new CancellationTokenSource();
+            Task.Run(async () =>
+            {
+                while (!gameEndCheckCts.IsCancellationRequested)
+                {
+                    Serielizer s = new Serielizer();
+                    s.sendMessage(ClientSocket.sock, (int)GameRequestTypes.checkForEnd, "");
+
+                    var data = Deserielizer.getResponse(ClientSocket.sock);
+
+                    CheckForEndReponse response = JsonSerializer.Deserialize<CheckForEndReponse>(data.jsonData);
+
+                    if (response.gameEnded == 1)
+                    {
+                        gameEndCheckCts.Cancel();
+                        //navigate to results page
+                    }
+
+                    // Wait for 3 seconds before the next check
+                    await Task.Delay(3000);
+                }
+            }, gameEndCheckCts.Token);
         }
     }
 }

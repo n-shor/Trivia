@@ -1,6 +1,8 @@
 #include "Game.h"
 #include "RequestHandlerFactory.h"
 
+int constexpr playerFinished = 250;
+
 std::map<std::string, clock_t> m_timeTracker;
 Question end = Question();
 
@@ -12,7 +14,7 @@ void Game::submitGameStatsToDB(GameData gd, IDatabase* db)
 	}
 }
 
-Game::Game(Room& r, IDatabase* db, unsigned int gameId)
+Game::Game(Room& r, IDatabase* db, const unsigned int gameId)
 {
 
 	if (r.getRoomData().numOfQuestionsInGame > db->getQuestionCount())
@@ -47,7 +49,6 @@ int getIndex(std::vector<Question> v, Question K)
 
     if (it != v.end())
     {
-
         return it - v.begin();
     }
     else {
@@ -57,31 +58,38 @@ int getIndex(std::vector<Question> v, Question K)
 
 int Game::submitAnswer(std::string lu, unsigned int id)
 {
+	int ret = 0;
 	if (m_players[lu].currentQuestion.getCorrectAnswerId() == id)
 	{
 		m_players[lu].correctAnswerCount++;
 		if (getIndex(m_questions, m_players[lu].currentQuestion) + 1 < m_questions.size())
 		{
 			m_players[lu].currentQuestion = m_questions[getIndex(m_questions, m_players[lu].currentQuestion) + 1];
+			ret = correctAnswer;
 		}
-		else {
-			return GameStatsResponse;
+		else
+		{
+			m_players[lu].currentQuestion = end;
+			ret = playerFinished;
 		}
 		m_players[lu].AverageAnswerTime = (m_players[lu].AverageAnswerTime * m_players[lu].correctAnswerCount + double(clock() - m_timeTracker[lu])) / (m_players[lu].correctAnswerCount + 1);
 		submitGameStatsToDB(m_players[lu], RequestHandlerFactory::getInstance().getStatisticsManager().getDB());
-		return correctAnswer;
+		return ret;
 	}
 	else {
 		m_players[lu].wrongAnswerCount++;
 		if (getIndex(m_questions, m_players[lu].currentQuestion) + 1 < m_questions.size())
 		{
 			m_players[lu].currentQuestion = m_questions[getIndex(m_questions, m_players[lu].currentQuestion) + 1];
+			ret = incorrectAnswer;
 		}
-		else {
-			return GameStatsResponse;
+		else
+		{
+			m_players[lu].currentQuestion = end;
+			ret = playerFinished;
 		}
 		submitGameStatsToDB(m_players[lu], RequestHandlerFactory::getInstance().getStatisticsManager().getDB());
-		return incorrectAnswer;
+		return ret;
 	}
 }
 
@@ -98,7 +106,7 @@ void Game::removePlayer(std::string lu)
 	}
 }
 
-int Game::getGameId()
+int Game::getGameId() const
 {
 	return m_gameId;
 }
@@ -116,4 +124,16 @@ int Game::getCorrectAnswerId(std::string lu)
 std::map<std::string, GameData>& Game::getPlayers()
 {
 	return m_players;
+}
+
+bool Game::hasGameEnded() const
+{
+	for (const auto& player : m_players)
+	{
+		if (player.second.currentQuestion != end)
+		{
+			return false;
+		}
+	}
+	return true;
 }

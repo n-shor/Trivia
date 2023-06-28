@@ -142,6 +142,11 @@ struct GetPlayesInRoomResponse
     std::vector<std::string> players;
 };
 
+struct CheckForEndReponse
+{
+    int gameEnded;
+};
+
 struct getHighScoreResponse
 {
     unsigned int status;

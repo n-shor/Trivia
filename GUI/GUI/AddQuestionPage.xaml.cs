@@ -25,7 +25,7 @@ public partial class AddQuestionPage : ContentPage
             return;
         }
 
-        if (correctAnswer.Length == 1)
+        if (correctAnswer != "a" && correctAnswer != "b" && correctAnswer != "c" && correctAnswer != "d")
         {
             var l = new AddQuestionRequest { correctAnswer = correctAnswer[0], optionA = opA, optionB = opB, optionC = opC, optionD = opD, question = question };
             string jsonString = JsonSerializer.Serialize(l);
@@ -43,7 +43,7 @@ public partial class AddQuestionPage : ContentPage
             }
             else
             {
-                DisplayAlert("Add Question Failed", "Your question was either invalid or already present in the database.", "OK");
+                DisplayAlert("Add Question Failed", "There was an error adding your question to the database. Please try again later.", "OK");
             }
         }
         else

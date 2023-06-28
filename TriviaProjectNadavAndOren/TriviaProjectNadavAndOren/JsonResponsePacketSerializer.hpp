@@ -11,9 +11,21 @@ using json = nlohmann::json;
 class JsonResponsePacketSerializer 
 {
 public:
+
+    static std::vector<unsigned char> serializeResponse(const CheckForEndReponse& response)
+    {
+        json j = { {"gameEnded", response.gameEnded} };
+        return createBuffer(1, j.dump());
+    }
+
     static std::vector<unsigned char> serializeResponse(const leaderBoardResponse& response)
     {
-        json j = { {"players", response.players} };
+        json players = json({});
+        for (const auto& pair : response.players)
+            players[pair.first] = pair.second;
+
+        json j = { {"players", players} };
+
         return createBuffer(1, j.dump());
     }
 
@@ -83,7 +95,6 @@ public:
         };
         return createBuffer(3, j.dump());
     }
-
 
     static std::vector<unsigned char> serializeResponse(const getHighScoreResponse& response)
     {
