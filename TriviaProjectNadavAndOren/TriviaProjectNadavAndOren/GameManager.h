@@ -10,8 +10,9 @@ private:
 	static std::mutex gameLock;
 	static unsigned int gameId;
 public:
+	std::vector<Game>& getGames();
 	GameManager(IDatabase*);
-	Game createGame(Room&);
+	int createGame(Room&);
 	void deleteGame(int gameId);
 	Game& findUserGame(std::string);
 };

@@ -31,7 +31,7 @@ Game::Game(Room& r, IDatabase* db, unsigned int gameId)
 		game = GameData(m_questions[0], 0, 0, 0);
 	}
 
-	this->gameId = gameId;
+	m_gameId = gameId;
 }
 
 Question Game::getQuestionForUser(std::string lu)
@@ -100,7 +100,12 @@ void Game::removePlayer(std::string lu)
 
 int Game::getGameId()
 {
-	return gameId;
+	return m_gameId;
+}
+
+bool Game::operator==(const Game& other) const
+{
+	return m_gameId == other.m_gameId;
 }
 
 int Game::getCorrectAnswerId(std::string lu)

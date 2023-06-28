@@ -12,7 +12,7 @@ class Game
 private:
 	std::vector<Question> m_questions;
 	std::map<std::string, GameData> m_players;
-	unsigned int gameId;
+	unsigned int m_gameId;
 	void submitGameStatsToDB(GameData, IDatabase*);
 public:
 	Game(Room&, IDatabase*, unsigned int);
@@ -20,6 +20,7 @@ public:
 	int submitAnswer(std::string, unsigned int id);
 	void removePlayer(std::string);
 	int getGameId();
+	bool operator==(const Game& other) const;
 	int getCorrectAnswerId(std::string);
 	std::map<std::string, GameData>& getPlayers();
 };

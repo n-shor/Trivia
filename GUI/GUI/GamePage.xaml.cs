@@ -34,9 +34,6 @@ namespace GUI
 
         private void FetchQuestionData()
         {
-            // Cancel any existing timer
-            timerCts?.Cancel();
-
             Serielizer s = new Serielizer();
             s.sendMessage(ClientSocket.sock, (int)GameRequestTypes.getQuestionReq, "");
 
@@ -44,6 +41,7 @@ namespace GUI
 
             if (data.jsonData != "{\"message\":\"irrelevant message\"}")
             {
+                timerCts?.Cancel();
                 GetQuestionResponse response = JsonSerializer.Deserialize<GetQuestionResponse>(data.jsonData);
 
                 QuestionLabel.Text = response.question;

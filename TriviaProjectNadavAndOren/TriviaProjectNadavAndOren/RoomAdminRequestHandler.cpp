@@ -29,7 +29,8 @@ RequestResult RoomAdminRequestHandler::startGame(RequestInfo)
 	try {
 		sgr.status = startGameSuccessful;
 		m_room.activateRoom();
-		r.newHandler = RequestHandlerFactory::getInstance().createGameRequestHandler(m_user, RequestHandlerFactory::getInstance().getGameManager().createGame(m_room));
+		r.newHandler = RequestHandlerFactory::getInstance().createGameRequestHandler(m_user,
+			RequestHandlerFactory::getInstance().getGameManager().getGames()[RequestHandlerFactory::getInstance().getGameManager().createGame(m_room)]);
 		r.response = JsonResponsePacketSerializer::serializeResponse(sgr);
 		return r;
 	}
@@ -43,8 +44,7 @@ RequestResult RoomAdminRequestHandler::startGame(RequestInfo)
 			sgr.status = startGameUnsuccessful;
 		}
 		m_room.deactivateRoom();
-		r.newHandler = RequestHandlerFactory::getInstance().createRoomAdminRequestHandler(m_user,
-			RequestHandlerFactory::getInstance().getRoomManager().getRoom(m_room.getRoomData().id));
+		r.newHandler = RequestHandlerFactory::getInstance().createRoomAdminRequestHandler(m_user, m_room);
 		r.response = JsonResponsePacketSerializer::serializeResponse(sgr);
 		r.username = m_user.getUsername();
 		return r;
@@ -77,8 +77,7 @@ RequestResult RoomAdminRequestHandler::getRoomsState(RequestInfo)
 		grsr.players = m_room.getAllUsers();
 		grsr.status = getRoomsStateRes;
 		r.response = JsonResponsePacketSerializer::serializeResponse(grsr);
-		r.newHandler = RequestHandlerFactory::getInstance().createRoomAdminRequestHandler(m_user,
-			RequestHandlerFactory::getInstance().getRoomManager().getRoom(m_room.getRoomData().id));
+		r.newHandler = RequestHandlerFactory::getInstance().createRoomAdminRequestHandler(m_user, m_room);
 		r.username = m_user.getUsername();
 		return r;
 	}

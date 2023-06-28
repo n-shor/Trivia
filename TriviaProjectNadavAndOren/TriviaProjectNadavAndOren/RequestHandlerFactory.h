@@ -43,6 +43,6 @@ public:
     RoomManager& getRoomManager();
     std::unique_ptr<IRequestHandler> createRoomAdminRequestHandler(LoggedUser, Room&);
     std::unique_ptr<IRequestHandler> createRoomMemberRequestHandler(LoggedUser, Room&);
-    std::unique_ptr<IRequestHandler> createGameRequestHandler(LoggedUser, Game);
+    std::unique_ptr<IRequestHandler> createGameRequestHandler(LoggedUser, Game&);
     GameManager& getGameManager();
 };

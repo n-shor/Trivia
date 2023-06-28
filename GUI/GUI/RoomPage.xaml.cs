@@ -86,7 +86,7 @@ namespace GUI
             cts = new CancellationTokenSource();
             Task.Run(async () =>
             {
-                while (!cts.IsCancellationRequested)
+                while (!cts.IsCancellationRequested && !_hasGameBegun)
                 {
                     await MainThread.InvokeOnMainThreadAsync(() =>
                     {
@@ -97,8 +97,8 @@ namespace GUI
                     await Task.Delay(3000);
                 }
             });
-
         }
+
 
         protected override void OnDisappearing()
         {
@@ -165,12 +165,14 @@ namespace GUI
 
                 if (_hasGameBegun)
                 {
+                    cts.Cancel(); // cancel the auto refresher
                     await MainThread.InvokeOnMainThreadAsync(async () =>
                     {
                         await DisplayAlert("Game Started", "The admin has started the game.", "OK");
                     });
                     await Navigation.PushAsync(new GamePage(_currentRoom));
                 }
+
             }
         }
 
