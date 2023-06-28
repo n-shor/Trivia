@@ -62,6 +62,20 @@ RequestResult GameRequestHandler::leaveGame(RequestInfo)
 	return r;
 }
 
+RequestResult GameRequestHandler::leaderboard(RequestInfo)
+{
+	RequestResult r;
+	r.username = m_user.getUsername();
+	leaderBoardResponse lbr;
+	for (auto it = m_game.getPlayers().begin(); it != m_game.getPlayers().end();it++)
+	{
+		lbr.players[it->first] = ((it->second.correctAnswerCount * it->second.AverageAnswerTime * 1000) / (it->second.correctAnswerCount + it->second.wrongAnswerCount));
+	}
+	r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
+	r.response = JsonResponsePacketSerializer::serializeResponse(lbr);
+	return r;
+}
+
 
 RequestResult GameRequestHandler::handleRequest(const RequestInfo& requestInfo)
 {
@@ -77,6 +91,8 @@ RequestResult GameRequestHandler::handleRequest(const RequestInfo& requestInfo)
 			return this->getGameResults(requestInfo);
 		case leaveGameReq:
 			return this->leaveGame(requestInfo);
+		case LeaderBoard:
+			return this->leaderboard(requestInfo);
 		}
 	}
 	RequestResult r;
@@ -91,7 +107,7 @@ RequestResult GameRequestHandler::handleRequest(const RequestInfo& requestInfo)
 bool GameRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
 {
 	return requestInfo.messageCode == getQuestionReq || requestInfo.messageCode == submitAnswerReq ||
-		requestInfo.messageCode == getGameResultsReq || requestInfo.messageCode == leaveGameReq;
+		requestInfo.messageCode == getGameResultsReq || requestInfo.messageCode == leaveGameReq || requestInfo.messageCode == LeaderBoard;
 }
 
 GameRequestHandler::GameRequestHandler(std::string lu, Game& g) : m_game(g), m_user(lu)

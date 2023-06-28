@@ -137,6 +137,15 @@ namespace GUI
                 RemainingQuestionsLabel.IsVisible = false;
                 CorrectAnswersLabel.IsVisible = false;
                 RemainingTimeLabel.IsVisible = false;
+
+                //get unsorted leaderboard with names and scores
+
+                //needs to be displayd somehow
+                /*s.sendMessage(ClientSocket.sock, (int)GameRequestTypes.LeaderBoard, "");
+
+                var dota = Deserielizer.getResponse(ClientSocket.sock);
+
+                leaderBoardResponse dota2 = JsonSerializer.Deserialize<leaderBoardResponse>(data.jsonData);*/
             }
 
         }

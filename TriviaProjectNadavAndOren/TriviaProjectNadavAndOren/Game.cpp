@@ -2,7 +2,7 @@
 #include "RequestHandlerFactory.h"
 
 std::map<std::string, clock_t> m_timeTracker;
-
+Question end = Question();
 
 void Game::submitGameStatsToDB(GameData gd, IDatabase* db)
 {
@@ -60,14 +60,26 @@ int Game::submitAnswer(std::string lu, unsigned int id)
 	if (m_players[lu].currentQuestion.getCorrectAnswerId() == id)
 	{
 		m_players[lu].correctAnswerCount++;
-		m_players[lu].currentQuestion = m_questions[getIndex(m_questions, m_players[lu].currentQuestion) + 1];
+		if (getIndex(m_questions, m_players[lu].currentQuestion) + 1 < m_questions.size())
+		{
+			m_players[lu].currentQuestion = m_questions[getIndex(m_questions, m_players[lu].currentQuestion) + 1];
+		}
+		else {
+			return GameStatsResponse;
+		}
 		m_players[lu].AverageAnswerTime = (m_players[lu].AverageAnswerTime * m_players[lu].correctAnswerCount + double(clock() - m_timeTracker[lu])) / (m_players[lu].correctAnswerCount + 1);
 		submitGameStatsToDB(m_players[lu], RequestHandlerFactory::getInstance().getStatisticsManager().getDB());
 		return correctAnswer;
 	}
 	else {
 		m_players[lu].wrongAnswerCount++;
-		m_players[lu].currentQuestion = m_questions[getIndex(m_questions, m_players[lu].currentQuestion) + 1];
+		if (getIndex(m_questions, m_players[lu].currentQuestion) + 1 < m_questions.size())
+		{
+			m_players[lu].currentQuestion = m_questions[getIndex(m_questions, m_players[lu].currentQuestion) + 1];
+		}
+		else {
+			return GameStatsResponse;
+		}
 		submitGameStatsToDB(m_players[lu], RequestHandlerFactory::getInstance().getStatisticsManager().getDB());
 		return incorrectAnswer;
 	}

@@ -5,7 +5,7 @@
 #include "JsonRequestPacketDeserializer.hpp"
 #include "RoomMemberRequestHandler.h"
 
-enum GameRequestTypes { getQuestionReq = 4, submitAnswerReq, getGameResultsReq, leaveGameReq};
+enum GameRequestTypes { getQuestionReq = 4, submitAnswerReq, getGameResultsReq, leaveGameReq, LeaderBoard = 765};
 enum GameRequeststatus { getQuestionSuccessful = 8, gameEnded, leaveGameResponse};
 
 class GameRequestHandler : public IRequestHandler
@@ -17,6 +17,7 @@ private:
 	RequestResult submitAnswer(RequestInfo);
 	RequestResult getGameResults(RequestInfo);
 	RequestResult leaveGame(RequestInfo);
+	RequestResult leaderboard(RequestInfo);
 	bool isRequestRelevant(const RequestInfo& requestInfo) override;
 public:
 	GameRequestHandler(std::string, Game&);

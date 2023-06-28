@@ -4,6 +4,7 @@
 #include "LoginManager.h"
 #include "GameManager.h"
 
+#define GameStatsResponse 6969
 
 class LoginRequestHandler;
 class MenuRequestHandler;

@@ -11,6 +11,12 @@ using json = nlohmann::json;
 class JsonResponsePacketSerializer 
 {
 public:
+    static std::vector<unsigned char> serializeResponse(const leaderBoardResponse& response)
+    {
+        json j = { {"players", response.players} };
+        return createBuffer(1, j.dump());
+    }
+
     static std::vector<unsigned char> serializeResponse(const LoginResponse& response) 
     {
         json j = { {"status", response.status} };

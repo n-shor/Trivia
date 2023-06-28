@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 enum LoginRequestStatus { AlreadyLoggedIn = 36, Error = -1, FailedLogin = 37, UserAlreadyExists, LoggedIn, SignedUp, NoSuchLoggedUser, LoggedOut };
 enum SubmitAnswerStatus { incorrectAnswer = 11, correctAnswer };
-enum GameRequestTypes { getQuestionReq = 4, submitAnswerReq, getGameResultsReq, leaveGameReq };
+enum GameRequestTypes { getQuestionReq = 4, submitAnswerReq, getGameResultsReq, leaveGameReq, LeaderBoard = 765};
 enum GameRequeststatus { getQuestionSuccessful = 8, gameEnded, leaveGameResponse };
 enum MenuRequestTypes { CreateRoom = 21, GetRooms, GetPlayersInRoom, JoinRoom, GetStatistics, Logout, GetHighScore, AddQuestion = 110 };
 enum MenuRequestStatus { signedOut = 28, GetRoomsSuccessful, GetPlayersInRoomSuccessful, GetPersonalStatsSuccessful, GetHighScoreSuccessful, joinRoomSuccessful, joinRoomUnSuccessful, CreateRoomSuccessful , InvalidQuestion = 170, QuestionAdded };

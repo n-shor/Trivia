@@ -8,6 +8,11 @@
 
 class IRequestHandler;
 
+struct leaderBoardResponse
+{
+    std::map<std::string, unsigned int> players;
+};
+
 struct AddQuestionRequest {
     std::string question;
     std::string optionA;

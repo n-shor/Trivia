@@ -140,6 +140,11 @@ public class GetQuestionResponse
     public Dictionary<uint, string> answers { get; set; }
 }
 
+public class leaderBoardResponse
+{
+    public Dictionary<string, int> players { get; set; }
+};
+
 public class SubmitAnswerResponse
 {
     public int status { get; set; }
