@@ -6,22 +6,15 @@ using System.Globalization;
 
 namespace GUI
 {
-    public class HighScore
-    {
-        public string Rank { get; set; }
-        public string UserName { get; set; }
-        public Color TextColor { get; set; }
-    }
-
     public partial class HighScoresPage : ContentPage
     {
-        public ObservableCollection<HighScore> HighScores { get; set; }
+        public ObservableCollection<ScoreEntry> HighScores { get; set; }
 
         public HighScoresPage()
         {
             InitializeComponent();
 
-            HighScores = new ObservableCollection<HighScore>();
+            HighScores = new ObservableCollection<ScoreEntry>();
             HighScoresList.ItemsSource = HighScores;
 
             FetchHighScores();
@@ -35,12 +28,11 @@ namespace GUI
             var data = Deserializer.getResponse(ClientSocket.sock);
             GetHighScoreResponse json = JsonSerializer.Deserialize<GetHighScoreResponse>(data.jsonData);
 
-            for (int i = 0; i < json.statistics.Count; i++)
+            // Use the deserialized high scores list to populate the ListView
+            int rank = 1;
+            foreach (var score in json.statistics)
             {
-                var score = json.statistics[i];
-                var name = score.Split(':')[0];
-                var textColor = (name == ClientSocket.username) ? Colors.Red : Colors.White;
-                HighScores.Add(new HighScore { Rank = (i + 1).ToString() + ". ", UserName = score, TextColor = textColor });
+                HighScores.Add(new ScoreEntry { Rank = $"{rank++}.", UserName = " " + score });
             }
         }
 
@@ -48,6 +40,13 @@ namespace GUI
         {
             Navigation.PushAsync(new StatisticsPage());
         }
+    }
+
+    public class ScoreEntry
+    {
+        public string Rank { get; set; }
+        public string UserName { get; set; }
+        public Color TextColor => (UserName == " " + ClientSocket.username) ? Colors.Red : Colors.White;
     }
 
     public class GetHighScoreResponse

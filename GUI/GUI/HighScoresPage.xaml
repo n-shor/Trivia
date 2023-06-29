@@ -13,7 +13,7 @@
                 <DataTemplate>
                     <ViewCell>
                         <StackLayout Orientation="Horizontal">
-                            <Label Text="{Binding Rank, StringFormat='{0} '}" TextColor="White" FontSize="30" />
+                            <Label Text="{Binding Rank}" TextColor="{Binding TextColor}" FontSize="40" />
                             <Label Text="{Binding UserName}" TextColor="{Binding TextColor}" FontSize="40" />
                         </StackLayout>
                     </ViewCell>
