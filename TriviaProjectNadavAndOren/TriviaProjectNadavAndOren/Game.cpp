@@ -65,6 +65,9 @@ int Game::submitAnswer(std::string lu, unsigned int id)
 	std::lock_guard<std::mutex> lock(m_playersMutex);
 	int ret = 0;
 	std::cout << "submit answer" << lu << std::endl;
+	time_t finishTime;
+	time(&finishTime);
+	std::cout << "answer time: " << double(1 + difftime(finishTime, m_timeTracker[lu])) << std::endl;
 	if (m_players[lu].currentQuestion.getCorrectAnswerId() == id)
 	{
 		m_players[lu].correctAnswerCount++;
@@ -75,13 +78,13 @@ int Game::submitAnswer(std::string lu, unsigned int id)
 		}
 		else
 		{
+			submitGameStatsToDB(m_players[lu], RequestHandlerFactory::getInstance().getStatisticsManager().getDB());
 			m_players[lu].currentQuestion = end;
 			ret = playerFinished;
 		}
-		time_t finishTime;
-		time(&finishTime);
-		m_players[lu].AverageAnswerTime = (m_players[lu].AverageAnswerTime * m_players[lu].correctAnswerCount + double(difftime(finishTime, m_timeTracker[lu]))) / (m_players[lu].correctAnswerCount + 1);
-		submitGameStatsToDB(m_players[lu], RequestHandlerFactory::getInstance().getStatisticsManager().getDB());
+
+
+		m_players[lu].AverageAnswerTime = (m_players[lu].AverageAnswerTime * m_players[lu].correctAnswerCount + double(1 + difftime(finishTime, m_timeTracker[lu]))) / (m_players[lu].correctAnswerCount + 1);
 		return ret;
 	}
 	else {
@@ -93,10 +96,10 @@ int Game::submitAnswer(std::string lu, unsigned int id)
 		}
 		else
 		{
+			submitGameStatsToDB(m_players[lu], RequestHandlerFactory::getInstance().getStatisticsManager().getDB());
 			m_players[lu].currentQuestion = end;
 			ret = playerFinished;
 		}
-		submitGameStatsToDB(m_players[lu], RequestHandlerFactory::getInstance().getStatisticsManager().getDB());
 		return ret;
 	}
 }
@@ -104,6 +107,8 @@ int Game::submitAnswer(std::string lu, unsigned int id)
 void Game::removePlayer(std::string lu)
 {
 	std::lock_guard<std::mutex> lock(m_playersMutex);
+	submitGameStatsToDB(m_players[lu], RequestHandlerFactory::getInstance().getStatisticsManager().getDB());
+
 	auto ite = m_players.find(lu);
 	if (ite != m_players.end()) {
 		m_players.erase(ite);
@@ -115,6 +120,7 @@ void Game::removePlayer(std::string lu)
 	}
 
 	RequestHandlerFactory::getInstance().getRoomManager().getRoom(m_room.getRoomData().id).removeUser(lu);
+
 
 	if (m_players.empty())
 	{
