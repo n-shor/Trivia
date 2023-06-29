@@ -13,7 +13,7 @@ private:
 public:
     SqliteDatabase() : db(nullptr) {}
 
-    int getQuestionCount() 
+    int getQuestionCount() const override
     {
         std::string sql = "SELECT COUNT(*) FROM TRIVIA_QUESTIONS;";
         sqlite3_stmt* stmt;
@@ -101,7 +101,7 @@ public:
         return true;
     }
 
-    bool doesUserExist(std::string username) override {
+    bool doesUserExist(const std::string username) const override {
         std::string sql = "SELECT * FROM USERS WHERE USERNAME = '" + username + "';";
         sqlite3_stmt* stmt;
 
@@ -118,7 +118,7 @@ public:
         return userExists;
     }
 
-    bool doesPasswordMatch(std::string username, std::string password) override {
+    bool doesPasswordMatch(const std::string username, const std::string password) const override {
         std::string sql = "SELECT PASSWORD FROM USERS WHERE USERNAME = '" + username + "';";
         sqlite3_stmt* stmt;
 
@@ -136,7 +136,7 @@ public:
         return passwordMatches;
     }
 
-    bool addNewUser(std::string username, std::string password, std::string email) override {
+    bool addNewUser(const std::string username, const std::string password, const std::string email) override {
         std::string sql = "INSERT INTO USERS (USERNAME, PASSWORD, EMAIL) VALUES ('" + username + "', '" + password + "', '" + email + "');";
 
         if (sqlite3_exec(db, sql.c_str(), nullptr, 0, nullptr) != SQLITE_OK) {
@@ -148,8 +148,8 @@ public:
         return true;
     }
 
-    bool addQuestion(int id, std::string question, std::string optionA, std::string optionB,
-        std::string optionC, std::string optionD, char correctAnswer) {
+    bool addQuestion(const int id, const std::string question, const std::string optionA, const std::string optionB,
+        const std::string optionC, const std::string optionD, const char correctAnswer) override {
         int correctAnswerInt = int(correctAnswer) - 'a';
         if (correctAnswerInt > 3 || correctAnswerInt < 0)
         {
@@ -167,7 +167,7 @@ public:
         return true;
     }
 
-    Question getQuestion(int id) {
+    Question getQuestion(const int id) const override{
         std::string sql = "SELECT * FROM TRIVIA_QUESTIONS WHERE ID = " + std::to_string(id) + ";";
         sqlite3_stmt* stmt;
 
@@ -193,7 +193,7 @@ public:
         return Question(question, ans, correctAnswerId);
     }
 
-    char getCorrectAnswer(int id) {
+    char getCorrectAnswer(const int id) const override {
         std::string sql = "SELECT CorrectAnswer FROM TRIVIA_QUESTIONS WHERE ID = " + std::to_string(id) + ";";
         sqlite3_stmt* stmt;
 
@@ -210,7 +210,7 @@ public:
         return correctAnswer;
     }
 
-    float getPlayerAverageAnswerTime(std::string username) {
+    float getPlayerAverageAnswerTime(const std::string username) const override {
         std::string sql = "SELECT AVERAGE_ANSWER_TIME FROM STATISTICS WHERE USERNAME = '" + username + "';";
         sqlite3_stmt* stmt;
 
@@ -227,7 +227,7 @@ public:
         return avgAnswerTime;
     }
 
-    int getNumOfCorrectAnswers(std::string username) {
+    int getNumOfCorrectAnswers(const std::string username) const override{
         std::string sql = "SELECT CORRECT_ANSWERS FROM STATISTICS WHERE USERNAME = '" + username + "';";
         sqlite3_stmt* stmt;
 
@@ -244,7 +244,7 @@ public:
         return correctAnswers;
     }
 
-    int getNumOfTotalAnswers(std::string username) {
+    int getNumOfTotalAnswers(const std::string username) const override {
         std::string sql = "SELECT TOTAL_ANSWERS FROM STATISTICS WHERE USERNAME = '" + username + "';";
         sqlite3_stmt* stmt;
 
@@ -261,7 +261,7 @@ public:
         return totalAnswers;
     }
 
-    int getNumOfPlayerGames(std::string username) {
+    int getNumOfPlayerGames(const std::string username) const override{
         std::string sql = "SELECT TOTAL_GAMES FROM STATISTICS WHERE USERNAME = '" + username + "';";
         sqlite3_stmt* stmt;
 
@@ -278,7 +278,7 @@ public:
         return totalGames;
     }
 
-    int getPlayerScore(std::string username) {
+    int getPlayerScore(const std::string username) const override {
         std::string sql = "SELECT SCORE FROM STATISTICS WHERE USERNAME = '" + username + "';";
         sqlite3_stmt* stmt;
 
@@ -295,7 +295,7 @@ public:
         return score;
     }
 
-    std::vector<std::string> getHighScores()
+    std::vector<std::string> getHighScores() const override
     {
         std::string sql = "SELECT USERNAME, SCORE FROM STATISTICS ORDER BY SCORE DESC LIMIT 3;";
         sqlite3_stmt* stmt;
@@ -316,7 +316,7 @@ public:
         return highScoreNames;
     }
 
-    bool submitGameStatistics(GameData gd, std::string username)
+    bool submitGameStatistics(const GameData gd, const std::string username) override
     {
         std::string delSql = "DELETE FROM STATISTICS WHERE USERNAME = '" + username + "';";
         std::string sql = " INSERT INTO STATISTICS VALUES ('" + username + "', " + std::to_string(getNumOfPlayerGames(username) + 1) + ", " + std::to_string(getNumOfTotalAnswers(username) + gd.correctAnswerCount + gd.wrongAnswerCount) + ", " + std::to_string(getNumOfCorrectAnswers(username) + gd.correctAnswerCount) + ", '" + std::to_string((getNumOfCorrectAnswers(username) * getPlayerAverageAnswerTime(username) + (gd.correctAnswerCount) * gd.AverageAnswerTime) / (getNumOfCorrectAnswers(username) + gd.correctAnswerCount)) + "', '" + std::to_string(getPlayerScore(username) + ((gd.correctAnswerCount * (1/ std::sqrt(gd.AverageAnswerTime)) * 1000) / (gd.correctAnswerCount + gd.wrongAnswerCount))) + "');";
