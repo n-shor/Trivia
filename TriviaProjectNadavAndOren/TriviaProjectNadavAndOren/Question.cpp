@@ -1,10 +1,6 @@
 #include "Question.h"
 
-Question::Question(std::string m_question, std::vector<std::string> m_possibleAnswers, int correctAnswerId) : m_question(m_question), m_possibleAnswers(m_possibleAnswers), correctAnswerId(correctAnswerId)
-{
-}
-
-Question::Question()
+Question::Question(const std::string m_question, const std::vector<std::string> m_possibleAnswers, const int correctAnswerId) : m_question(m_question), m_possibleAnswers(m_possibleAnswers), correctAnswerId(correctAnswerId)
 {
 }
 

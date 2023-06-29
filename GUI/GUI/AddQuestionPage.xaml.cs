@@ -25,7 +25,7 @@ public partial class AddQuestionPage : ContentPage
             return;
         }
 
-        if (correctAnswer != "a" && correctAnswer != "b" && correctAnswer != "c" && correctAnswer != "d")
+        if (!(correctAnswer != "a" && correctAnswer != "b" && correctAnswer != "c" && correctAnswer != "d"))
         {
             var l = new AddQuestionRequest { correctAnswer = correctAnswer[0], optionA = opA, optionB = opB, optionC = opC, optionD = opD, question = question };
             string jsonString = JsonSerializer.Serialize(l);

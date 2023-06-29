@@ -15,10 +15,10 @@ private:
     Room& m_room;
     LoggedUser m_user;
 
-    bool isRequestRelevant(const RequestInfo& requestInfo) override;
+    bool isRequestRelevant(const RequestInfo& requestInfo) const override;
 
     RequestResult leaveRoom(RequestInfo);
-    RequestResult getRoomsState(RequestInfo);
+    RequestResult getRoomsState(RequestInfo) const;
 
 public:
     RoomMemberRequestHandler(std::string username, Room& room);

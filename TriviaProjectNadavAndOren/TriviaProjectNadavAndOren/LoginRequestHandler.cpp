@@ -1,7 +1,7 @@
 #include "LoginRequestHandler.h"
 #include "RequestHandlerFactory.h"
 
-bool LoginRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
+bool LoginRequestHandler::isRequestRelevant(const RequestInfo& requestInfo) const
 {
     return requestInfo.messageCode == LOGIN_CODE
         || requestInfo.messageCode == SIGNUP_CODE

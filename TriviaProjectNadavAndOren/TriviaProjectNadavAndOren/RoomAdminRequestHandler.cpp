@@ -2,7 +2,7 @@
 #include "RequestHandlerFactory.h"
 #include "GameRequestHandler.h"
 
-bool RoomAdminRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
+bool RoomAdminRequestHandler::isRequestRelevant(const RequestInfo& requestInfo) const
 {
 	return requestInfo.messageCode == CloseRoom || requestInfo.messageCode == StartGame || requestInfo.messageCode == GetRoomsState;
 }

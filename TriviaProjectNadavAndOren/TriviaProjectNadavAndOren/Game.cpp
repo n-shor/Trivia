@@ -4,7 +4,7 @@
 std::map<std::string, time_t> m_timeTracker;
 std::mutex m_timeTrackerMutex;
 std::mutex Game::m_playersMutex;
-Question end = Question();
+Question end("error", { "error", "error", "error", "error"}, 0);
 
 void Game::submitGameStatsToDB(GameData& gd, IDatabase* db)
 {
@@ -160,4 +160,9 @@ bool Game::hasGameEnded() const
 	}
 	RequestHandlerFactory::getInstance().getRoomManager().deleteRoom(m_room.getRoomData().id);
 	return true;
+}
+
+int Game::getRoomId() const
+{
+	return m_room.getRoomData().id;
 }

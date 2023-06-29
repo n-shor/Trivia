@@ -1,7 +1,7 @@
 #include "RoomMemberRequestHandler.h"
 #include "GameRequestHandler.h"
 
-bool RoomMemberRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
+bool RoomMemberRequestHandler::isRequestRelevant(const RequestInfo& requestInfo) const
 {
     return requestInfo.messageCode == LeaveRoom || requestInfo.messageCode == GetRoomsState;
 }
@@ -30,7 +30,7 @@ bool contains(std::vector<T> vec, const T& elem)
 	return result;
 }
 
-RequestResult RoomMemberRequestHandler::getRoomsState(RequestInfo)
+RequestResult RoomMemberRequestHandler::getRoomsState(RequestInfo) const
 {
 	try{
 		if (!contains(m_room.getAllUsers(), m_room.getRoomData().adminName))

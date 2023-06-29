@@ -45,7 +45,7 @@ Game& GameManager::findUserGame(const std::string lu)
     for (int a = 0; a < m_games.size(); a++)
     {
         it = m_games[a].getPlayers().find(lu);
-        if (it != m_games[a].getPlayers().end()) {
+        if (it != m_games[a].getPlayers().end() && !m_games[a].hasGameEnded()) {
             return m_games[a];
         }
     }

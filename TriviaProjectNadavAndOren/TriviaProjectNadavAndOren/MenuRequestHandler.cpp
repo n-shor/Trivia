@@ -38,7 +38,7 @@ RequestResult MenuRequestHandler::handleRequest(const RequestInfo& requestInfo)
 	return r;
 }
 
-bool MenuRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
+bool MenuRequestHandler::isRequestRelevant(const RequestInfo& requestInfo) const
 {
 	return requestInfo.messageCode == CreateRoom || requestInfo.messageCode == GetRooms || requestInfo.messageCode == GetPlayersInRoom ||
 		requestInfo.messageCode == JoinRoom || requestInfo.messageCode == GetStatistics || requestInfo.messageCode == Logout || requestInfo.messageCode == GetHighScore || requestInfo.messageCode == AddQuestion;

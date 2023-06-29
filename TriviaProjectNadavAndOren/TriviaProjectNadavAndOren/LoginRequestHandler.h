@@ -13,7 +13,7 @@ private:
     constexpr static int END_CODE = 3;
 
 public:
-    bool isRequestRelevant(const RequestInfo& requestInfo) override;
+    bool isRequestRelevant(const RequestInfo& requestInfo) const override;
     RequestResult handleRequest(const RequestInfo& requestInfo) override;
 
 private:

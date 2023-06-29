@@ -4,7 +4,7 @@
 
 bool GameRequestHandler::m_gameEnded = false;
 
-RequestResult GameRequestHandler::getQuestion(const RequestInfo ri)
+RequestResult GameRequestHandler::getQuestion(const RequestInfo ri) const
 {
 	RequestResult r;
 	r.username = m_user.getUsername();
@@ -21,7 +21,7 @@ RequestResult GameRequestHandler::getQuestion(const RequestInfo ri)
 	return r;
 }
 
-RequestResult GameRequestHandler::submitAnswer(const RequestInfo ri)
+RequestResult GameRequestHandler::submitAnswer(const RequestInfo ri) const
 {
 	SubmitAnswerRequest sart = JsonRequestPacketDeserializer::deserializeSubmitAnswerRequest(ri);
 	RequestResult r;
@@ -38,7 +38,7 @@ RequestResult GameRequestHandler::submitAnswer(const RequestInfo ri)
 	return r;
 }
 
-RequestResult GameRequestHandler::getGameResults(const RequestInfo ri)
+RequestResult GameRequestHandler::getGameResults(const RequestInfo ri) const
 {
 	RequestResult r;
 	r.username = m_user.getUsername();
@@ -56,7 +56,7 @@ RequestResult GameRequestHandler::getGameResults(const RequestInfo ri)
 	return r;
 }
 
-RequestResult GameRequestHandler::leaveGame(const RequestInfo)
+RequestResult GameRequestHandler::leaveGame(const RequestInfo) const
 {
 	m_game.removePlayer(m_user.getUsername());
 
@@ -69,7 +69,7 @@ RequestResult GameRequestHandler::leaveGame(const RequestInfo)
 	return r;
 }
 
-RequestResult GameRequestHandler::leaderboard(const RequestInfo)
+RequestResult GameRequestHandler::leaderboard(const RequestInfo) const
 {
 	RequestResult r;
 	r.username = m_user.getUsername();
@@ -80,10 +80,11 @@ RequestResult GameRequestHandler::leaderboard(const RequestInfo)
 	}
 	r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
 	r.response = JsonResponsePacketSerializer::serializeResponse(lbr);
+	RequestHandlerFactory::getInstance().getRoomManager().deleteRoom(m_game.getRoomId());
 	return r;
 }
 
-RequestResult GameRequestHandler::checkGameEnd(const RequestInfo)
+RequestResult GameRequestHandler::checkGameEnd(const RequestInfo) const
 {
 	RequestResult r;
 	CheckForEndReponse cfer;
@@ -129,7 +130,7 @@ RequestResult GameRequestHandler::handleRequest(const RequestInfo& requestInfo)
 	return r;
 }
 
-bool GameRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
+bool GameRequestHandler::isRequestRelevant(const RequestInfo& requestInfo) const
 {
 	return requestInfo.messageCode == getQuestionReq || requestInfo.messageCode == submitAnswerReq ||
 		requestInfo.messageCode == getGameResultsReq || requestInfo.messageCode == leaveGameReq || 

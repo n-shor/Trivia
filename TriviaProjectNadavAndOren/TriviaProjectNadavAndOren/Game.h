@@ -31,5 +31,6 @@ public:
 	const int getCorrectAnswerId(const std::string);
 	const std::map<std::string, GameData>& getPlayers() const;
 	bool hasGameEnded() const;
+	int getRoomId() const;
 	static int constexpr playerFinished = 250;
 };

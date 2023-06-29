@@ -15,7 +15,7 @@ private:
     Room& m_room;
     LoggedUser m_user;
 
-    bool isRequestRelevant(const RequestInfo& requestInfo) override;
+    bool isRequestRelevant(const RequestInfo& requestInfo) const override;
 
     RequestResult closeRoom(const RequestInfo);
     RequestResult startGame(const RequestInfo);

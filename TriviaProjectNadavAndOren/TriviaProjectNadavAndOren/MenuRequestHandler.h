@@ -12,7 +12,7 @@ class MenuRequestHandler : public IRequestHandler
 private:
     LoggedUser m_user;
 
-    bool isRequestRelevant(const RequestInfo& requestInfo) override;
+    bool isRequestRelevant(const RequestInfo& requestInfo) const override;
 
     RequestResult signout(const RequestInfo);
     RequestResult getRooms(const RequestInfo);

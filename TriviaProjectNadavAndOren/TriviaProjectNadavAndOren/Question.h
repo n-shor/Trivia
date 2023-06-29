@@ -11,8 +11,7 @@ private:
     std::string m_question;
     std::vector<std::string> m_possibleAnswers;
 public:
-    Question(std::string m_question, std::vector<std::string> m_possibleAnswers, int correctAnswerId);
-    Question();
+    Question(const std::string m_question, const std::vector<std::string> m_possibleAnswers, const int correctAnswerId);
     const std::string getQuestion() const;
     const std::vector<std::string> getPossibleAnswers() const;
     const int getCorrectAnswerId() const;
