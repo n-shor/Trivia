@@ -76,7 +76,7 @@ RequestResult GameRequestHandler::leaderboard(const RequestInfo)
 	leaderBoardResponse lbr;
 	for (auto it = m_game.getPlayers().begin(); it != m_game.getPlayers().end();it++)
 	{
-		lbr.players[it->first] = ((it->second.correctAnswerCount * (1/it->second.AverageAnswerTime) * 1000) / (it->second.correctAnswerCount + it->second.wrongAnswerCount)); //score calculation
+		lbr.players[it->first] = ((it->second.correctAnswerCount * (1/ std::sqrt(it->second.AverageAnswerTime)) * 1000) / (it->second.correctAnswerCount + it->second.wrongAnswerCount)); //score calculation
 	}
 	r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
 	r.response = JsonResponsePacketSerializer::serializeResponse(lbr);

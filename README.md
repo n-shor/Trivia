@@ -35,3 +35,5 @@ This project includes the following bonuses:
 - Bonus Feature 15: [You can't even CREATE a room that has more questions than what the server's database holds]
 
 - Bonus Feature 16: [The player's name is red in the results screen, and if they won the 'Winner' title's name also becomes red]
+
+- Bonus Feature 17: [The player's name is red in the high scores page, if they appear there]

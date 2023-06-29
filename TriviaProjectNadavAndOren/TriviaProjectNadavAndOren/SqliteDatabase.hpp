@@ -319,7 +319,7 @@ public:
     bool submitGameStatistics(GameData gd, std::string username)
     {
         std::string delSql = "DELETE FROM STATISTICS WHERE USERNAME = '" + username + "';";
-        std::string sql = " INSERT INTO STATISTICS VALUES ('" + username + "', " + std::to_string(getNumOfPlayerGames(username) + 1) + ", " + std::to_string(getNumOfTotalAnswers(username) + gd.correctAnswerCount + gd.wrongAnswerCount) + ", " + std::to_string(getNumOfCorrectAnswers(username) + gd.correctAnswerCount) + ", '" + std::to_string((getNumOfCorrectAnswers(username) * getPlayerAverageAnswerTime(username) + (gd.correctAnswerCount) * gd.AverageAnswerTime) / (getNumOfCorrectAnswers(username) + gd.correctAnswerCount)) + "', '" + std::to_string(getPlayerScore(username) + ((gd.correctAnswerCount * (1/gd.AverageAnswerTime) * 1000) / (gd.correctAnswerCount + gd.wrongAnswerCount))) + "');";
+        std::string sql = " INSERT INTO STATISTICS VALUES ('" + username + "', " + std::to_string(getNumOfPlayerGames(username) + 1) + ", " + std::to_string(getNumOfTotalAnswers(username) + gd.correctAnswerCount + gd.wrongAnswerCount) + ", " + std::to_string(getNumOfCorrectAnswers(username) + gd.correctAnswerCount) + ", '" + std::to_string((getNumOfCorrectAnswers(username) * getPlayerAverageAnswerTime(username) + (gd.correctAnswerCount) * gd.AverageAnswerTime) / (getNumOfCorrectAnswers(username) + gd.correctAnswerCount)) + "', '" + std::to_string(getPlayerScore(username) + ((gd.correctAnswerCount * (1/ std::sqrt(gd.AverageAnswerTime)) * 1000) / (gd.correctAnswerCount + gd.wrongAnswerCount))) + "');";
 
         if (sqlite3_exec(db, delSql.c_str(), nullptr, 0, nullptr) != SQLITE_OK) {
             std::cout << "deleted previus stats" << std::endl;
