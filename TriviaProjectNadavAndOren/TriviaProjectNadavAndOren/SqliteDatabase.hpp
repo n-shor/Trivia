@@ -297,7 +297,7 @@ public:
 
     std::vector<std::string> getHighScores()
     {
-        std::string sql = "SELECT USERNAME, SCORE FROM STATISTICS ORDER BY SCORE DESC LIMIT 5;";
+        std::string sql = "SELECT USERNAME, SCORE FROM STATISTICS ORDER BY SCORE DESC LIMIT 3;";
         sqlite3_stmt* stmt;
 
         if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK)

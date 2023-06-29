@@ -13,6 +13,6 @@ public:
 	std::vector<Game>& getGames();
 	GameManager(IDatabase*);
 	int createGame(Room&);
-	void deleteGame(int gameId);
-	Game& findUserGame(std::string);
+	void deleteGame(const int gameId);
+	Game& findUserGame(const std::string);
 };

@@ -98,7 +98,7 @@ public:
 
     static const std::vector<unsigned char> serializeResponse(const getHighScoreResponse& response)
     {
-        json j = { {"status", response.status }, {"HighScores", response.statistics}};
+        json j = { {"status", response.status }, {"statistics", response.statistics}};
         return createBuffer(3, j.dump());
     }
 

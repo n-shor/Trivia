@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -91,7 +92,7 @@ public class GetPlayersInRoomResponse
 public class GetHighScoreResponse
 {
     public int status { get; set; }
-    public List<string> statistics { get; set; }
+    public ObservableCollection<string> statistics { get; set; }
 };
 
 public class getPersonalStatsResponse

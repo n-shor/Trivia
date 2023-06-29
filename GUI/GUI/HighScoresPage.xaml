@@ -7,11 +7,16 @@
         <BackButtonBehavior IsVisible="False" IsEnabled="False" />
     </Shell.BackButtonBehavior>
     <StackLayout Padding="20">
-        <Label Text="High Scores" TextColor="White"/>
-        <ListView x:Name="HighScoresList">
+        <Label Text="High Scores" TextColor="White" FontSize="48" />
+        <ListView x:Name="HighScoresList" SelectionMode="None">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell Text="{Binding .}" TextColor="White"/>
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="{Binding Rank, StringFormat='{0} '}" TextColor="White" FontSize="30" />
+                            <Label Text="{Binding UserName}" TextColor="{Binding TextColor}" FontSize="40" />
+                        </StackLayout>
+                    </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

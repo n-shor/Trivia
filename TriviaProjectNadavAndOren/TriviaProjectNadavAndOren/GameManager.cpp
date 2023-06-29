@@ -21,7 +21,7 @@ int GameManager::createGame(Room& r)
     return find(m_games.begin(), m_games.end(), g) - m_games.begin();
 }
 
-void GameManager::deleteGame(int gameId)
+void GameManager::deleteGame(const int gameId)
 {
     std::lock_guard<std::mutex> lock(gameLock);
     for (auto it = m_games.begin(); it != m_games.end();)
@@ -38,7 +38,7 @@ void GameManager::deleteGame(int gameId)
     }
 }
 
-Game& GameManager::findUserGame(std::string lu)
+Game& GameManager::findUserGame(const std::string lu)
 {
     std::lock_guard<std::mutex> lock(gameLock);
     auto it = m_games[0].getPlayers().find(lu);

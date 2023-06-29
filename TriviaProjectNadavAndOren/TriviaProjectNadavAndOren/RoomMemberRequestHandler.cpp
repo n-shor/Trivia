@@ -35,7 +35,7 @@ RequestResult RoomMemberRequestHandler::getRoomsState(RequestInfo)
 	try{
 		if (!contains(m_room.getAllUsers(), m_room.getRoomData().adminName))
 		{
-			throw 69;
+			throw std::exception("Admin is no longer in the room");
 		}
 		RequestResult r;
 		GetRoomStateResponse grsr;
@@ -56,7 +56,7 @@ RequestResult RoomMemberRequestHandler::getRoomsState(RequestInfo)
 		r.username = m_user.getUsername();
 		return r;
     }
-	catch (...)
+	catch (const std::exception& er)
 	{
 		RequestResult r;
 		ErrorResponse e;

@@ -7,11 +7,18 @@
         <BackButtonBehavior IsVisible="False" IsEnabled="False" />
     </Shell.BackButtonBehavior>
     <StackLayout Padding="20">
-        <Label Text="Personal Statistics" TextColor="White"/>
-        <ListView x:Name="PersonalStatsList">
+        <Label Text="Personal Statistics" 
+               TextColor="White"
+               FontSize="30"/>
+        <ListView x:Name="PersonalStatsList"
+                  SelectionMode="None">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell Text="{Binding .}" TextColor="White"/>
+                    <ViewCell IsEnabled="False">
+                        <Label Text="{Binding .}" 
+                               TextColor="White"
+                               FontSize="24"/>
+                    </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
