@@ -43,3 +43,7 @@ This project includes the following bonuses:
 - Bonus Feature 19: [The GUI looks kind of good with background pictures and colored buttons (even the joinRoom page has a list of buttons (!!!)), also a lot of effort has been put into the various lists being scrollable if they're too long to see without scrolling]
 
 - Bonus Feature 20: [For user convenience, when the game starts they have to press the ok button on the popup so they can get ready instead of being thrown right into the game]
+
+- Bonus Feature 21: [The game works even if you adjust the window size, adjusting its components as it sees fit]
+
+- Bonus Feature 22: [The app has several gesture recognizers. Try them out (even though they're not that prevalent in our implementation)!]
