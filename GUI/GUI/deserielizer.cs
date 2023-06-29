@@ -1,11 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
+public class AddQuestionRequest
+{
+    public string question { get; set; }
+    public string optionA { get; set; }
+    public string optionB { get; set; }
+    public string optionC { get; set; }
+    public string optionD { get; set; }
+    public char correctAnswer { get; set; }
+};
 
+public class AddQuestionResponse
+{
+    public int status { get; set; }
+};
 public class LoginRequest
 {
     public string username { get; set; }
@@ -29,6 +43,11 @@ public class SignupResponse
     public int status { get; set; }
 };
 
+public class CheckForEndReponse
+{
+    public int gameEnded { get; set; }
+};
+
 public class RoomData
 {
     public int id { get; set; }
@@ -41,6 +60,10 @@ public class RoomData
     public string adminName { get; set; }
     public string DisplayText => $"{name} (Max Players: {maxPlayers})";
 
+};
+public class SubmitAnswerRequest
+{
+     public uint answerId { get; set; }
 };
 
 public class CreateRoomRequest
@@ -69,7 +92,7 @@ public class GetPlayersInRoomResponse
 public class GetHighScoreResponse
 {
     public int status { get; set; }
-    public List<string> statistics { get; set; }
+    public ObservableCollection<string> statistics { get; set; }
 };
 
 public class getPersonalStatsResponse
@@ -85,7 +108,7 @@ public class JoinRoomResponse
 
 public class LeaveRoomResponse
 {
-    public int status;
+    public int status { get; set; }
 };
 
 public class CreateRoomResponse
@@ -97,12 +120,12 @@ public class CreateRoomResponse
 
 public class CloseRoomResponse
 {
-    public int status;
+    public int status { get; set; }
 };
 
 public class StartGameResponse
 {
-    public int status;
+    public int status { get; set; }
 };
 
 public class GetRoomsResponse
@@ -116,6 +139,24 @@ public class ErrorResponse
     public string message { get; set; }
 };
 
+public class GetQuestionResponse
+{
+    public int status { get; set; }
+    public string question { get; set; }
+    public Dictionary<uint, string> answers { get; set; }
+}
+
+public class leaderBoardResponse
+{
+    public Dictionary<string, int> players { get; set; }
+};
+
+public class SubmitAnswerResponse
+{
+    public int status { get; set; }
+    public int correctAnswerId { get; set; }
+};
+
 public class GetRoomStateResponse
 {
     public int status { get; set; }
@@ -125,12 +166,39 @@ public class GetRoomStateResponse
     public int answerTimeout { get; set; }
 };
 
+public class Question
+{
+    public string questionText { get; set; }
+    public List<string> possibleAnswers { get; set; }
+    public int correctAnswerId { get; set; }
+
+    public Question()
+    {
+    }
+
+    public Question(string questionText, List<string> possibleAnswers, int correctAnswerId)
+    {
+        this.questionText = questionText;
+        this.possibleAnswers = possibleAnswers;
+        this.correctAnswerId = correctAnswerId;
+    }
+}
+
+public class GameData
+{
+    public Question currentQuestion { get; set; }
+    public uint correctAnswerCount { get; set; }
+    public uint wrongAnswerCount { get; set; }
+    public double averageAnswerTime { get; set; }
+}
+
+
 
 namespace GUI
 {
-    internal class Deserielizer
+    internal class Deserializer
     {
-        public static dynamic getResponse(Socket sock)
+        public static ( int type, string jsonData ) getResponse(Socket sock)
         {
             // Receive the message type
             byte[] typeBuffer = new byte[1];
@@ -153,7 +221,7 @@ namespace GUI
             // Convert the bytes into string
             string jsonData = Encoding.ASCII.GetString(jsonBuffer);
 
-            return new { type, jsonData = jsonData };
+            return ( type, jsonData );
         }
 
     }

@@ -2,7 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:GUI.Converters"
              x:Class="GUI.JoinRoomPage"
-             NavigationPage.HasBackButton="False">
+             NavigationPage.HasBackButton="False"
+             BackgroundImageSource="Resources/joinRoomPageBG.jpg">
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="False" IsEnabled="False" />
     </Shell.BackButtonBehavior>
@@ -12,11 +13,11 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <StackLayout Padding="20">
-        <Label Text="Join Room" />
+        <Label Text="Join Room" TextColor="White"/>
         <ScrollView>
             <StackLayout x:Name="RoomsStackLayout" />
         </ScrollView>
-        <Button x:Name="JoinButton" Text="Join" Clicked="OnJoinButtonClicked" IsEnabled="false"/>
-        <Button Text="Back" Clicked="OnBackButtonClicked"/>
+        <Button x:Name="JoinButton" Text="Join" Clicked="OnJoinButtonClicked" IsEnabled="false" BackgroundColor="DarkBlue" TextColor="White"/>
+        <Button Text="Back" Clicked="OnBackButtonClicked" BackgroundColor="MediumBlue" TextColor="White"/>
     </StackLayout>
 </ContentPage>

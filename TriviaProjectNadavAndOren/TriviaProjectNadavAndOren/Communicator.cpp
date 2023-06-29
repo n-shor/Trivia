@@ -1,8 +1,7 @@
 #include "Communicator.h"
+#include "RoomAdminRequestHandler.h"
+#include "GameRequestHandler.h"
 #define PORT 8080
-#define TEMP_STATUS_VAL 69
-
-RequestHandlerFactory rhf;
 
 void Communicator::bindAndListen()
 {
@@ -29,17 +28,17 @@ void Communicator::bindAndListen()
 
 //helper function in order to parse the message properly
 std::pair<int, std::string> recvMessage(int clientSocket) {
-    char headerData[6] = { 0 }; // 5 for data and 1 for null terminator
+    char headerData[5] = { 0 };
+    unsigned char* headerDataUnsigned = { 0 };
     if (recv(clientSocket, headerData, 5, 0) <= 0)
     {
-        //handle error or disconnection here
-        throw std::runtime_error("Failed to receive message from client: " + std::to_string(WSAGetLastError()) + " (The client's thread has been closed)");
+        throw std::runtime_error("Failed to receive message from client");
     }
-    headerData[5] = '\0'; // Null-terminate the string
+    headerDataUnsigned = (unsigned char*)headerData;
+    int messageType = headerDataUnsigned[0]; // Interpret the first byte as the status
 
-    int messageType = headerData[0];
-
-    int messageSize = (headerData[1] - '0') * 1000 + (headerData[2] - '0') * 100 + (headerData[3] - '0') * 10 + (headerData[4] - '0');
+    // Interpret the next 4 bytes as an integer for the length
+    int messageSize = *reinterpret_cast<int*>(headerDataUnsigned + 1);
 
     std::vector<char> messageJson(messageSize);
     int bytesToReceive = messageSize;
@@ -49,7 +48,6 @@ std::pair<int, std::string> recvMessage(int clientSocket) {
         int received = recv(clientSocket, &messageJson[bytesReceived], bytesToReceive, 0);
         if (received <= 0)
         {
-            //handle error or disconnection here
             throw std::runtime_error("Failed to receive message: " + std::to_string(WSAGetLastError()));
         }
         bytesReceived += received;
@@ -62,7 +60,7 @@ std::pair<int, std::string> recvMessage(int clientSocket) {
 }
 
 
-void Communicator::handleNewClient(SOCKET s)
+void Communicator::handleNewClient(const SOCKET s)
 {
     std::cout << "Client connected." << std::endl;
 
@@ -73,7 +71,6 @@ void Communicator::handleNewClient(SOCKET s)
         {
             // Receives the JSON message from the client
             auto [messageCode, messageData] = recvMessage(s);
-            messageCode -= '0'; //turning char into int
 
             std::cout << "Received message (type " << static_cast<int>(messageCode) << "): " << messageData << std::endl;
 
@@ -90,25 +87,47 @@ void Communicator::handleNewClient(SOCKET s)
                 ri.messageContent = std::vector<unsigned char>(messageData.begin(), messageData.end());
 
                 // Process the received JSON message
-                RequestResult reqRes = m_clients[s]->handleRequest(ri);
+                RequestResult reqRes = m_clients[s].second->handleRequest(ri);
                 std::vector<unsigned char> res = reqRes.response;
-                m_clients[s] = reqRes.newHandler;
+                m_clients[s].second = std::move(reqRes.newHandler);
+                m_clients[s].first = reqRes.username;
                 std::string msg(res.begin(), res.end());
                 std::cout << msg.substr(5) << std::endl; //printing the message without the bytes at the start
+                std::cout << m_clients[s].first << std::endl;
                 send(s, msg.c_str(), msg.size(), 0);
             }
         }
     }
-    catch (std::runtime_error e)
+    catch (const std::runtime_error& e)
     {
-        for (auto it = rhf.getLoginManager().m_loggedUsers.begin(); it != rhf.getLoginManager().m_loggedUsers.end(); ++it)
+        std::cout << e.what() << " " << m_clients[s].first << ". Their thread has been closed." << std::endl;
+        std::lock_guard<std::mutex> lock(RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers_mutex);
+        //remove the user from the game they're in / the room they're in
+        for (auto it = RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.begin();
+            it != RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.end();)
         {
-            if (it->getUsername() == ) //!!!!!HERE!!!!!//
+            std::cout << it->getUsername() << "\n"; //for testing purposes
+            if (it->getUsername() == m_clients[s].first)
             {
-                m_LoggedUsers.erase(it); 
+                it = RequestHandlerFactory::getInstance().getLoginManager().m_loggedUsers.erase(it);
+            }
+            else
+            {
+                ++it;
             }
         }
-        std::cout << e.what() << std::endl;
+
+
+        RequestInfo ri;
+        ri.messageCode = CloseRoom;
+        m_clients[s].second->handleRequest(ri);
+        ri.messageCode = LeaveRoom;
+        m_clients[s].second->handleRequest(ri);
+        ri.messageCode = leaveGameReq;
+        m_clients[s].second->handleRequest(ri);
+
+
+        m_clients.erase(s);
     }
 
     // Closes the client socket
@@ -144,7 +163,7 @@ void Communicator::startHandleRequests()
         std::cout << "Accepted client connection" << std::endl;
 
         // handle the client connection in a separate thread
-        m_clients[clientSocket] = new LoginRequestHandler(rhf);
+        m_clients[clientSocket] = std::make_pair("", std::make_unique<LoginRequestHandler>());
 
         std::thread(&Communicator::handleNewClient, this, clientSocket).detach();
 

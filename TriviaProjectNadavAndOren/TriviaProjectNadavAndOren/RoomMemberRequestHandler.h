@@ -5,24 +5,22 @@
 #include "JsonResponsePacketSerializer.hpp"
 #include "JsonRequestPacketDeserializer.hpp"
 
-enum RoomMemberRequestTypes { LeaveRoom, GetRoomsState };
-enum RoomMemberRequeststatus { leaveRoomSuccessful, getRoomsStateRes};
+enum RoomMemberRequestTypes { LeaveRoom = 17, GetRoomsState };
+enum RoomMemberRequeststatus { leaveRoomSuccessful = 19, getRoomsStateRes };
 
 class RoomMemberRequestHandler : public IRequestHandler
 {
 private:
 
-    Room m_room;
-    RoomManager& m_roomManager;
+    Room& m_room;
     LoggedUser m_user;
-    RequestHandlerFactory& m_handlerFactory;
 
-    bool isRequestRelevant(const RequestInfo& requestInfo) override;
+    bool isRequestRelevant(const RequestInfo& requestInfo) const override;
 
     RequestResult leaveRoom(RequestInfo);
-    RequestResult getRoomsState(RequestInfo);
+    RequestResult getRoomsState(RequestInfo) const;
 
 public:
-    RoomMemberRequestHandler(std::string username, RequestHandlerFactory& rhf, Room room);
+    RoomMemberRequestHandler(std::string username, Room& room);
     RequestResult handleRequest(const RequestInfo& requestInfo) override;
 };

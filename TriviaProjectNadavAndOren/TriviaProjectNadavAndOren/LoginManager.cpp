@@ -3,8 +3,9 @@
 #include <mutex>
 #include <map>
 
-std::unique_ptr<IDatabase> LoginManager::m_database = nullptr;
+std::unique_ptr<IDatabase> LoginManager::m_database;
 std::mutex LoginManager::m_database_mutex;
+std::vector<LoggedUser> LoginManager::m_loggedUsers;
 
 LoginManager::LoginManager()
 {
@@ -40,7 +41,8 @@ bool containsUser(std::vector<LoggedUser>& LoggedUsers, std::string& user)
 
 int LoginManager::login(std::string username, std::string password)
 {
-    std::lock_guard<std::mutex> lock(m_database_mutex);
+    std::lock_guard<std::mutex> lock1(m_loggedUsers_mutex);
+    std::lock_guard<std::mutex> lock2(m_database_mutex);
     if (m_database->doesUserExist(username) && m_database->doesPasswordMatch(username, password))
     {
         if (containsUser(m_loggedUsers, username))
@@ -55,13 +57,18 @@ int LoginManager::login(std::string username, std::string password)
 
 int LoginManager::logout(std::string username)
 {
-    std::lock_guard<std::mutex> lock(m_database_mutex);
-    for (auto it = m_loggedUsers.begin(); it != m_loggedUsers.end(); ++it)
+    std::lock_guard<std::mutex> lock1(m_loggedUsers_mutex);
+    std::lock_guard<std::mutex> lock2(m_database_mutex);
+    for (auto it = m_loggedUsers.begin(); it != m_loggedUsers.end();)
     {
         if (it->getUsername() == username)
         {
             m_loggedUsers.erase(it);
             return LoggedOut;
+        }
+        else
+        {
+            ++it;
         }
     }
     return NoSuchLoggedUser;

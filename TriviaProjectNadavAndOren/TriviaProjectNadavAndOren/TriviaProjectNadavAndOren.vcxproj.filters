@@ -66,13 +66,19 @@
     <ClInclude Include="StatisticsManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Question.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="RoomAdminRequestHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RoomMemberRequestHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Question.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -120,6 +126,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RoomMemberRequestHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Question.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameRequestHandler.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameRequestHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
