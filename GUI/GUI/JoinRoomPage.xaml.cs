@@ -72,11 +72,14 @@ namespace GUI
 
         private void LoadRooms()
         {
+            (int type, string jsonData) data;
             JoinButton.IsEnabled = false;
-            Serielizer s = new Serielizer();
-            s.sendMessage(ClientSocket.sock, (int)1, "");
-            dynamic data = Deserielizer.getResponse(ClientSocket.sock);
+            JoinButton.BackgroundColor = Colors.DarkBlue;
+            Serializer s = new Serializer();
+            s.sendMessage(ClientSocket.sock, (int)MenuRequestTypes.GetRooms, "");
 
+            data = Deserializer.getResponse(ClientSocket.sock);
+            
             GetRoomsResponse json = JsonSerializer.Deserialize<GetRoomsResponse>(data.jsonData);
 
             // Clear the existing items
@@ -89,7 +92,7 @@ namespace GUI
                 {
                     BorderColor = Colors.Black,
                     Content = new Label { Text = $"Room Name: {room.name}, Admin: {room.adminName}, Players: {room.currentPlayers}/{room.maxPlayers}" },
-                    BackgroundColor = room.isActive != 0 ? Colors.Red : Colors.Gray,
+                    BackgroundColor = room.isActive != 0 ? Colors.Red : Colors.LightGray,
                 };
 
                 var tapGesture = new TapGestureRecognizer();
@@ -97,6 +100,12 @@ namespace GUI
                 roomFrame.GestureRecognizers.Add(tapGesture);
 
                 RoomsStackLayout.Children.Add(roomFrame);
+
+                // Re-select the previously selected room if it still exists
+                if (_selectedRoom != null && room.id == _selectedRoom.id)
+                {
+                    OnRoomSelected(room, roomFrame);
+                }
             }
         }
 
@@ -105,14 +114,15 @@ namespace GUI
             // Reset color of previously selected frame
             if (_selectedFrame != null)
             {
-                _selectedFrame.BackgroundColor = (_selectedRoom.isActive != 0) ? Colors.Red : Colors.Gray;
+                _selectedFrame.BackgroundColor = (_selectedRoom.isActive != 0) ? Colors.Red : Colors.LightGray;
             }
 
             _selectedRoom = room;
             _selectedFrame = selectedFrame;
-            _selectedFrame.BackgroundColor = (_selectedRoom.isActive != 0) ? Colors.DarkRed : Colors.DarkGray;
+            _selectedFrame.BackgroundColor = (_selectedRoom.isActive != 0) ? Colors.DarkRed : Colors.Gray;
 
             JoinButton.IsEnabled = true;
+            JoinButton.BackgroundColor = Colors.MediumBlue;
         }
 
         private async void OnJoinButtonClicked(object sender, EventArgs e)
@@ -128,16 +138,16 @@ namespace GUI
             }
             else
             {
-                Serielizer s = new Serielizer();
+                Serializer s = new Serializer();
 
                 string jsonString = JsonSerializer.Serialize(new { roomId = _selectedRoom.id });
-                s.sendMessage(ClientSocket.sock, (int)3, jsonString);
+                s.sendMessage(ClientSocket.sock, (int)MenuRequestTypes.JoinRoom, jsonString);
 
                 // Receive and handle the response from the server
-                dynamic data = Deserielizer.getResponse(ClientSocket.sock);
+                var data = Deserializer.getResponse(ClientSocket.sock);
                 JoinRoomResponse response = JsonSerializer.Deserialize<JoinRoomResponse>(data.jsonData);
 
-                if (response.status == 5) // Assuming your response object has a "success" property
+                if (response.status == (int)MenuRequestStatus.joinRoomSuccessful)
                 {
                     // After successfully joining the room, navigate to RoomPage
                     await Navigation.PushAsync(new RoomPage(_selectedRoom, OriginPage.JoinRoomPage));

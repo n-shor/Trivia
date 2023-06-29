@@ -1,19 +1,20 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GUI.CreateRoomPage"
-             NavigationPage.HasBackButton="False">
+             NavigationPage.HasBackButton="False"
+             BackgroundImageSource="Resources/createRoomPageBG.jpg">
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="False" IsEnabled="False" />
     </Shell.BackButtonBehavior>
     <StackLayout Padding="20">
-        <Label Text="Create Room" />
-        <Entry Placeholder="Room Name" x:Name="RoomNameEntry"/>
-        <Entry Placeholder="Time for Question" x:Name="TimeQuestionEntry" Keyboard="Numeric"/>
-        <Entry Placeholder="Number of Questions" x:Name="QuestionCountEntry" Keyboard="Numeric"/>
-        <Entry Placeholder="Number of Players" x:Name="PlayersNumberEntry" Keyboard="Numeric"/>
-        <Button Text="Create" Clicked="OnCreateButtonClicked"/>
-        <Button Text="Back" Clicked="OnBackButtonClicked" />
-        <Label x:Name="PlayersLabel" Text=""/>
-        <Label x:Name="AdminLabel" Text=""/>
+        <Label Text="Create Room" TextColor="White"/>
+        <Entry Placeholder="Room Name" x:Name="RoomNameEntry" TextColor="White"/>
+        <Entry Placeholder="Time Limit Per Question" x:Name="TimeQuestionEntry" Keyboard="Numeric" TextColor="White"/>
+        <Entry Placeholder="Number of Questions" x:Name="QuestionCountEntry" Keyboard="Numeric" TextColor="White"/>
+        <Entry Placeholder="Number of Players" x:Name="PlayersNumberEntry" Keyboard="Numeric" TextColor="White"/>
+        <Button Text="Create" Clicked="OnCreateButtonClicked" BackgroundColor="MediumBlue" TextColor="White"/>
+        <Button Text="Back" Clicked="OnBackButtonClicked" BackgroundColor="MediumBlue" TextColor="White" />
+        <Label x:Name="PlayersLabel" Text="" TextColor="White"/>
+        <Label x:Name="AdminLabel" Text="" TextColor="White"/>
     </StackLayout>
 </ContentPage>

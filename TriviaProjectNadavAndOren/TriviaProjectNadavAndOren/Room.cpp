@@ -2,19 +2,11 @@
 
 Room::Room()
 {
-    RoomData d;
-    d.id = 0;
-    d.isActive = false;
-    d.maxPlayers = 0;
-    d.name = "!!! Uninitialized Room !!!";
-    d.numOfQuestionsInGame = 0;
-    d.timePerQuestion = 0;
-    m_metadata = d;
+
 }
 
-Room::Room(RoomData d)
+Room::Room(RoomData& d) : m_metadata(d)
 {
-    m_metadata = d;
 }
 
 void Room::addUser(LoggedUser u)
@@ -26,6 +18,7 @@ void Room::addUser(LoggedUser u)
 void Room::removeUser(LoggedUser u)
 {
     auto temp = m_users.begin();
+    this->m_metadata.currentPlayers--;
     for (auto it = m_users.begin(); it != m_users.end(); it++)
     {
         if (it->getUsername() == u.getUsername())
@@ -36,7 +29,7 @@ void Room::removeUser(LoggedUser u)
     }
 }
 
-std::vector<std::string> Room::getAllUsers()
+const std::vector<std::string> Room::getAllUsers()
 {
     std::vector<std::string> ret;
     for (int it = 0; it < m_users.size(); it++)
@@ -46,7 +39,17 @@ std::vector<std::string> Room::getAllUsers()
     return ret;
 }
 
-RoomData Room::getRoomData()
+const RoomData& Room::getRoomData() const
 {
     return m_metadata;
+}
+
+void Room::activateRoom()
+{
+    m_metadata.isActive = 1;
+}
+
+void Room::deactivateRoom()
+{
+    m_metadata.isActive = 0;
 }

@@ -12,7 +12,7 @@ using json = nlohmann::json;
 class JsonRequestPacketDeserializer 
 {
 public:
-    static LoginRequest deserializeLoginRequest(const RequestInfo& requestInfo) {
+    static const LoginRequest deserializeLoginRequest(const RequestInfo& requestInfo) {
         std::string jsonString(requestInfo.messageContent.begin(), requestInfo.messageContent.end());
         json j = json::parse(jsonString);
         LoginRequest request;
@@ -21,7 +21,7 @@ public:
         return request;
     }
 
-    static SignupRequest deserializeSignUpRequest(const RequestInfo& requestInfo) {
+    static const SignupRequest deserializeSignUpRequest(const RequestInfo& requestInfo) {
         std::string jsonString(requestInfo.messageContent.begin(), requestInfo.messageContent.end());
         json j = json::parse(jsonString);
         SignupRequest request;
@@ -31,7 +31,7 @@ public:
         return request;
     }
 
-    static GetPlayersInRoomRequest deserializeGetPlayersRequest(const RequestInfo& requestInfo) {
+    static const GetPlayersInRoomRequest deserializeGetPlayersRequest(const RequestInfo& requestInfo) {
         std::string jsonString(requestInfo.messageContent.begin(), requestInfo.messageContent.end());
         json j = json::parse(jsonString);
         GetPlayersInRoomRequest request;
@@ -39,7 +39,7 @@ public:
         return request;
     }
 
-    static JoinRoomRequest deserializeJoinRoomRequest(const RequestInfo& requestInfo) {
+    static const JoinRoomRequest deserializeJoinRoomRequest(const RequestInfo& requestInfo) {
         std::string jsonString(requestInfo.messageContent.begin(), requestInfo.messageContent.end());
         json j = json::parse(jsonString);
         JoinRoomRequest request;
@@ -47,7 +47,7 @@ public:
         return request;
     }
 
-    static CreateRoomRequest deserializeCreateRoomRequest(const RequestInfo& requestInfo) {
+    static const CreateRoomRequest deserializeCreateRoomRequest(const RequestInfo& requestInfo) {
         std::string jsonString(requestInfo.messageContent.begin(), requestInfo.messageContent.end());
         json j = json::parse(jsonString);
         CreateRoomRequest request;
@@ -55,6 +55,27 @@ public:
         request.maxUsers = j.at("maxUsers").get<unsigned int>();
         request.questionCount = j.at("questionCount").get<unsigned int>();
         request.roomName = j.at("roomName").get<std::string>();
+        return request;
+    }
+
+    static const SubmitAnswerRequest deserializeSubmitAnswerRequest(const RequestInfo& requestInfo) {
+        std::string jsonString(requestInfo.messageContent.begin(), requestInfo.messageContent.end());
+        json j = json::parse(jsonString);
+        SubmitAnswerRequest request;
+        request.answerId = j.at("answerId").get<unsigned int>();
+        return request;
+    }
+
+    static const AddQuestionRequest deserializeAddQuestionRequest(const RequestInfo& requestInfo) {
+        std::string jsonString(requestInfo.messageContent.begin(), requestInfo.messageContent.end());
+        json j = json::parse(jsonString);
+        AddQuestionRequest request;
+        request.question = j.at("question").get<std::string>();
+        request.optionA = j.at("optionA").get<std::string>();
+        request.optionB = j.at("optionB").get<std::string>();
+        request.optionC = j.at("optionC").get<std::string>();
+        request.optionD = j.at("optionD").get<std::string>();
+        request.correctAnswer = (j.at("correctAnswer").get<std::string>())[0];
         return request;
     }
 };

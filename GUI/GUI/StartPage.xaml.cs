@@ -42,7 +42,7 @@ namespace GUI
         private void OnExitButtonClicked(object sender, EventArgs e)
         {
             // Send the exit message to the server
-            Serielizer s = new Serielizer();
+            Serializer s = new Serializer();
             s.sendMessage(ClientSocket.sock, (int)3, "end");
 
             // Exit the application

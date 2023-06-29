@@ -1,0 +1,28 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GUI.GamePage"
+             NavigationPage.HasBackButton="False"
+             BackgroundImageSource="Resources/createRoomPageBG.jpg">
+
+	<Shell.BackButtonBehavior>
+		<BackButtonBehavior IsVisible="False" IsEnabled="False" />
+	</Shell.BackButtonBehavior>
+
+	<AbsoluteLayout>
+
+		<StackLayout AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All" Padding="20">
+			<Label x:Name="QuestionLabel" Text="Question will appear here" TextColor="White" FontSize="40"/>
+			<Button x:Name="Option1Button" Text="Option 1" BackgroundColor="MediumBlue" Clicked="OnOptionButtonClicked" TextColor="White"/>
+			<Button x:Name="Option2Button" Text="Option 2" BackgroundColor="MediumBlue" Clicked="OnOptionButtonClicked" TextColor="White"/>
+			<Button x:Name="Option3Button" Text="Option 3" BackgroundColor="MediumBlue" Clicked="OnOptionButtonClicked" TextColor="White"/>
+			<Button x:Name="Option4Button" Text="Option 4" BackgroundColor="MediumBlue" Clicked="OnOptionButtonClicked" TextColor="White"/>
+			<Label x:Name="RemainingQuestionsLabel" Text="Remaining questions: " TextColor="White" FontSize="30"/>
+			<Label x:Name="CorrectAnswersLabel" Text="Correct answers: 0" TextColor="White" FontSize="30"/>
+			<Label x:Name="RemainingTimeLabel" Text="Time left to answer: " TextColor="White" FontSize="30"/>
+		</StackLayout>
+
+		<Label x:Name="WaitingLabel" Text="" TextColor="White" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" IsVisible="False" FontSize="60"/>
+
+	</AbsoluteLayout>
+
+</ContentPage>

@@ -48,8 +48,6 @@ namespace GUI
         private RoomData _currentRoom;
         private OriginPage _originPage;
         private string _currentUser;
-
-        // New properties for GetRoomStateResponse
         private bool _hasGameBegun;
         private int _questionCount;
         private int _answerTimeout;
@@ -79,7 +77,6 @@ namespace GUI
                 CloseRoomButton.IsVisible = false;
             }
 
-            // Start the task to keep updating the room data
             StartUpdating();
         }
 
@@ -87,10 +84,9 @@ namespace GUI
         private void StartUpdating()
         {
             cts = new CancellationTokenSource();
-            // Start the task to keep updating the room data
             Task.Run(async () =>
             {
-                while (!cts.IsCancellationRequested)
+                while (!cts.IsCancellationRequested && !_hasGameBegun)
                 {
                     await MainThread.InvokeOnMainThreadAsync(() =>
                     {
@@ -101,8 +97,8 @@ namespace GUI
                     await Task.Delay(3000);
                 }
             });
-
         }
+
 
         protected override void OnDisappearing()
         {
@@ -115,79 +111,86 @@ namespace GUI
             var request = new GetPlayersInRoomRequest { roomId = _currentRoom.id };
             var jsonString = JsonSerializer.Serialize(request);
 
-            Serielizer s = new Serielizer();
-            s.sendMessage(ClientSocket.sock, 1, jsonString);
+            Serializer s = new Serializer();
+            s.sendMessage(ClientSocket.sock, (int)RoomMemberRequestTypes.GetRoomsState, jsonString);
 
-            dynamic data = Deserielizer.getResponse(ClientSocket.sock);
+            (int type, string jsonData) data;
 
-            // Attempt to deserialize to ErrorResponse and check for a message property
-            try
+
+            data = Deserializer.getResponse(ClientSocket.sock);
+
+            if (data.jsonData != "{\"message\":\"irrelevant message\"}")
             {
-                ErrorResponse errorResponse = JsonSerializer.Deserialize<ErrorResponse>(data.jsonData);
-
-                // If the error message indicates the room is closed, handle it accordingly
-                if (errorResponse.message == "room closed")
+                try
                 {
-                    // Handle room closing
+                    ErrorResponse errorResponse = JsonSerializer.Deserialize<ErrorResponse>(data.jsonData);
+
+                    if (errorResponse.message == "room closed")
+                    {
+                        await MainThread.InvokeOnMainThreadAsync(async () =>
+                        {
+                            await Navigation.PushAsync(new MainMenuPage());
+                            await DisplayAlert("Room Closed", "The room has been closed by the admin.", "OK");
+                        });
+                        return;
+                    }
+                }
+                catch (JsonException)
+                {
+                }
+
+                GetRoomStateResponse response = JsonSerializer.Deserialize<GetRoomStateResponse>(data.jsonData);
+
+                List<User> users = new List<User>();
+                foreach (var username in response.players)
+                {
+                    if (username != _currentRoom.adminName)
+                    {
+                        users.Add(new User
+                        {
+                            Username = username,
+                            TextColor = username == _currentUser ? Colors.Red : Colors.White
+                        });
+                    }
+                }
+
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    UsersListView.ItemsSource = users;
+                });
+
+                _hasGameBegun = response.hasGameBegun;
+                _questionCount = response.questionCount;
+                _answerTimeout = response.answerTimeout;
+
+                if (_hasGameBegun)
+                {
+                    cts.Cancel(); // cancel the auto refresher
                     await MainThread.InvokeOnMainThreadAsync(async () =>
                     {
-                        await Navigation.PushAsync(new MainMenuPage());
-                        await DisplayAlert("Room Closed", "The room has been closed by the admin.", "OK");
+                        await DisplayAlert("Game Started", "The admin has started the game.", "OK");
                     });
-                    return;
+                    await Navigation.PushAsync(new GamePage(_currentRoom, _currentUser));
                 }
-            }
-            catch (JsonException)
-            {
-                // If deserialization to ErrorResponse failed, it means it's not an ErrorResponse
-            }
 
-            GetRoomStateResponse response = JsonSerializer.Deserialize<GetRoomStateResponse>(data.jsonData);
-
-            List<User> users = new List<User>();
-            foreach (var username in response.players)
-            {
-                if (username != _currentRoom.adminName)
-                {
-                    users.Add(new User
-                    {
-                        Username = username,
-                        TextColor = username == _currentUser ? Colors.Red : Colors.White
-                    });
-                }
-            }
-
-            await MainThread.InvokeOnMainThreadAsync(() =>
-            {
-                UsersListView.ItemsSource = users;
-            });
-
-            // Update the new properties
-            _hasGameBegun = response.hasGameBegun;
-            _questionCount = response.questionCount;
-            _answerTimeout = response.answerTimeout;
-
-            if (_hasGameBegun)
-            {
-                await MainThread.InvokeOnMainThreadAsync(async () =>
-                {
-                    await DisplayAlert("Game Started", "The admin has started the game.", "OK");
-                });
-                //Navigation.PushAsync(new GamePage());
             }
         }
 
         private async void OnStartGameButtonClicked(object sender, EventArgs e)
         {
-            Serielizer s = new Serielizer();
-            s.sendMessage(ClientSocket.sock, 2, "");
+            Serializer s = new Serializer();
+            s.sendMessage(ClientSocket.sock, (int)RoomAdminRequestTypes.StartGame, "");
 
-            dynamic data = Deserielizer.getResponse(ClientSocket.sock);
+            var data = Deserializer.getResponse(ClientSocket.sock);
             StartGameResponse response = JsonSerializer.Deserialize<StartGameResponse>(data.jsonData);
 
-            if (response.status == 1)
+            if (response.status == (int)RoomAdminRequeststatus.startGameSuccessful)
             {
-                //Navigation.PushAsync(new GamePage());
+                await Navigation.PushAsync(new GamePage(_currentRoom, _currentUser));
+            }
+            else if (response.status == (int)RoomAdminRequeststatus.theServerDoesntHaveEnoughQuestions)
+            {
+                await DisplayAlert("Game Start Failed", "The database does not contain enough questions for the game. Please create a new room with fewer questions.", "OK");
             }
             else
             {
@@ -197,13 +200,13 @@ namespace GUI
 
         private async void OnCloseRoomButtonClicked(object sender, EventArgs e)
         {
-            Serielizer s = new Serielizer();
-            s.sendMessage(ClientSocket.sock, 0, "");
+            Serializer s = new Serializer();
+            s.sendMessage(ClientSocket.sock, (int)RoomAdminRequestTypes.CloseRoom, "");
 
-            dynamic data = Deserielizer.getResponse(ClientSocket.sock);
+            var data = Deserializer.getResponse(ClientSocket.sock);
             CloseRoomResponse response = JsonSerializer.Deserialize<CloseRoomResponse>(data.jsonData);
 
-            if (response.status == 0)
+            if (response.status == (int)RoomAdminRequeststatus.closeRoomSuccessful)
             {
                 await Navigation.PushAsync(new MainMenuPage());
             }
@@ -215,13 +218,13 @@ namespace GUI
 
         private async void OnLeaveRoomButtonClicked(object sender, EventArgs e)
         {
-            Serielizer s = new Serielizer();
-            s.sendMessage(ClientSocket.sock, 0, "");
+            Serializer s = new Serializer();
+            s.sendMessage(ClientSocket.sock, (int)RoomMemberRequestTypes.LeaveRoom, "");
 
-            dynamic data = Deserielizer.getResponse(ClientSocket.sock);
+            var data = Deserializer.getResponse(ClientSocket.sock);
             LeaveRoomResponse response = JsonSerializer.Deserialize<LeaveRoomResponse>(data.jsonData);
 
-            if (response.status == 0)
+            if (response.status == (int)RoomMemberRequeststatus.leaveRoomSuccessful)
             {
                 await Navigation.PushAsync(new MainMenuPage());
             }
@@ -230,6 +233,5 @@ namespace GUI
                 await DisplayAlert("Room Leave Failed", "Unable to leave the room, please try again later.", "OK");
             }
         }
-
     }
 }

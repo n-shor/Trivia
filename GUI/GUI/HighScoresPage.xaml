@@ -1,19 +1,25 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GUI.HighScoresPage"
-             NavigationPage.HasBackButton="False">
+             NavigationPage.HasBackButton="False"
+             BackgroundImageSource="Resources/highScoresPageBG.jpg">
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="False" IsEnabled="False" />
     </Shell.BackButtonBehavior>
     <StackLayout Padding="20">
-        <Label Text="High Scores" />
-        <ListView x:Name="HighScoresList">
+        <Label Text="High Scores" TextColor="White" FontSize="48" />
+        <ListView x:Name="HighScoresList" SelectionMode="None">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell Text="{Binding .}" />
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="{Binding Rank}" TextColor="{Binding TextColor}" FontSize="40" />
+                            <Label Text="{Binding UserName}" TextColor="{Binding TextColor}" FontSize="40" />
+                        </StackLayout>
+                    </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Button Text="Back" Clicked="OnBackButtonClicked" />
+        <Button Text="Back" BackgroundColor="MediumBlue" Clicked="OnBackButtonClicked" TextColor="White"/>
     </StackLayout>
 </ContentPage>

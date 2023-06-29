@@ -1,49 +1,54 @@
 #include "RoomAdminRequestHandler.h"
 #include "RequestHandlerFactory.h"
+#include "GameRequestHandler.h"
 
-bool RoomAdminRequestHandler::isRequestRelevant(const RequestInfo& requestInfo)
+bool RoomAdminRequestHandler::isRequestRelevant(const RequestInfo& requestInfo) const
 {
-	return requestInfo.messageCode >= 0 && requestInfo.messageCode <= 2;
+	return requestInfo.messageCode == CloseRoom || requestInfo.messageCode == StartGame || requestInfo.messageCode == GetRoomsState;
 }
 
 RequestResult RoomAdminRequestHandler::closeRoom(RequestInfo)
 {
-	m_roomManager.deleteRoom(m_room.getRoomData().id);
+	RequestHandlerFactory::getInstance().getRoomManager().deleteRoom(m_room.getRoomData().id);
 
 	RequestResult r;
 	CloseRoomResponse crr;
 	crr.status = closeRoomSuccessful;
-	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+	r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
 	r.response = JsonResponsePacketSerializer::serializeResponse(crr);
+	r.username = m_user.getUsername();
 	return r;
 }
 
 RequestResult RoomAdminRequestHandler::startGame(RequestInfo)
 {
-	m_room =  Room(m_roomManager.getRoom(m_room.getRoomData().id).getRoomData());
-	for (int i = 0; i < m_room.getRoomData().currentPlayers; i++)
-		m_room.addUser(m_roomManager.getRoom(m_room.getRoomData().id).getAllUsers()[i]);
-
-	m_roomManager.deleteRoom(m_room.getRoomData().id);
-	m_roomManager.createRoom(m_room.getRoomData(), m_user);
-
-	for (int i = 0; i < m_room.getRoomData().currentPlayers; i++)
-		m_roomManager.getRoom(m_room.getRoomData().id).addUser(m_room.getAllUsers()[i]);
-	
-
 	RequestResult r;
 	StartGameResponse sgr;
-	sgr.status = startGameSuccessful;
 
 
-	//!!!!!!!
-	//!!!!!!!
-	r.newHandler = nullptr; //for now its null, later when we have a game handler, we will put it here
-	//!!!!!!!
-	//!!!!!!!
-	
-	r.response = JsonResponsePacketSerializer::serializeResponse(sgr);
-	return r;
+	try {
+		sgr.status = startGameSuccessful;
+		m_room.activateRoom();
+		r.newHandler = RequestHandlerFactory::getInstance().createGameRequestHandler(m_user,
+			RequestHandlerFactory::getInstance().getGameManager().getGames()[RequestHandlerFactory::getInstance().getGameManager().createGame(m_room)]);
+		r.response = JsonResponsePacketSerializer::serializeResponse(sgr);
+		return r;
+	}
+	catch (std::logic_error e)
+	{
+		if (e.what() == notEnoughQuestionsMessage)
+		{
+			sgr.status = theServerDoesntHaveEnoughQuestions;
+		}
+		else {
+			sgr.status = startGameUnsuccessful;
+		}
+		m_room.deactivateRoom();
+		r.newHandler = RequestHandlerFactory::getInstance().createRoomAdminRequestHandler(m_user, m_room);
+		r.response = JsonResponsePacketSerializer::serializeResponse(sgr);
+		r.username = m_user.getUsername();
+		return r;
+	}
 }
 
 template <typename T>
@@ -60,34 +65,44 @@ bool contains(std::vector<T> vec, const T& elem)
 RequestResult RoomAdminRequestHandler::getRoomsState(RequestInfo)
 {
 	try {
-		if (!contains(m_roomManager.getRoom(m_room.getRoomData().id).getAllUsers(), m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().adminName))
+		if (!contains(m_room.getAllUsers(), m_room.getRoomData().adminName))
 		{
-			throw 69;
+			throw std::logic_error("the user is not in the room");
 		}
 		RequestResult r;
 		GetRoomStateResponse grsr;
-		grsr.answerTimeout = m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().timePerQuestion;
-		grsr.hasGameBegun = m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().isActive;
-		grsr.questionCount = m_roomManager.getRoom(m_room.getRoomData().id).getRoomData().numOfQuestionsInGame;
-		grsr.players = m_roomManager.getRoom(m_room.getRoomData().id).getAllUsers();
+		grsr.answerTimeout = m_room.getRoomData().timePerQuestion;
+		grsr.hasGameBegun = m_room.getRoomData().isActive;
+		grsr.questionCount = m_room.getRoomData().numOfQuestionsInGame;
+		grsr.players = m_room.getAllUsers();
 		grsr.status = getRoomsStateRes;
 		r.response = JsonResponsePacketSerializer::serializeResponse(grsr);
-		r.newHandler = m_handlerFactory.createRoomAdminRequestHandler(m_user, m_roomManager.getRoom(m_room.getRoomData().id));
-		
+		r.newHandler = RequestHandlerFactory::getInstance().createRoomAdminRequestHandler(m_user, m_room);
+		r.username = m_user.getUsername();
 		return r;
 	}
-	catch(...) //we should check if this causes problems with the sudden disconnects later, or just check what error we should be catching
+	catch (std::logic_error le)
 	{
-		RequestResult r;
-		ErrorResponse e;
-		e.message = "room closed";
-		r.response = JsonResponsePacketSerializer::serializeResponse(e);
-		r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
-		return r;
+		std::cout << le.what() << "\n";
 	}
+	catch (const std::exception& e)
+	{
+		std::cout << e.what() << "\n";
+	}
+	catch(...)
+	{
+
+	}
+	RequestResult r;
+	ErrorResponse e;
+	e.message = "room closed";
+	r.response = JsonResponsePacketSerializer::serializeResponse(e);
+	r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
+	r.username = m_user.getUsername();
+	return r;
 }
 
-RoomAdminRequestHandler::RoomAdminRequestHandler(std::string username, RequestHandlerFactory& rhf, Room room) : m_room(room), m_user(username), m_handlerFactory(rhf), m_roomManager(rhf.getRoomManager())
+RoomAdminRequestHandler::RoomAdminRequestHandler(std::string username, Room& room) : m_room(room), m_user(username)
 {
 }
 
@@ -109,7 +124,8 @@ RequestResult RoomAdminRequestHandler::handleRequest(const RequestInfo& requestI
 	ErrorResponse e;
 	e.message = "irrelevant message";
 	r.response = JsonResponsePacketSerializer::serializeResponse(e);
-	r.newHandler = m_handlerFactory.createMenuRequestHandler(m_user.getUsername());
+	r.newHandler = RequestHandlerFactory::getInstance().createMenuRequestHandler(m_user.getUsername());
+	r.username = m_user.getUsername();
 	return r;
 }
 

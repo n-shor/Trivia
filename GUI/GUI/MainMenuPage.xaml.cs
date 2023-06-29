@@ -26,20 +26,25 @@ namespace GUI
             Navigation.PushAsync(new StatisticsPage());
         }
 
+        private void OnAddQuestionButtonClicked(object sender, EventArgs e)
+        {
+            Navigation.PushAsync(new AddQuestionPage());
+        }
+
         private async void OnLogoutButtonClicked(object sender, EventArgs e)
         {
-            Serielizer s = new Serielizer();
+            Serializer s = new Serializer();
             s.sendMessage(ClientSocket.sock,
-                                   (int)5,
+                                   (int)MenuRequestTypes.Logout,
                                    "");
             
-            dynamic data = Deserielizer.getResponse(ClientSocket.sock);
+            var data = Deserializer.getResponse(ClientSocket.sock);
             LoginResponse json = JsonSerializer.Deserialize<LoginResponse>(data.jsonData);
 
             // Now we check if the logout was successful.
-            if (json.status == 0)
+            if (json.status == (int)MenuRequestStatus.signedOut)
             {
-                await Navigation.PushAsync(new LoginPage());
+                await Navigation.PushAsync(new StartPage());
             }
             else
             {

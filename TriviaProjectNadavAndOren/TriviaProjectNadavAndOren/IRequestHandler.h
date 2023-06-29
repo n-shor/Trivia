@@ -3,9 +3,76 @@
 #include <string>
 #include <chrono>
 #include <vector>
-#include "IRequestHandler.h"
+#include <map>
+#include "Question.h"
 
 class IRequestHandler;
+
+struct leaderBoardResponse
+{
+    std::map<std::string, unsigned int> players;
+};
+
+struct AddQuestionRequest {
+    std::string question;
+    std::string optionA;
+    std::string optionB;
+    std::string optionC;
+    std::string optionD;
+    char correctAnswer;
+};
+
+struct AddQuestionResponse {
+    unsigned int status;
+};
+
+struct SubmitAnswerRequest
+{
+    unsigned int answerId;
+};
+
+struct GameData
+{
+    Question currentQuestion;
+    unsigned int correctAnswerCount;
+    unsigned int wrongAnswerCount;
+    double AverageAnswerTime;
+    GameData(Question currentQuestion, unsigned int correctAnswerCount, unsigned int wrongAnswerCount, double AverageAnswerTime) : currentQuestion(currentQuestion), correctAnswerCount(correctAnswerCount), wrongAnswerCount(wrongAnswerCount), AverageAnswerTime(AverageAnswerTime){}
+    GameData() : currentQuestion("error2", { "error2", "error2", "error2", "error2" }, 0) {}
+};
+
+struct PlayerResults
+{
+    std::string username;
+    unsigned int correctAnswerCount;
+    unsigned int wrongAnswerCount;
+    double averageAnswerTime;
+    PlayerResults(std::string username, unsigned int correctAnswerCount, unsigned int wrongAnswerCount, double averageAnswerTime) : username(username), correctAnswerCount(correctAnswerCount), wrongAnswerCount(wrongAnswerCount), averageAnswerTime(averageAnswerTime){}
+};
+
+struct LeaveGameResponse
+{
+    unsigned int status;
+};
+
+struct GetQuestionResponse
+{
+    unsigned int status;
+    std::string question;
+    std::map<unsigned int, std::string> answers;
+};
+
+struct SubmitAnswerResponse
+{
+    unsigned int status;
+    unsigned int correctAnswerId;
+};
+
+struct GetGameResultsResponse
+{
+    unsigned int status;
+    std::vector<PlayerResults> results;
+};
 
 struct CloseRoomResponse
 {
@@ -41,6 +108,8 @@ struct RoomData
     unsigned int numOfQuestionsInGame;
     unsigned int timePerQuestion;
     unsigned int isActive;
+    RoomData() {}
+    RoomData(unsigned int id, std::string name, std::string adminName, unsigned int currentPlayers, unsigned int maxPlayers, unsigned int numOfQuestionsInGame, unsigned int timePerQuestion, unsigned int isActive) : id(id), name(name), adminName(adminName), currentPlayers(currentPlayers), maxPlayers(maxPlayers), numOfQuestionsInGame(numOfQuestionsInGame), timePerQuestion(timePerQuestion), isActive(isActive) {}
 };
 
 struct CreateRoomRequest
@@ -64,12 +133,18 @@ struct JoinRoomRequest
 struct RequestResult
 {
     std::vector<unsigned char> response;
-    IRequestHandler* newHandler;
+    std::unique_ptr<IRequestHandler> newHandler;
+    std::string username;
 };
 
 struct GetPlayesInRoomResponse
 {
     std::vector<std::string> players;
+};
+
+struct CheckForEndReponse
+{
+    int gameEnded;
 };
 
 struct getHighScoreResponse
@@ -145,6 +220,6 @@ struct RequestInfo
 class IRequestHandler
 {
 public:
-    virtual bool isRequestRelevant(const RequestInfo& requestInfo) = 0;
+    virtual bool isRequestRelevant(const RequestInfo& requestInfo) const = 0;
     virtual RequestResult handleRequest(const RequestInfo& requestInfo) = 0;
 };

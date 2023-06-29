@@ -43,16 +43,23 @@ namespace GUI
 
             string jsonString = JsonSerializer.Serialize(request);
 
-            Serielizer s = new Serielizer();
-            s.sendMessage(ClientSocket.sock, (int)0, jsonString);
+            Serializer s = new Serializer();
+            s.sendMessage(ClientSocket.sock, (int)MenuRequestTypes.CreateRoom, jsonString);
 
-            dynamic data = Deserielizer.getResponse(ClientSocket.sock);
+            var data = Deserializer.getResponse(ClientSocket.sock);
 
             CreateRoomResponse response = JsonSerializer.Deserialize<CreateRoomResponse>(data.jsonData);
 
-            if (response.status != 7)
+            if (response.status != (int)MenuRequestStatus.CreateRoomSuccessful)
             {
-                await DisplayAlert("Error", "Room could not be created. Please try again.", "OK");
+                if (response.status == (int)RoomAdminRequeststatus.theServerDoesntHaveEnoughQuestions)
+                {
+                    await DisplayAlert("Room Creation Failed", "There are not enough questions in the database. Please try again with a smaller number of questions.", "OK");
+                }
+                else
+                {
+                    await DisplayAlert("Room Creation Failed", "The room could not be created. Please try again.", "OK");
+                }
                 return;
             }
 
@@ -61,7 +68,11 @@ namespace GUI
                 name = RoomNameEntry.Text,
                 currentPlayers = 1, // as the room got just created, only admin is there.
                 adminName = response.adminName,
-                id = response.roomId 
+                id = response.roomId,
+                maxPlayers = maxUsers,
+                numOfQuestionsInGame = questionCount,
+                timePerQuestion = answerTimeout,
+                isActive = 0,
             };
 
             await Navigation.PushAsync(new RoomPage(createdRoom, OriginPage.CreateRoomPage));

@@ -1,7 +1,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GUI.MainMenuPage"
-             NavigationPage.HasBackButton="False">
+             NavigationPage.HasBackButton="False"
+             BackgroundImageSource="Resources/mainMenuPageBG.jpg">
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="False" IsEnabled="False" />
     </Shell.BackButtonBehavior>
@@ -9,19 +10,33 @@
 
         <Button x:Name="CreateRoomButton"
                 Text="Create Room"
-                Clicked="OnCreateRoomButtonClicked" />
+                Clicked="OnCreateRoomButtonClicked" 
+                BackgroundColor="MediumBlue"
+                TextColor="White"/>
 
         <Button x:Name="JoinRoomButton"
                 Text="Join Room"
-                Clicked="OnJoinRoomButtonClicked" />
+                Clicked="OnJoinRoomButtonClicked" 
+                BackgroundColor="MediumBlue"
+                TextColor="White"/>
 
         <Button x:Name="StatisticsButton"
                 Text="Statistics"
-                Clicked="OnStatisticsButtonClicked" />
+                Clicked="OnStatisticsButtonClicked"
+                BackgroundColor="MediumBlue"
+                TextColor="White"/>
+        
+        <Button x:Name="AddQuestionButton"
+                Text="Add Question"
+                Clicked="OnAddQuestionButtonClicked" 
+                BackgroundColor="MediumBlue"
+                TextColor="White"/>
 
         <Button x:Name="LogOutButton"
                 Text="Log Out"
-                Clicked="OnLogoutButtonClicked" />
+                Clicked="OnLogoutButtonClicked" 
+                BackgroundColor="MediumBlue"
+                TextColor="White"/>
 
     </StackLayout>
 </ContentPage>

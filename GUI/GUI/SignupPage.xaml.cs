@@ -31,14 +31,14 @@ namespace GUI
                 var l = new SignupRequest { username = username, password = password, email = email };
                 string jsonString = JsonSerializer.Serialize(l);
 
-                Serielizer s = new Serielizer();
+                Serializer s = new Serializer();
                 s.sendMessage(ClientSocket.sock, (int)2, jsonString);
 
-                dynamic data = Deserielizer.getResponse(ClientSocket.sock);
+                var data = Deserializer.getResponse(ClientSocket.sock);
                 SignupResponse json = JsonSerializer.Deserialize<SignupResponse>(data.jsonData);
 
                 // Now we check if the registration was successful.
-                if (json.status == (int)Statuses.SignedUp)
+                if (json.status == (int)LoginRequestStatus.SignedUp)
                 {
                     ClientSocket.username = username;
                     Navigation.PushAsync(new MainMenuPage());
