@@ -16,11 +16,11 @@ This project includes the following bonuses:
 
 - Bonus Feature 6: [The server doesn't allow the user to log into the same account from 2 clients at the same time]
 
-- Bonus Feature 7: [In the joinRoom page in the GUI, if you selected a room and it doesn't get deleted after the automatic refresh your selection would stay]
+- Bonus Feature 7: [In the joinRoom page in the GUI, if you selected a room and it doesn't get deleted after the automatic refresh your selection would stay instead of you having to reselect]
 
 - Bonus Feature 8: [In the room page in the GUI, the admin has their own label and is excluded from the normal players' list]
 
-- Bonus Feature 9: [In the room page in the GUI, the player's name is red while the rest are white (even if they're the admin)]
+- Bonus Feature 9: [In the room page in the GUI, the player's name is red while the rest are white (if they're the admin, the admin label turns red)]
 
 - Bonus Feature 10: [In the GUI, you have to enter a valid email address to sign up]
 
@@ -37,3 +37,9 @@ This project includes the following bonuses:
 - Bonus Feature 16: [The player's name is red in the results screen, and if they won the 'Winner' title's name also becomes red]
 
 - Bonus Feature 17: [The player's name is red in the high scores page, if they appear there]
+
+- Bonus Feature 18: [The game works on android!!! (obviously not with 127.0.0.1 though)]
+
+- Bonus Feature 19: [The GUI looks kind of good with background pictures and colored buttons (even the joinRoom page has a list of buttons (!!!)), also a lot of effort has been put into the various lists being scrollable if they're too long to see without scrolling]
+
+- Bonus Feature 20: [For user convenience, when the game starts they have to press the ok button on the popup so they can get ready instead of being thrown right into the game]
