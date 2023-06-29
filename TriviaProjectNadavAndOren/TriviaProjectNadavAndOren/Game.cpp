@@ -84,7 +84,7 @@ int Game::submitAnswer(std::string lu, unsigned int id)
 		}
 
 
-		m_players[lu].AverageAnswerTime = (m_players[lu].AverageAnswerTime * m_players[lu].correctAnswerCount + double(1 + difftime(finishTime, m_timeTracker[lu]))) / (m_players[lu].correctAnswerCount + 1);
+		m_players[lu].AverageAnswerTime = (m_players[lu].AverageAnswerTime * m_players[lu].correctAnswerCount + double(difftime(finishTime, m_timeTracker[lu]))) / (m_players[lu].correctAnswerCount + 1);
 		return ret;
 	}
 	else {
